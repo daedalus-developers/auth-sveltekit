@@ -8,6 +8,7 @@ import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
 import postgres from 'postgres';
 import 'dotenv/config';
+import { exit } from 'process';
 
 (async () => {
 	// const DIR_PATH = path.dirname(process.env.DATABASE_URL!);
@@ -60,5 +61,6 @@ import 'dotenv/config';
 
 		await db.insert(users).values(initialUsers).onConflictDoNothing();
 		console.log('Database Migrated.');
+		exit(0);
 	}
 })();
