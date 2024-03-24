@@ -20,9 +20,6 @@ services:
       - SMTP_FROM_EMAIL=${SMTP_FROM_EMAIL}
       - SMTP_REPLY_TO=${SMTP_REPLY_TO}
       - ORIGIN=${ORIGIN}
-      # - PORT=3000
-      # - HOST=0.0.0.0
-      # - NODE_ENV=production
     volumes:
       - ./data:/app/data
     # healthcheck:
