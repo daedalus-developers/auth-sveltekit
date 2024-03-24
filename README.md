@@ -53,7 +53,7 @@ cp .env.example .env # Creates a copy of .env.example to .env
 
 ```sh
 #.env
-DATABASE_URL=local.db # For local development only
+DATABASE_URL=postgres://username:password@host:port/dbname # For local development only
 SMTP_HOST=smtp.example.com # your smtp host
 SMTP_PORT=587 # your smtp port
 SMTP_USER=your_email@example.com
@@ -70,25 +70,20 @@ GOOGLE_CLIENTSECRET="" # This is provided by google console
 GOOGLE_CALLBACK_URL="http://localhost:5173/login/google/callback"
 ```
 
-Create your Database file according to `DATABASE_URL` you set in `.env`
+Create your Database for now the schemas are written in postgres, create a neon or vercel postgres database, or run your own in a container for development
 
 e.g
 
 ```sh
-touch local.db
 pnpm db:migrate # or npm run db:migrate
+# Optional if you just want to login and check whats inside
+pnpm db:seed # or npm run db:seed
 ```
 
 Run the development server
 
 ```sh
 pnpm dev # or npm run dev
-```
-
-Seeding is wip but default accounts provided are seen in the `migrate.ts` file
-
-```sh
-pnpm migrate # or npm run migrate
 ```
 
 # Deploying
