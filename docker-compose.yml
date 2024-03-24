@@ -2,16 +2,17 @@ version: '3.8'
 
 services:
   app:
-    image: auth-kit
+    image: authmaster
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: auth-kit-sqlite
+    container_name: auth-sveltekit
     ports:
       - 3000:3000
     environment:
+      - ORIGIN=${ORIGIN}
+      - TZ=${TZ}
       - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN}
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_HOST=${SMTP_HOST}
       - SMTP_USER=${SMTP_USER}
@@ -19,9 +20,12 @@ services:
       - SMTP_FROM_NAME=${SMTP_FROM_NAME}
       - SMTP_FROM_EMAIL=${SMTP_FROM_EMAIL}
       - SMTP_REPLY_TO=${SMTP_REPLY_TO}
-      - ORIGIN=${ORIGIN}
-    volumes:
-      - ./data:/app/data
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+      - GITHUB_CALLBACK_URL=${GITHUB_CALLBACK_URL}
+      - GOOGLE_CLIENTID=${GOOGLE_CLIENTID}
+      - GOOGLE_CLIENTSECRET=${GOOGLE_CLIENTSECRET}
+      - GOOGLE_CALLBACK_URL=${GOOGLE_CALLBACK_URL}
     # healthcheck:
     #   test: ['CMD', 'curl', '-f', 'http://localhost:3000/']
     #   interval: 30s

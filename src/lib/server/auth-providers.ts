@@ -3,7 +3,7 @@ import { GitHub, Google } from 'arctic';
 import { generateId } from 'lucia';
 import { alphabet, generateRandomString } from 'oslo/crypto';
 import { Argon2id } from 'oslo/password';
-import { oAuthAccounts, users } from '@server/schema';
+import { oAuthAccounts, users } from '@server/schemas';
 import { db } from '@server/db';
 import { queryUserByEmail } from './queries';
 

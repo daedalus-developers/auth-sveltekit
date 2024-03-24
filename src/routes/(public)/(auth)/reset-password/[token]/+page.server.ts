@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types';
 import { db } from '@server/db';
-import { users } from '@server/schema';
+import { users } from '@server/schemas';
 import { eq } from 'drizzle-orm';
 import { redirect } from '@sveltejs/kit';
 import { auth, verifyPasswordResetToken } from '@server/auth';

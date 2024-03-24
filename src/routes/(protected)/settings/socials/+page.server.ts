@@ -2,7 +2,7 @@ import { queryUseroAuthAccounts } from '@server/queries';
 import type { Actions, PageServerLoad } from './$types';
 import { db } from '@server/db';
 import { fail, redirect } from '@sveltejs/kit';
-import { oAuthAccounts } from '@server/schema';
+import { oAuthAccounts } from '@server/schemas';
 import { and, eq } from 'drizzle-orm';
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
