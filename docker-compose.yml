@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    image: auth-kit
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth-kit-libsql
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_AUTH_TOKEN=${DATABASE_AUTH_TOKEN}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_FROM_NAME=${SMTP_FROM_NAME}
+      - SMTP_FROM_EMAIL=${SMTP_FROM_EMAIL}
+      - SMTP_REPLY_TO=${SMTP_REPLY_TO}
+      - ORIGIN=${ORIGIN}
+      # - PORT=3000
+      # - HOST=0.0.0.0
+      # - NODE_ENV=production
+    volumes:
+      - ./data:/app/data
+    # healthcheck:
+    #   test: ['CMD', 'curl', '-f', 'http://localhost:3000/']
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3

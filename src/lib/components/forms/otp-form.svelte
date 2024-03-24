@@ -1,0 +1,125 @@
+<script lang="ts">
+	import { page } from '$app/stores';
+	import * as Card from '@components/ui/card';
+	import * as Form from '@components/ui/form';
+	import { Input } from '@components/ui/input';
+	import { Switch } from '@components/ui/switch';
+	import { Button } from '@components/ui/button';
+	import type { OtpFormSchema, OtpProvider } from '@types';
+	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+	import { LoaderCircle } from 'lucide-svelte';
+	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
+	import { queryParam, ssp } from 'sveltekit-search-params';
+	import { Label } from '@components/ui/label';
+
+	let formData: SuperValidated<Infer<OtpFormSchema>> = $page.data.otpForm;
+
+	let key: string | undefined = $page.data.key ?? undefined;
+
+	const provider = queryParam('provider', ssp.string('email'), {
+		showDefaults: false
+	});
+
+	let selectedProvider = false;
+
+	export let dispatch: () => void = () => {};
+
+	export let cancelDispatch: () => void = () => {};
+
+	const form = superForm(formData, {
+		dataType: 'json',
+		onUpdated({ form }) {
+			if (form.message) {
+				switch (form.message.type) {
+					case 'success':
+						{
+							toast.success(form.message.text);
+							if (form.message.data && form.message.data?.redirect) {
+								goto(String(form.message.data?.redirect));
+							}
+							dispatch();
+						}
+						break;
+					case 'error': {
+						if (form.message.data && form.message.data?.redirect) {
+							goto(String(form.message.data?.redirect));
+						}
+						cancelDispatch();
+					}
+				}
+			}
+		}
+	});
+
+	const { form: fields, enhance, delayed } = form;
+
+	$: {
+		key = $page.data.key;
+		if (key !== undefined) {
+			$fields.key = key;
+		}
+	}
+
+	const handleChangeProvider = () => {
+		selectedProvider = !selectedProvider;
+		if (selectedProvider) $provider = 'sms';
+		else $provider = 'email';
+	};
+
+	$: {
+		if ($provider) {
+			$fields.provider = $provider as OtpProvider;
+		}
+	}
+</script>
+
+<h2 class="py-4 text-center text-xl font-semibold tracking-tight">One Time Password</h2>
+<div class="flex items-center justify-center space-x-2">
+	<Switch
+		id="toggle-provider"
+		disabled
+		bind:checked={selectedProvider}
+		onCheckedChange={handleChangeProvider}
+	/>
+
+	<Label for="toggle-provider">
+		Provider
+		<span class="text-muted-foreground">({$provider?.toUpperCase()}) </span>
+	</Label>
+</div>
+
+<form method="POST" use:enhance action="?/otp">
+	<Card.Content class="space-y-2">
+		<input class="hidden" type="text" name="provider" bind:value={$fields.provider} />
+		<Form.Field {form} name="key">
+			<Form.Control let:attrs>
+				<Form.Label class="flex justify-between text-base">
+					{selectedProvider ? 'Phone Number' : 'Email'}
+				</Form.Label>
+				<Input
+					class="text-base"
+					autofocus
+					{...attrs}
+					type={selectedProvider ? 'text' : 'email'}
+					bind:value={$fields.key}
+				/>
+				<Form.FieldErrors class="h-[18px] text-center" />
+			</Form.Control>
+		</Form.Field>
+	</Card.Content>
+	<Card.Footer>
+		<div class="flex w-full flex-col gap-y-2">
+			<Form.Button class="w-full" disabled={$delayed}>
+				{#if $delayed}
+					Sending OTP <LoaderCircle class="animate-spin" />
+				{:else}
+					Send OTP
+				{/if}
+			</Form.Button>
+			<Button variant="link" href="/signup" class="text-muted-foreground">
+				No account? Create one
+			</Button>
+		</div>
+	</Card.Footer>
+</form>
