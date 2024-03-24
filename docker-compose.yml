@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: auth-kit-libsql
+    container_name: auth-kit-sqlite
     ports:
       - 3000:3000
     environment:
