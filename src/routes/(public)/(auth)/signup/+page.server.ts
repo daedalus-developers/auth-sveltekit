@@ -6,7 +6,7 @@ import { queryUserEmails } from '@server/queries';
 import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
 import { db } from '@server/db';
-import { users } from '@server/schema';
+import { users } from '@server/schemas';
 import { redirect } from '@sveltejs/kit';
 import { sendFailedRegistrationAttempt, sendOnboardingDetails } from '@server/mailer';
 import { generateOTP } from '@server/auth';

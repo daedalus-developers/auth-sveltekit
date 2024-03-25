@@ -53,7 +53,7 @@
 	export const snapshot = { capture, restore };
 </script>
 
-<div class="container grid h-full w-full items-center gap-4 py-16 md:w-[50%]">
+<div class="container grid h-full w-full items-center gap-4 py-16 md:w-1/2 xl:w-1/4">
 	<div class="flex flex-col gap-4 text-center">
 		<h1 class="text-4xl font-bold"><Fingerprint class="mx-auto h-16 w-16" /></h1>
 		<p class="text-sm font-medium">

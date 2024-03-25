@@ -7,7 +7,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { RateLimiter } from 'sveltekit-rate-limiter/server';
 import { auth } from '@server/auth';
 import { db } from '@server/db';
-import { users } from '@server/schema';
+import { users } from '@server/schemas';
 import { Argon2id } from 'oslo/password';
 import { eq } from 'drizzle-orm';
 import { Base64Encoding, encodeHex } from 'oslo/encoding';

@@ -2,11 +2,11 @@ import { defineConfig } from 'drizzle-kit';
 import 'dotenv/config';
 
 export default defineConfig({
-	schema: ['./src/lib/server/schema.ts'],
-	driver: 'better-sqlite',
+	schema: ['./src/lib/server/schemas/'],
+	driver: 'pg',
 	out: './migrations',
 	dbCredentials: {
-		url: process.env.DATABASE_URL!
+		connectionString: process.env.DATABASE_URL!
 	},
 	verbose: true
 });

@@ -1,25 +1,21 @@
-import { sql, type InferInsertModel, type InferSelectModel } from 'drizzle-orm';
-import { integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { type InferInsertModel, type InferSelectModel } from 'drizzle-orm';
+import { timestamp, boolean, primaryKey, pgTable, text } from 'drizzle-orm/pg-core';
 
-export const users = sqliteTable('user', {
+export const users = pgTable('user', {
 	id: text('id').notNull().primaryKey(),
 	username: text('username').unique(),
 	email: text('email').notNull().unique(),
-	emailVerified: integer('email_verified', { mode: 'boolean' }).default(false),
+	emailVerified: boolean('email_verified').default(false),
 	password: text('password').notNull(),
 	twoFactorSecret: text('two_factor_secret'),
 	role: text('role', { enum: ['super', 'admin', 'tenant', 'user'] })
 		.notNull()
 		.default('user'),
-	createdAt: integer('created_at', { mode: 'timestamp' })
-		.notNull()
-		.default(sql`(strftime('%s', 'now'))`),
-	updatedAt: integer('updated_at', { mode: 'timestamp' })
-		.notNull()
-		.default(sql`(strftime('%s', 'now'))`)
+	createdAt: timestamp('created_at', { precision: 6, withTimezone: true }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { precision: 6, withTimezone: true }).notNull().defaultNow()
 });
 
-export const userDetails = sqliteTable(
+export const userDetails = pgTable(
 	'users_details',
 	{
 		userId: text('user_id')
@@ -29,18 +25,16 @@ export const userDetails = sqliteTable(
 			}),
 		name: text('name'),
 		bio: text('bio'),
-		updatedAt: integer('updated_at', { mode: 'timestamp' })
-			.notNull()
-			.default(sql`(strftime('%s', 'now'))`)
+		updatedAt: timestamp('updated_at', { precision: 6, withTimezone: true }).notNull().defaultNow()
 	},
 	(table) => {
 		return {
-			pk: primaryKey({ name: 'id', columns: [table.userId] })
+			pk: primaryKey({ columns: [table.userId] })
 		};
 	}
 );
 
-export const usersOtp = sqliteTable(
+export const usersOtp = pgTable(
 	'users_otp',
 	{
 		userId: text('user_id')
@@ -50,16 +44,16 @@ export const usersOtp = sqliteTable(
 			}),
 		providerKey: text('provider_key').notNull(),
 		otp: text('otp').notNull(),
-		expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull()
+		expiresAt: timestamp('expires_at', { precision: 6, withTimezone: true }).notNull().defaultNow()
 	},
 	(table) => {
 		return {
-			pk: primaryKey({ name: 'id', columns: [table.userId, table.providerKey] })
+			pk: primaryKey({ columns: [table.userId, table.providerKey] })
 		};
 	}
 );
 
-export const passwordResetToken = sqliteTable(
+export const passwordResetToken = pgTable(
 	'password_reset_token',
 	{
 		userId: text('user_id')
@@ -68,28 +62,28 @@ export const passwordResetToken = sqliteTable(
 				onDelete: 'cascade'
 			}),
 		tokenHash: text('token_hash').notNull().unique(),
-		expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull()
+		expiresAt: timestamp('expires_at', { precision: 6, withTimezone: true }).notNull()
 	},
 
 	(table) => {
 		return {
-			pk: primaryKey({ name: 'id', columns: [table.userId, table.tokenHash] })
+			pk: primaryKey({ columns: [table.userId, table.tokenHash] })
 		};
 	}
 );
 
-export const sessions = sqliteTable('session', {
+export const sessions = pgTable('session', {
 	id: text('id').notNull().primaryKey(),
 	userId: text('user_id')
 		.notNull()
 		.references(() => users.id, {
 			onDelete: 'cascade'
 		}),
-	expiresAt: integer('expires_at').notNull(),
-	fresh: integer('fresh', { mode: 'boolean' }).notNull().default(true)
+	expiresAt: timestamp('expires_at', { precision: 6, withTimezone: true }).notNull(),
+	fresh: boolean('fresh').notNull().default(true)
 });
 
-export const oAuthAccounts = sqliteTable(
+export const oAuthAccounts = pgTable(
 	'oauth_account',
 	{
 		provider: text('provider').notNull(),
@@ -99,13 +93,11 @@ export const oAuthAccounts = sqliteTable(
 			.references(() => users.id, {
 				onDelete: 'cascade'
 			}),
-		createdAt: integer('created_at', { mode: 'timestamp' })
-			.notNull()
-			.default(sql`(strftime('%s', 'now'))`)
+		createdAt: timestamp('created_at', { precision: 6, withTimezone: true }).notNull().defaultNow()
 	},
 	(table) => {
 		return {
-			pk: primaryKey({ name: 'id', columns: [table.provider, table.providerAccountId] })
+			pk: primaryKey({ columns: [table.provider, table.providerAccountId, table.userId] })
 		};
 	}
 );

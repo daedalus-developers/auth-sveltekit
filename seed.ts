@@ -1,27 +1,29 @@
-import fs from 'fs/promises';
+// import fs from 'fs/promises';
 import path from 'path';
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
-import * as schema from './src/lib/server/schema';
-import { users, type UserInsertSchema } from './src/lib/server/schema';
-import Database from 'better-sqlite3';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import * as schema from './src/lib/server/schemas/';
+import { users, type UserInsertSchema } from './src/lib/server/schemas/';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
+import postgres from 'postgres';
 import 'dotenv/config';
+import { exit } from 'process';
 
 (async () => {
-	const DIR_PATH = path.dirname(process.env.DATABASE_URL!);
+	// const DIR_PATH = path.dirname(process.env.DATABASE_URL!);
+	//
+	// try {
+	// 	await fs.access(process.env.DATABASE_URL!, fs.constants.F_OK);
+	// 	console.log('Database found!');
+	// } catch (error) {
+	// 	console.log('Database not found. Creating a new one...');
+	// 	await fs.mkdir(DIR_PATH, { recursive: true });
+	// 	await fs.writeFile(process.env.DATABASE_URL!, '');
+	// }
 
-	try {
-		await fs.access(process.env.DATABASE_URL!, fs.constants.F_OK);
-		console.log('Database found!');
-	} catch (error) {
-		console.log('Database not found. Creating a new one...');
-		await fs.mkdir(DIR_PATH, { recursive: true });
-		await fs.writeFile(process.env.DATABASE_URL!, '');
-	}
+	const client = postgres(process.env.DATABASE_URL!);
 
-	const client = new Database(process.env.DATABASE_URL);
 	const db = drizzle(client, {
 		schema
 	});
@@ -59,5 +61,6 @@ import 'dotenv/config';
 
 		await db.insert(users).values(initialUsers).onConflictDoNothing();
 		console.log('Database Migrated.');
+		exit(0);
 	}
 })();

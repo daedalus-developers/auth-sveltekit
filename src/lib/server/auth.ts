@@ -1,6 +1,6 @@
-import { DrizzleSQLiteAdapter } from '@lucia-auth/adapter-drizzle';
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { db } from './db';
-import { passwordResetToken, sessions, users, usersOtp, type UserInsertSchema } from './schema';
+import { passwordResetToken, sessions, users, usersOtp, type UserInsertSchema } from './schemas';
 import { Lucia, TimeSpan, generateId } from 'lucia';
 import { dev } from '$app/environment';
 import { and, eq } from 'drizzle-orm';
@@ -12,7 +12,7 @@ import type { TwoFactorMethods } from '@types';
 import { TOTPController } from 'oslo/otp';
 import { Argon2id } from 'oslo/password';
 
-const adapter = new DrizzleSQLiteAdapter(db, sessions, users);
+const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 
 export const auth = new Lucia(adapter, {
 	sessionCookie: {
