@@ -1,6 +1,8 @@
 import type { ComponentType } from 'svelte';
 import { boolean, object, string, union, enum as zEnum, type infer as zInfer } from 'zod';
 
+export type PaymentMethod = 'card' | 'paypal' | 'google';
+
 export type LinkWithIcon = {
 	icon: ComponentType;
 	href: string;
