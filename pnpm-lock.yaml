@@ -29,6 +29,9 @@ dependencies:
   cmdk-sv:
     specifier: ^0.0.16
     version: 0.0.16(svelte@4.2.12)
+  date-fns:
+    specifier: ^3.6.0
+    version: 3.6.0
   drizzle-orm:
     specifier: ^0.30.4
     version: 0.30.4(pg@8.11.3)(postgres@3.4.4)
@@ -3148,6 +3151,10 @@ packages:
     dependencies:
       d3: 7.8.5
       lodash-es: 4.17.21
+    dev: false
+
+  /date-fns@3.6.0:
+    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
     dev: false
 
   /dateformat@4.6.3:

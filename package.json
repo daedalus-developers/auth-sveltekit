@@ -75,6 +75,7 @@
 		"bits-ui": "^0.20.0",
 		"clsx": "^2.1.0",
 		"cmdk-sv": "^0.0.16",
+		"date-fns": "^3.6.0",
 		"drizzle-orm": "^0.30.4",
 		"formsnap": "^0.5.1",
 		"lucia": "^3.1.1",
