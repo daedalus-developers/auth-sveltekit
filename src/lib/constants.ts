@@ -4,7 +4,6 @@ import {
 	CreditCard,
 	MonitorSmartphone,
 	ScanFace,
-	Settings,
 	ShieldCheck,
 	User
 } from 'lucide-svelte';
@@ -15,11 +14,6 @@ export const navLinks = [
 ];
 
 export const settingsLinks: Array<LinkWithIcon> = [
-	{
-		icon: Settings,
-		title: 'Settings',
-		href: '/settings'
-	},
 	{
 		icon: User,
 		title: 'Profile',
