@@ -1,3 +1,7 @@
-<div class="flex flex-col items-center justify-center gap-y-4">
-	<div>Change password</div>
+<script>
+	import PaymentMethod from './payment-method.svelte';
+</script>
+
+<div class="flex flex-col gap-y-4">
+	<PaymentMethod />
 </div>
