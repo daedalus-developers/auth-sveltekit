@@ -32,6 +32,8 @@ export const actions: Actions = {
 				// A path where to save the file
 				const path = `media/${locals.user.id}/avatars`;
 
+				// TODO: Delete old avatars here
+
 				//ObjectKey is the full path of the file in storage
 				const { preSignedUrl, objectKey } = await createPresignedUrl(
 					path,

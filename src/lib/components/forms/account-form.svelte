@@ -30,7 +30,7 @@
 				if (pathname.includes('onboarding')) {
 					store.nextStep();
 				} else {
-					toast.success(form.message?.text ?? '');
+					toast.success('Saved successfully');
 				}
 			} else if (result.type === 'failure') {
 				if (form.message) toast.error(form.message.text);
