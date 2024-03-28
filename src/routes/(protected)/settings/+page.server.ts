@@ -1,7 +1,7 @@
-import { fail, setError, superValidate, withFiles } from 'sveltekit-superforms';
+import { fail, message, setError, superValidate, withFiles } from 'sveltekit-superforms';
 import type { Actions } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
-import { accountForm } from '@types';
+import { accountForm, paymentForm, tierForm } from '@types';
 import { db } from '@server/db';
 import { userDetails, users } from '@server/schemas';
 import { eq } from 'drizzle-orm';
@@ -108,6 +108,34 @@ export const actions: Actions = {
 
 		return withFiles({ accountForm: form });
 	},
-	updateTierSubscriptionUpdate: async ({ request }) => {},
-	updatePaymentMethod: async ({ request }) => {}
+	updateTierSubscription: async ({ request, locals }) => {
+		if (!locals.user) return fail(401, { message: 'Unauthorized' });
+
+		// Validate Form
+		const form = await superValidate(request, zod(tierForm));
+
+		if (!form.valid) return fail(400, { form });
+
+		return message(form, {
+			type: 'success',
+			text: 'Subscription updated successfully'
+		});
+
+		// return fail(500, { form, message: 'Something went wrong' });
+	},
+	updatePaymentMethod: async ({ request, locals }) => {
+		if (!locals.user) return fail(401, { message: 'Unauthorized' });
+
+		// Validate Form
+		const form = await superValidate(request, zod(paymentForm));
+
+		if (!form.valid) return fail(400, { form });
+
+		return message(form, {
+			type: 'success',
+			text: 'Payment method updated successfully'
+		});
+
+		// return fail(500, { form, message: 'Something went wrong' });
+	}
 };

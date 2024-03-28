@@ -1,5 +1,4 @@
 import type { LinkWithIcon } from '@types';
-
 import AppWindowMacIcon from 'lucide-svelte/icons/app-window-mac';
 import CreditCard from 'lucide-svelte/icons/credit-card';
 import MonitorSmartphone from 'lucide-svelte/icons/monitor-smartphone';
@@ -159,7 +158,7 @@ export const PAYMENT_METHODS_WITH_ICONS: Array<PaymentMethodWithIcoon> = [
 	}
 ] as const;
 
-export const PAYMENT_OCCURENCE = ['weekly', 'monthly', 'annually'] as const;
+export const PAYMENT_OCCURENCE = ['Weekly', 'Monthly', 'Annually'] as const;
 
 export const navLinks = [
 	{ label: 'Signup', href: '/signup' },

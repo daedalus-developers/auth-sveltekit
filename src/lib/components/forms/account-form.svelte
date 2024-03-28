@@ -9,37 +9,41 @@
 	import { toast } from 'svelte-sonner';
 	import { onBoardingStepStore as store } from '@stores';
 	import { onMount } from 'svelte';
+	import { Button } from '@components/ui/button';
 
-	let formData: SuperValidated<Infer<AccountFormSchema>> = $page.data.accountForm;
+	let data: SuperValidated<Infer<AccountFormSchema>> = $page.data.accountForm;
+	export { data as form };
 
 	const initials = $page.data?.user?.email?.charAt(0).toUpperCase() ?? 'U';
 
 	let avatarFile: File | undefined = undefined;
 
+	$: pathname = $page.url.pathname;
+
 	$: avatar = $page.data.user.avatar;
 
-	const form = superForm(formData, {
+	const form = superForm(data, {
 		dataType: 'json',
 		resetForm: true,
-		onUpdate({ result }) {
+		onUpdate({ result, form }) {
 			if (result.type === 'success') {
-				if ($page.url.pathname.includes('onboarding')) {
+				if (pathname.includes('onboarding')) {
 					store.nextStep();
 				} else {
-					toast.success('Successfully updated profile information');
+					toast.success(form.message?.text ?? '');
 				}
 			} else if (result.type === 'failure') {
-				toast.error('Failed to update profile information');
+				if (form.message) toast.error(form.message.text);
 			}
 		}
 	});
 
-	const { form: fields, enhance, errors, tainted, isTainted, delayed, capture, restore } = form;
+	const { form: formData, enhance, errors, tainted, isTainted, delayed, capture, restore } = form;
 
 	const onAvatarChange = (event: Event): void => {
 		const input = event.target as HTMLInputElement;
 		avatarFile = input.files?.[0] ?? undefined;
-		$fields.avatar = avatarFile;
+		$formData.avatar = avatarFile;
 	};
 
 	$: {
@@ -65,15 +69,15 @@
 	$: {
 		if (!$errors.username) {
 			if ($page.data.user.username !== $page.data.user.email)
-				$fields.username = $page.data.user.username;
+				$formData.username = $page.data.user.username;
 		}
 
-		if ($page.data.user.avatar) $fields.avatar = $page.data.user.avatar;
+		if ($page.data.user.avatar) $formData.avatar = $page.data.user.avatar;
 
 		if ($page.data.details) {
-			if ($page.data.details.bio) $fields.bio = $page.data.details.bio;
+			if ($page.data.details.bio) $formData.bio = $page.data.details.bio;
 
-			if ($page.data.details.name) $fields.name = $page.data.details.name;
+			if ($page.data.details.name) $formData.name = $page.data.details.name;
 		}
 
 		disableSubmit = true;
@@ -106,7 +110,7 @@
 		<Form.Field {form} name="username">
 			<Form.Control let:attrs>
 				<Form.Label>Username</Form.Label>
-				<Input {...attrs} placeholder="jwick1543" bind:value={$fields.username} />
+				<Input {...attrs} placeholder="jwick1543" bind:value={$formData.username} />
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
@@ -114,7 +118,7 @@
 		<Form.Field {form} name="name">
 			<Form.Control let:attrs>
 				<Form.Label>Name</Form.Label>
-				<Input {...attrs} placeholder="John Wick" bind:value={$fields.name} />
+				<Input {...attrs} placeholder="John Wick" bind:value={$formData.name} />
 			</Form.Control>
 			<Form.Description>Nickname, or your real name.</Form.Description>
 			<Form.FieldErrors />
@@ -126,7 +130,7 @@
 				<Textarea
 					{...attrs}
 					placeholder="Tell us a little bit about yourself"
-					bind:value={$fields.bio}
+					bind:value={$formData.bio}
 				/>
 			</Form.Control>
 			<Form.FieldErrors />
@@ -134,3 +138,9 @@
 	</div>
 	<Form.Button type="submit" class="col-span-2 w-full" disabled={disableSubmit}>Update</Form.Button>
 </form>
+
+{#if pathname.includes('onboarding')}
+	<div class="flex justify-end py-2">
+		<Button variant="ghost" class="" on:click={() => store.nextStep()}>Skip</Button>
+	</div>
+{/if}

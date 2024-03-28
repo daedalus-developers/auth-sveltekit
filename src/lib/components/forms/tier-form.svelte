@@ -4,17 +4,19 @@
 	import { Button } from '@components/ui/button';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import * as RadioGroup from '@components/ui/radio-group';
+	import * as Select from '@components/ui/select';
 	import { onBoardingStepStore as store } from '@stores';
-	import { lgScreen } from '@utils';
+	import { cn, lgScreen } from '@utils';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { type TierFormSchema, tierForm } from '@types';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { TIERS, FEATURES, TIERS_FEATURES } from '$lib/constants';
+	import { tierForm, type TierFormSchema } from '@types';
+	import { TIERS, FEATURES, TIERS_FEATURES, PAYMENT_OCCURENCE } from '$lib/constants';
 	import { IconTierDiamond } from '@components/icons';
 	import { ScrollArea } from '@components/ui/scroll-area';
 	import { DisclaimerAlert } from '@components';
+	import { toast } from 'svelte-sonner';
+	import { zod } from 'sveltekit-superforms/adapters';
 
 	$: pathname = $page.url.pathname;
 
@@ -28,10 +30,34 @@
 	export { data as form };
 
 	const form = superForm(data, {
-		validators: zodClient(tierForm)
+		dataType: 'json',
+		resetForm: true,
+		validators: zod(tierForm),
+		onUpdate({ result, form }) {
+			if (result.type === 'success') {
+				if ($page.url.pathname.includes('onboarding')) {
+					store.nextStep();
+				} else {
+					toast.success(form.message?.text ?? '');
+				}
+			} else if (result.type === 'failure') {
+				if (form.message) toast.error(form.message.text);
+			}
+		}
 	});
 
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, tainted, isTainted, delayed, capture, restore } = form;
+
+	export const snapshot = { capture, restore };
+
+	$: disableSubmit = !isTainted($tainted) || $delayed;
+
+	$: selectedOccurence = $formData.occurence
+		? {
+				label: $formData.occurence,
+				value: $formData.occurence
+			}
+		: undefined;
 </script>
 
 <Card.Root class="border-0">
@@ -50,7 +76,7 @@
 			<Form.Field {form} name="tier">
 				<RadioGroup.Root
 					bind:value={$formData.tier}
-					class="grid h-full w-full grid-cols-3 items-center justify-center lg:grid-cols-1"
+					class="col-span-1 grid h-full w-full grid-cols-3 items-center justify-between lg:grid-cols-1"
 				>
 					{#each TIERS as tier}
 						<Form.Control let:attrs>
@@ -70,7 +96,7 @@
 					{/each}
 				</RadioGroup.Root>
 			</Form.Field>
-			<div class="col-span-3">
+			<div class="col-span-4 md:col-span-3">
 				<ScrollArea orientation="both" class="py-4">
 					<Table.Root>
 						<Table.Caption
@@ -87,8 +113,16 @@
 							<Table.Row>
 								<Table.Head>Feature</Table.Head>
 								{#if $lgScreen}
-									{#each TIERS_FEATURES as tier}
-										<Table.Head class="md:text-xl">{tier.value}</Table.Head>
+									{#each TIERS_FEATURES as tier (tier.value)}
+										<Table.Head
+											class={cn(
+												`md:text-xl`,
+												$formData.tier === tier.value ? 'md:bg-indigo-200 md:text-black' : ''
+											)}
+										>
+											{tier.value}
+											<IconTierDiamond class="inline-flex" />
+										</Table.Head>
 									{/each}
 								{:else}
 									<Table.Head class="md:text-xl">{$formData.tier}</Table.Head>
@@ -105,7 +139,11 @@
 										{@const frequency = tier.features.find((f) => f.name === feature)?.frequency}
 										{#if $lgScreen}
 											{#if name}
-												<Table.Cell>
+												<Table.Cell
+													class={cn(
+														$formData.tier === tier.value ? 'md:bg-indigo-200 md:text-black' : ''
+													)}
+												>
 													{#if limit}
 														{limit > 999 ? 'Unlimited' : limit}
 													{/if}
@@ -133,7 +171,9 @@
 								<Table.Cell>Price</Table.Cell>
 								{#each TIERS_FEATURES as tier}
 									{#if $lgScreen}
-										<Table.Cell>
+										<Table.Cell
+											class={cn($formData.tier === tier.value ? 'bg-indigo-200 text-black' : '')}
+										>
 											{tier.price === 0 ? 'Free' : tier.price ? `${tier.price}$` : '$$$'}
 										</Table.Cell>
 									{:else if tier.value === $formData.tier}
@@ -147,15 +187,42 @@
 					</Table.Root>
 				</ScrollArea>
 			</div>
+			<div class="col-span-4 justify-end">
+				<Form.Field {form} name="occurence">
+					<Form.Control let:attrs>
+						<Form.Label>Billing Cyle</Form.Label>
+						<Select.Root
+							selected={selectedOccurence}
+							onSelectedChange={(v) => {
+								v && ($formData.occurence = v.value);
+							}}
+						>
+							<Select.Trigger {...attrs}>
+								<Select.Value placeholder="Month" />
+							</Select.Trigger>
+							<Select.Content>
+								{#each PAYMENT_OCCURENCE as occurence}
+									<Select.Item value={occurence} label={occurence}>
+										{occurence}
+									</Select.Item>
+								{/each}
+							</Select.Content>
+						</Select.Root>
+						<input hidden bind:value={$formData.occurence} name={attrs.name} />
+					</Form.Control>
+				</Form.Field>
+			</div>
 		</Card.Content>
 		<Card.Footer>
-			<Button class="w-full">{pathname.includes('onboarding') ? 'Continue' : 'Save'}</Button>
+			<Form.Button disabled={disableSubmit} class="w-full"
+				>{pathname.includes('onboarding') ? 'Continue' : 'Update'}
+			</Form.Button>
 		</Card.Footer>
 	</form>
 </Card.Root>
 
 {#if pathname.includes('onboarding')}
-	<div class="container flex justify-end">
-		<Button variant="secondary" on:click={() => store.nextStep(1)}>Skip</Button>
+	<div class="flex justify-end py-2">
+		<Button variant="ghost" class="" on:click={() => store.nextStep(1)}>Skip</Button>
 	</div>
 {/if}
