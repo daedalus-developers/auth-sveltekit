@@ -67,10 +67,13 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.540.0",
+		"@aws-sdk/s3-request-presigner": "^3.540.0",
 		"@fontsource-variable/comfortaa": "^5.0.19",
 		"@fontsource-variable/montserrat": "^5.0.18",
 		"@internationalized/date": "^3.5.2",
 		"@lucia-auth/adapter-drizzle": "^1.0.7",
+		"@neoconfetti/svelte": "^2.2.1",
 		"arctic": "^1.2.1",
 		"bits-ui": "^0.20.0",
 		"clsx": "^2.1.0",

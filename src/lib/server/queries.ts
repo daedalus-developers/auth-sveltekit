@@ -62,3 +62,12 @@ export const queryUserSessions = db
 	.from(sessions)
 	.where(eq(sessions.userId, sql.placeholder('id')))
 	.prepare('query_user_sessions');
+
+// export const queryUserDetailsWithUser = db.query.userDetails
+// 	.findFirst({
+// 		where: (details, { eq }) => eq(details.userId, sql.placeholder('id')),
+// 		with: {
+// 			user: true
+// 		}
+// 	})
+// 	.prepare('query_user_details_with_user');

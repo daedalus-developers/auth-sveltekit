@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS "oauth_account" (
 	"provider" text NOT NULL,
 	"provider_account_id" text NOT NULL,
 	"user_id" text NOT NULL,
-	"created_at" timestamp (6) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "oauth_account_provider_provider_account_id_user_id_pk" PRIMARY KEY("provider","provider_account_id","user_id")
 );
 --> statement-breakpoint
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS "password_reset_token" (
 CREATE TABLE IF NOT EXISTS "session" (
 	"id" text PRIMARY KEY NOT NULL,
 	"user_id" text NOT NULL,
-	"expires_at" timestamp (6) with time zone NOT NULL,
+	"expires_at" timestamp NOT NULL,
 	"fresh" boolean DEFAULT true NOT NULL
 );
 --> statement-breakpoint
@@ -25,8 +25,15 @@ CREATE TABLE IF NOT EXISTS "users_details" (
 	"user_id" text NOT NULL,
 	"name" text,
 	"bio" text,
-	"updated_at" timestamp (6) with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "users_details_user_id_pk" PRIMARY KEY("user_id")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "users_details_urls" (
+	"user_id" text NOT NULL,
+	"url" text NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_details_urls_user_id_url_pk" PRIMARY KEY("user_id","url")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "user" (
@@ -35,10 +42,11 @@ CREATE TABLE IF NOT EXISTS "user" (
 	"email" text NOT NULL,
 	"email_verified" boolean DEFAULT false,
 	"password" text NOT NULL,
+	"avatar" text,
 	"two_factor_secret" text,
 	"role" text DEFAULT 'user' NOT NULL,
-	"created_at" timestamp (6) with time zone DEFAULT now() NOT NULL,
-	"updated_at" timestamp (6) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "user_username_unique" UNIQUE("username"),
 	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
@@ -71,6 +79,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "users_details" ADD CONSTRAINT "users_details_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "users_details_urls" ADD CONSTRAINT "users_details_urls_user_id_users_details_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "users_details"("user_id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

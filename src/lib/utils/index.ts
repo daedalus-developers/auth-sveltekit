@@ -23,3 +23,24 @@ export const transformPathname = (pathname: string): string => {
 		return '';
 	}
 };
+
+export const mergeObject = <T>(original: T, updated: Partial<T>): T => {
+	return {
+		...original,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		...Object.fromEntries(Object.entries(updated).filter(([_, value]) => value !== undefined))
+	};
+};
+
+export const slugifyString = (str: string) =>
+	str
+		.trim()
+		.toLowerCase()
+		.replace(/\s+/g, '-')
+		.replace(/\./g, '-')
+		.replace(/-+/g, '-')
+		.replace(/[^a-z0-9-]/g, '-');
+
+// export const mergeObjectV2 = <T>(original: T, updated: T): T => {
+//   return Object.assign({}, , source)
+// }

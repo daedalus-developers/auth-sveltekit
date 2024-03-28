@@ -1,7 +1,15 @@
+import { MONTHS, PAYMENT_METHODS, PAYMENT_OCCURENCE, TIERS } from '$lib/constants';
 import type { ComponentType } from 'svelte';
-import { boolean, object, string, union, enum as zEnum, type infer as zInfer } from 'zod';
-
-export type PaymentMethod = 'card' | 'paypal' | 'google';
+import {
+	boolean,
+	number,
+	object,
+	string,
+	union,
+	instanceof as zInstanceOf,
+	enum as zEnum,
+	type infer as zInfer
+} from 'zod';
 
 export type LinkWithIcon = {
 	icon: ComponentType;
@@ -68,7 +76,7 @@ const usernameSchema = requiredString('Username', { min: 3, max: 16 })
 		message: 'Username can only contain letters, numbers, and underscores'
 	});
 
-const emailSchema = string({
+export const emailSchema = string({
 	required_error: 'Email address is required'
 }).email({
 	message: 'Please enter a valid email address'
@@ -150,3 +158,65 @@ export const oAuthProviderLinkSchema = object({
 });
 
 export type OAuthProviderLinkFormSchema = typeof oAuthProviderLinkSchema;
+
+const MAX_FILE_SIZE = 1 * 1024 * 1024;
+
+const avatar = union([
+	string().url(),
+	zInstanceOf(File)
+		.refine((f) => f.size < MAX_FILE_SIZE, 'Max 1MB upload size.')
+		.optional()
+]);
+
+export const accountForm = object({
+	// .refine((files) => files?.length == 1, "Image is required.")
+	avatar,
+	username: usernameSchema,
+	name: string().max(100).optional(),
+	bio: string().max(160).optional()
+});
+
+export type AccountFormSchema = typeof accountForm;
+
+const paymentMethod = zEnum(PAYMENT_METHODS).default('card');
+
+export type PaymentMethod = zInfer<typeof paymentMethod>;
+
+export const month = zEnum(MONTHS).default('January');
+
+const cardDetail = object({
+	name: string({
+		required_error: 'Card Holder Name is required'
+	}),
+	number: string().regex(/^\d{16}$/, 'Card number must be 16 digits'),
+	month,
+	year: number().min(new Date().getFullYear(), 'Invalid year').max(2999, 'Invalid year'),
+	cvc: string().min(100, 'Invalid CVC').max(999, 'Invalid CVC')
+}).default({
+	month: 'January',
+	year: new Date().getFullYear(),
+	number: '',
+	name: '',
+	cvc: ''
+});
+
+export const paymentForm = object({
+	method: paymentMethod,
+	account: emailSchema.optional(),
+	card: cardDetail
+});
+
+export type PaymentFormSchema = typeof paymentForm;
+
+export const subscriptionTiers = zEnum(TIERS).default('Freemium');
+
+const paymentOccurence = zEnum(PAYMENT_OCCURENCE).default('monthly');
+
+export type SubscriptionTiers = zInfer<typeof subscriptionTiers>;
+
+export const tierForm = object({
+	tier: subscriptionTiers,
+	occurence: paymentOccurence
+});
+
+export type TierFormSchema = typeof tierForm;

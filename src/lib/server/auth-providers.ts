@@ -32,7 +32,7 @@ export const getProvider = (provider: string) => {
 	}
 };
 
-const linkUserAccount = async (
+export const linkUserAccount = async (
 	userId: string,
 	provider: string,
 	providerAccountId: string
@@ -52,7 +52,10 @@ const linkUserAccount = async (
 	}
 };
 
-const registerUser = async (email: string, provider: string): Promise<string | undefined> => {
+export const registerUser = async (
+	email: string,
+	provider: string
+): Promise<string | undefined> => {
 	const userId = generateId(15);
 	const generatedPassword = generateRandomString(16, alphabet('a-z', 'A-Z', '0-9', '-'));
 	const hashedPassword = await new Argon2id().hash(generatedPassword);

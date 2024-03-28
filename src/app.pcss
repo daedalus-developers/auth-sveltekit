@@ -34,6 +34,8 @@
 		--ring: 240 10% 3.9%;
 
 		--radius: 0.5rem;
+
+		/* --brand: 162 84% 28%; */
 	}
 
 	.dark {
@@ -65,6 +67,8 @@
 		--destructive-foreground: 0 0% 98%;
 
 		--ring: 240 4.9% 83.9%;
+
+		--brand: 190 84% 54%;
 	}
 }
 
@@ -75,5 +79,23 @@
 	body {
 		@apply bg-background text-foreground;
 		font-family: 'Montserrat Variable', sans-serif;
+	}
+}
+
+@layer components {
+	.hero-gradient {
+		background: radial-gradient(
+			circle 50vh at 50% 25%,
+			theme(colors.brand),
+			theme(colors.background) 60%
+		);
+		filter: blur(180px);
+		height: 30vh;
+		opacity: 1;
+		position: fixed;
+		top: -5vh;
+		left: 0vw;
+		width: 100%;
+		z-index: -1;
 	}
 }

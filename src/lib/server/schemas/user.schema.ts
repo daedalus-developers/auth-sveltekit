@@ -7,12 +7,13 @@ export const users = pgTable('user', {
 	email: text('email').notNull().unique(),
 	emailVerified: boolean('email_verified').default(false),
 	password: text('password').notNull(),
+	avatar: text('avatar'),
 	twoFactorSecret: text('two_factor_secret'),
 	role: text('role', { enum: ['super', 'admin', 'tenant', 'user'] })
 		.notNull()
 		.default('user'),
-	createdAt: timestamp('created_at', { precision: 6, withTimezone: true }).notNull().defaultNow(),
-	updatedAt: timestamp('updated_at', { precision: 6, withTimezone: true }).notNull().defaultNow()
+	createdAt: timestamp('created_at').notNull().defaultNow(),
+	updatedAt: timestamp('updated_at').notNull().defaultNow()
 });
 
 export const userDetails = pgTable(
@@ -25,11 +26,29 @@ export const userDetails = pgTable(
 			}),
 		name: text('name'),
 		bio: text('bio'),
-		updatedAt: timestamp('updated_at', { precision: 6, withTimezone: true }).notNull().defaultNow()
+		updatedAt: timestamp('updated_at').notNull().defaultNow()
 	},
 	(table) => {
 		return {
 			pk: primaryKey({ columns: [table.userId] })
+		};
+	}
+);
+
+export const userDetailsUrls = pgTable(
+	'users_details_urls',
+	{
+		userId: text('user_id')
+			.notNull()
+			.references(() => userDetails.userId, {
+				onDelete: 'cascade'
+			}),
+		url: text('url').notNull(),
+		updatedAt: timestamp('updated_at').notNull().defaultNow()
+	},
+	(table) => {
+		return {
+			pk: primaryKey({ columns: [table.userId, table.url] })
 		};
 	}
 );
@@ -79,7 +98,7 @@ export const sessions = pgTable('session', {
 		.references(() => users.id, {
 			onDelete: 'cascade'
 		}),
-	expiresAt: timestamp('expires_at', { precision: 6, withTimezone: true }).notNull(),
+	expiresAt: timestamp('expires_at').notNull(),
 	fresh: boolean('fresh').notNull().default(true)
 });
 
@@ -93,7 +112,7 @@ export const oAuthAccounts = pgTable(
 			.references(() => users.id, {
 				onDelete: 'cascade'
 			}),
-		createdAt: timestamp('created_at', { precision: 6, withTimezone: true }).notNull().defaultNow()
+		createdAt: timestamp('created_at').notNull().defaultNow()
 	},
 	(table) => {
 		return {
@@ -104,3 +123,5 @@ export const oAuthAccounts = pgTable(
 
 export type UserSchema = InferSelectModel<typeof users>;
 export type UserInsertSchema = InferInsertModel<typeof users>;
+export type UserDetailsSchema = InferSelectModel<typeof userDetails>;
+export type UserDetailsInsertSchema = InferInsertModel<typeof userDetails>;

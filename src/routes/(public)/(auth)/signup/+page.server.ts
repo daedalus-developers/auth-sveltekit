@@ -71,6 +71,7 @@ export const actions: Actions = {
 
 			sendOnboardingDetails(user.email, generatedPassword, code, verifyUrl, loginUrl);
 		} catch (errors) {
+			console.log(errors);
 			return message(form, {
 				type: 'error',
 				text: 'Something went wrong. Please try again.'

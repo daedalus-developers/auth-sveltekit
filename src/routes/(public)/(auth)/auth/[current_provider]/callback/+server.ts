@@ -4,6 +4,7 @@ import { OAuth2RequestError } from 'oslo/oauth2';
 import {
 	createOrLinkUser,
 	getProvider,
+	linkUserAccount,
 	type GitHubUserResponse,
 	type GoogleUserResponse
 } from '@server/auth-providers';
@@ -43,6 +44,8 @@ export const GET: RequestHandler = async ({ params, cookies, url, locals, fetch 
 				//TODO:  change this to be a page that lets the user know that they needs verified email on their provider
 				if (!response[0].verified) return redirect(302, redirectUrl);
 
+				// TODO: Allow linking with other email
+
 				const id = await createOrLinkUser(response[0].email, current_provider);
 
 				if (!id) return redirect(302, redirectUrl);
@@ -51,6 +54,8 @@ export const GET: RequestHandler = async ({ params, cookies, url, locals, fetch 
 			} else {
 				//TODO:  change this to be a page that lets the user know that they needs verified email on their provider
 				if (!response.verified) return redirect(302, redirectUrl);
+
+				// TODO: Allow linking with other email
 
 				const id = await createOrLinkUser(response.email, redirectUrl);
 
@@ -61,6 +66,8 @@ export const GET: RequestHandler = async ({ params, cookies, url, locals, fetch 
 		} else if (provider instanceof Google) {
 			//NOTE: No need to check for verified email.
 			if (!codeVerifier) return redirect(302, redirectUrl);
+
+			// TODO: Allow linking with other email
 
 			const tokens = await provider.validateAuthorizationCode(code, codeVerifier);
 			const fetchUserDetails = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {

@@ -8,6 +8,7 @@
 {#if $lgScreen}
 	<DotsBackground />
 {/if}
+<div class="hero-gradient"></div>
 <div class="mx-auto flex max-w-7xl flex-col items-center justify-center">
 	<div class="mx-auto grid gap-y-6">
 		<h1 class="z-50 py-36 text-5xl font-bold md:text-9xl">Auth Kit</h1>
