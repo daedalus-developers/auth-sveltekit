@@ -102,7 +102,7 @@
 		</Form.Field>
 	</div>
 
-	<div class="col-span-2 md:col-span-1 md:flex md:flex-col md:space-y-8">
+	<div class="col-span-2 md:col-span-1 md:flex md:flex-col md:justify-between">
 		<Form.Field {form} name="username">
 			<Form.Control let:attrs>
 				<Form.Label>Username</Form.Label>
@@ -116,6 +116,7 @@
 				<Form.Label>Name</Form.Label>
 				<Input {...attrs} placeholder="John Wick" bind:value={$fields.name} />
 			</Form.Control>
+			<Form.Description>Nickname, or your real name.</Form.Description>
 			<Form.FieldErrors />
 		</Form.Field>
 
