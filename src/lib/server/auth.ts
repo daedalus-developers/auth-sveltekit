@@ -27,6 +27,7 @@ export const auth = new Lucia(adapter, {
 			email: attrs.email,
 			role: attrs.role,
 			twoFactorEnabled: attrs.twoFactorSecret !== null,
+			avatar: attrs.avatar,
 			createdAt: attrs.createdAt,
 			updatedAt: attrs.updatedAt
 		};

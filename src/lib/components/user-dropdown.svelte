@@ -9,7 +9,6 @@
 	import { page } from '$app/stores';
 
 	const initials = $page.data?.user?.email?.charAt(0).toUpperCase() ?? 'U';
-
 	let open = false;
 </script>
 
@@ -18,7 +17,7 @@
 	<DropdownMenu.Trigger asChild let:builder>
 		<Button variant="ghost" builders={[builder]} class="relative h-8 w-8 rounded-full">
 			<Avatar.Root>
-				<!-- <Avatar.Image src="https://github.com/shadcn.png" alt="@shadcn" /> -->
+				<Avatar.Image src={$page.data.user.avatar ?? ''} alt="@shadcn" />
 				<Avatar.Fallback>{initials}</Avatar.Fallback>
 			</Avatar.Root>
 		</Button>

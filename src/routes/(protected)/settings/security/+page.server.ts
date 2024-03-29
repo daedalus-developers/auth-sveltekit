@@ -153,8 +153,6 @@ export const actions: Actions = {
 
 		if (!locals.user) fail(401, { message: 'Unauthorized' });
 
-		// TODO: Check user_session cookie here
-
 		const totpSetupForm = await superValidate(request, zod(totpSetupSchema));
 
 		const base64 = new Base64Encoding(

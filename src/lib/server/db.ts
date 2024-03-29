@@ -12,7 +12,9 @@ class QueryLogger implements Logger {
 	}
 }
 
-export const client = postgres(env.DATABASE_URL);
+export const client = postgres(env.DATABASE_URL, {
+	max: 2
+});
 
 export const db = drizzle(client, {
 	schema,

@@ -11,13 +11,17 @@
 	import TwoFactorFormHeader from './two-factor-form-header.svelte';
 	import * as RadioGroup from '@components/ui/radio-group';
 	import { Eye, EyeOff } from 'lucide-svelte';
+	import { queryParam, ssp } from 'sveltekit-search-params';
+	import { fade, fly } from 'svelte/transition';
 
-	let formData: SuperValidated<Infer<TwoFactorFormSchema>> = $page.data.twoFactorForm;
+	let data: SuperValidated<Infer<TwoFactorFormSchema>> = $page.data.twoFactorForm;
+
+	$: verifyRoute = $page.url.pathname.includes('verify');
 
 	export let method: TwoFactorMethods;
 	export let provider: OtpProvider;
 
-	const form = superForm(formData, {
+	const form = superForm(data, {
 		dataType: 'json',
 		onUpdated({ form }) {
 			if (form.message) {
@@ -53,31 +57,13 @@
 		resetForm: false
 	});
 
-	const { form: fields, enhance } = form;
+	const { form: formData, enhance } = form;
 
-	$: $fields.sudo = $page.data.user ? true : false;
-
-	if ($page.data.user) {
-		if ($page.data.user.twoFactorEnabled) {
-			$fields.method = 'totp';
-			$fields.sudo = true;
-			method = 'totp';
-			provider = 'email';
-		} else {
-			$fields.method = 'otp';
-			$fields.sudo = true;
-			method = 'otp';
-			provider = 'email';
-		}
+	$: if (verifyRoute) {
+		$formData.method = $page.url.searchParams.get('method') as TwoFactorMethods;
+		method = $formData.method;
 	} else {
-		$fields.method = 'otp';
-		$fields.sudo = false;
-		method = 'otp';
-		provider = 'email';
-	}
-
-	$: if ($fields.method) {
-		method = $fields.method;
+		method = $formData.method;
 	}
 
 	let revealPassword = false;
@@ -86,80 +72,85 @@
 <div class={cn('space-y-3.5 p-4')}>
 	<TwoFactorFormHeader bind:method bind:provider />
 	<form method="POST" action="?/verify" class="space-y-3.5" use:enhance>
-		<input class="hidden" type="text" name="method" bind:value={$fields.method} />
-		<input class="hidden" type="checkbox" name="sudo" bind:checked={$fields.sudo} />
-		<Form.Field {form} name="key">
-			<Form.Control let:attrs>
-				<Form.Label class="text-md">
-					{#if $fields.method === 'totp'}
-						Code
-					{:else if $fields.method === 'otp'}
-						One Time Password
-					{:else}
-						Password
-					{/if}
-				</Form.Label>
-				{#if $fields.method === 'password'}
-					<div class="flex">
-						<Input
-							{...attrs}
-							autofocus
-							type={revealPassword ? 'text' : 'password'}
-							class="text-center text-lg"
-							maxlength={64}
-							bind:value={$fields.key}
-						/>
-						<Button
-							size="icon"
-							variant="ghost"
-							class="mx-2"
-							on:click={() => (revealPassword = !revealPassword)}
-						>
-							{#if revealPassword}
-								<EyeOff />
+		<input class="hidden" type="text" name="method" bind:value={$formData.method} />
+		<input class="hidden" type="checkbox" name="sudo" bind:checked={$formData.sudo} />
+		{#key $formData.method}
+			<div in:fade={{ duration: 300 }}>
+				<Form.Field {form} name="key">
+					<Form.Control let:attrs>
+						<Form.Label class="text-md">
+							{#if $formData.method === 'totp'}
+								Code
+							{:else if $formData.method === 'otp'}
+								One Time Password
 							{:else}
-								<Eye />
+								Password
 							{/if}
-						</Button>
-					</div>
-				{:else}
-					<Input
-						{...attrs}
-						class="text-center text-lg"
-						autofocus
-						maxlength={6}
-						bind:value={$fields.key}
-						placeholder={'XXXXXX'}
-					/>
-				{/if}
-				<Form.FieldErrors class="h-[18px] text-center" />
-			</Form.Control>
-		</Form.Field>
+						</Form.Label>
+						{#if $formData.method === 'password'}
+							<div class="flex">
+								<Input
+									{...attrs}
+									autofocus
+									type={revealPassword ? 'text' : 'password'}
+									class="text-center text-lg"
+									maxlength={64}
+									bind:value={$formData.key}
+								/>
+								<Button
+									size="icon"
+									variant="ghost"
+									class="mx-2"
+									on:click={() => (revealPassword = !revealPassword)}
+								>
+									{#if revealPassword}
+										<EyeOff />
+									{:else}
+										<Eye />
+									{/if}
+								</Button>
+							</div>
+						{:else}
+							<Input
+								{...attrs}
+								class="text-center text-lg"
+								autofocus
+								maxlength={6}
+								bind:value={$formData.key}
+								placeholder={'XXXXXX'}
+							/>
+						{/if}
+						<Form.FieldErrors class="h-[18px] text-center" />
+					</Form.Control>
+				</Form.Field>
+			</div>
+		{/key}
 		<Button type="submit" class="w-full text-lg">Verify</Button>
-		{#if $page.data.user}
-			<Form.Fieldset {form} name="method" class="flex justify-center space-y-1 py-4">
-				<Form.Legend class="mx-auto text-muted-foreground">
-					Having Trouble? Select preffered method below.
-				</Form.Legend>
-				<RadioGroup.Root bind:value={$fields.method}>
-					<div class="flex space-x-4">
-						{#if $page.data.user.twoFactorEnabled}
+		<Form.Fieldset {form} name="method" class="flex justify-center space-y-1 py-4">
+			<Form.Legend class="mx-auto text-muted-foreground">
+				Having Trouble? Select preffered method below.
+			</Form.Legend>
+			<RadioGroup.Root bind:value={$formData.method}>
+				<div class="flex space-x-4">
+					{#if $page.data.user}
+						<Form.Control let:attrs>
+							<RadioGroup.Item value="totp" {...attrs} />
+							<Form.Label class="ml-2 font-normal">TOTP</Form.Label>
+						</Form.Control>
+						{#if !verifyRoute}
 							<Form.Control let:attrs>
-								<RadioGroup.Item value="totp" {...attrs} />
-								<Form.Label class="ml-2 font-normal">TOTP</Form.Label>
+								<RadioGroup.Item value="password" {...attrs} />
+								<Form.Label class="ml-2 font-normal">Password</Form.Label>
 							</Form.Control>
 						{/if}
-						<Form.Control let:attrs>
-							<RadioGroup.Item value="otp" {...attrs} />
-							<Form.Label class="ml-2 font-normal">OTP</Form.Label>
-						</Form.Control>
-						<Form.Control let:attrs>
-							<RadioGroup.Item value="password" {...attrs} />
-							<Form.Label class="ml-2 font-normal">Password</Form.Label>
-						</Form.Control>
-					</div>
-				</RadioGroup.Root>
-			</Form.Fieldset>
-		{/if}
+					{/if}
+
+					<Form.Control let:attrs>
+						<RadioGroup.Item value="otp" {...attrs} />
+						<Form.Label class="ml-2 font-normal">OTP(Email/SMS)</Form.Label>
+					</Form.Control>
+				</div>
+			</RadioGroup.Root>
+		</Form.Fieldset>
 	</form>
 </div>

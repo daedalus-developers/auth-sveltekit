@@ -6,12 +6,13 @@
 	import type { LinkWithIcon } from '@types';
 
 	export let links: Array<LinkWithIcon>;
+	export let name: string = 'Default';
 </script>
 
 <Breadcrumb.Item>
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger class="flex items-center gap-1">
-			Settings
+			{name}
 			<ChevronDown class="h-4 w-4" />
 		</DropdownMenu.Trigger>
 		<DropdownMenu.Content align="start">

@@ -1,6 +1,6 @@
 import { or, eq, sql } from 'drizzle-orm';
 import { db } from './db';
-import { oAuthAccounts, users } from './schemas';
+import { oAuthAccounts, sessions, users } from './schemas';
 
 export const queryUsers = db.select().from(users).prepare('query_users');
 
@@ -56,3 +56,18 @@ export const queryUseroAuthAccounts = db
 	.from(oAuthAccounts)
 	.where(eq(oAuthAccounts.userId, sql.placeholder('userId')))
 	.prepare('query_user_oauth_accounts');
+
+export const queryUserSessions = db
+	.select()
+	.from(sessions)
+	.where(eq(sessions.userId, sql.placeholder('id')))
+	.prepare('query_user_sessions');
+
+// export const queryUserDetailsWithUser = db.query.userDetails
+// 	.findFirst({
+// 		where: (details, { eq }) => eq(details.userId, sql.placeholder('id')),
+// 		with: {
+// 			user: true
+// 		}
+// 	})
+// 	.prepare('query_user_details_with_user');

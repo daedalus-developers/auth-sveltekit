@@ -32,7 +32,6 @@ export const actions: Actions = {
 		const form = await superValidate(request, zod(oAuthProviderLinkSchema));
 
 		if (!form.valid) {
-			console.log(form.data);
 			return message(form, {
 				type: 'error',
 				text: 'Invalid data, please check your input'
@@ -47,7 +46,6 @@ export const actions: Actions = {
 		const form = await superValidate(request, zod(oAuthProviderLinkSchema));
 
 		if (!form.valid) {
-			console.log(form.data);
 			return message(form, {
 				type: 'error',
 				text: 'Invalid data, please check your input'

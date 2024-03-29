@@ -13,6 +13,8 @@ import { generateOTP } from '@server/auth';
 import { generateRandomString, alphabet } from 'oslo/crypto';
 import { base64url } from 'oslo/encoding';
 import { RateLimiter } from 'sveltekit-rate-limiter/server';
+import { dev } from '$app/environment';
+import { logger } from '@server/utils';
 
 const registerLimit = new RateLimiter({
 	IPUA: [5, '15m']
@@ -69,7 +71,20 @@ export const actions: Actions = {
 
 			const code = await generateOTP(user.id, user.email, 2, 'h');
 
-			sendOnboardingDetails(user.email, generatedPassword, code, verifyUrl, loginUrl);
+			if (dev) {
+				logger.info(
+					{
+						email: user.email,
+						password: generatedPassword,
+						code,
+						verifyUrl,
+						loginUrl
+					},
+					'Generated onboarding details'
+				);
+			} else {
+				sendOnboardingDetails(user.email, generatedPassword, code, verifyUrl, loginUrl);
+			}
 		} catch (errors) {
 			return message(form, {
 				type: 'error',

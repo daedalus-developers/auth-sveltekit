@@ -7,10 +7,12 @@
 	import { replaceState } from '$app/navigation';
 	import { CountdownTimer } from '@components';
 
+	$: verifyRoute = $page.url.pathname.includes('verify');
+
 	export let method: TwoFactorMethods;
 	export let provider: OtpProvider;
 
-	let duration = new Date(Date.now() + 5 * 60 * 500);
+	let duration = new Date(Date.now() + 5 * 60 * 1000);
 	let remainingTime = 0;
 
 	$: showTimer = remainingTime > 0;
@@ -18,7 +20,7 @@
 	$: disableSendOTP = false;
 </script>
 
-{#if $page.data.user}
+{#if !verifyRoute}
 	<div class="border border-muted bg-secondary bg-opacity-50 p-1 text-center">
 		<p>
 			Signed in as
