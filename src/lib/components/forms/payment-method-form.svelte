@@ -6,12 +6,11 @@
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { page } from '$app/stores';
-	import { paymentForm, type PaymentFormSchema } from '@types';
+	import { type PaymentFormSchema } from '@types';
 	import { MONTHS, PAYMENT_METHODS_WITH_ICONS } from '$lib/constants';
 	import { DisclaimerAlert } from '@components';
 	import { onBoardingStepStore as store } from '@stores';
 	import { toast } from 'svelte-sonner';
-	import { zod } from 'sveltekit-superforms/adapters';
 	import { Button } from '@components/ui/button';
 
 	$: onboarding = $page.url.pathname.includes('onboarding');
@@ -21,7 +20,7 @@
 
 	const form = superForm(data, {
 		dataType: 'json',
-		validators: zod(paymentForm),
+		resetForm: true,
 		onUpdate({ result, form }) {
 			if (result.type === 'success') {
 				if (onboarding) {
@@ -30,7 +29,8 @@
 					toast.success(form.message?.text ?? '');
 				}
 			} else if (result.type === 'failure') {
-				if (form.message) toast.error(form.message.text);
+				if (form.message?.type === 'error') toast.error(form.message.text);
+				else toast.success(form.message?.text ?? '');
 			}
 		}
 	});
