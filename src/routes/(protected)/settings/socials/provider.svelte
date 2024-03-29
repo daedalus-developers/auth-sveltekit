@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { capitalize } from '@utils';
 	import type { OAuthProviderWithIcon } from '@types';
 	import { CircleCheckBig } from 'lucide-svelte';
 	import { Button } from '@components/ui/button';
