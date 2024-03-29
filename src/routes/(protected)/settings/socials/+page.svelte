@@ -76,6 +76,7 @@
 			);
 			return {
 				...provider,
+				providerAccountId: userProvider?.providerAccountId,
 				userId: userProvider?.userId
 			};
 		});

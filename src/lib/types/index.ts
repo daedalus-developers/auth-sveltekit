@@ -11,6 +11,7 @@ export type LinkWithIcon = {
 export type OAuthProviderWithIcon = {
 	icon: ComponentType;
 	name: string;
+	providerAccountId?: string;
 	userId?: string;
 };
 
