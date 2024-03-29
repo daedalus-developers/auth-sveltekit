@@ -26,6 +26,10 @@ Rate limiting
 - [x] Sending OTP, IP+UA limitation should only be 5 per 15minutes
 - [x] Wrong OTP Verification should only be 5 per 15minutes
 
+Onboarding
+
+- [x] Welcome, Update Account, Select Tier Subscription, Select Payment Method, Finished Section
+
 Documentation
 
 - [ ] Guide into changing database to postgres and mariadb
@@ -38,8 +42,9 @@ Admin dashboard
 Demo dashboard apps
 
 - [ ] AI Prompt
-- [ ] Customer Maanger + Invoices
+- [ ] Customer Maanager + Invoices (localfirst ?)
 - [ ] Chat Application
+- [ ] File Manager(emulate a google drive like)
 
 ## Development
 
@@ -68,7 +73,16 @@ GITHUB_CALLBACK_URL="http://localhost:5173/login/github/callback"
 GOOGLE_CLIENTID="" # This is provided by google console
 GOOGLE_CLIENTSECRET="" # This is provided by google console
 GOOGLE_CALLBACK_URL="http://localhost:5173/login/google/callback"
+STORAGE_ACCESS_KEY=accesskey
+STORAGE_SECRET_KEY=secretkey
+STORAGE_URL=customdomain or .r2 # domain given by your provider
+STORAGE_ENDPOINT=https://your url.r2.cloudflarestorage.com # do not include /bucketname or any S3 provider
+STORAGE_BUCKET=bucketname #bucket name
 ```
+
+Create a bucket and get your credentials from the storage provider
+This requires a storage provider like minio, r2, or any s3 compatible provider.
+READ more about it [here](https://developers.cloudflare.com/r2/get-started/)
 
 Create your Database for now the schemas are written in postgres, create a neon or vercel postgres database, or run your own in a container for development
 
