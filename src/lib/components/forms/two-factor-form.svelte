@@ -12,7 +12,7 @@
 	import * as RadioGroup from '@components/ui/radio-group';
 	import { Eye, EyeOff } from 'lucide-svelte';
 	import { queryParam, ssp } from 'sveltekit-search-params';
-	import { fade, fly } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 
 	let data: SuperValidated<Infer<TwoFactorFormSchema>> = $page.data.twoFactorForm;
 
