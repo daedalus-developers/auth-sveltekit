@@ -225,6 +225,6 @@
 
 {#if onboarding}
 	<div class="flex justify-end py-2">
-		<Button variant="ghost" class="" on:click={() => store.nextStep(1)}>Skip</Button>
+		<Button variant="ghost" class="" on:click={() => store.nextStep()}>Skip</Button>
 	</div>
 {/if}
