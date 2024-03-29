@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { dev } from '$app/environment';
-import { createToken } from '@server/auth';
+import { createToken, validateToken } from '@server/auth';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { twoFactorSchema, type TwoFactorMethods } from '@types';
@@ -24,8 +24,6 @@ export const load: PageServerLoad = async ({ locals, cookies, url }) => {
 			httpOnly: true,
 			maxAge: new TimeSpan(30, 'm').milliseconds()
 		});
-
-		console.log(id);
 	}
 
 	const method: TwoFactorMethods | undefined =
@@ -40,9 +38,18 @@ export const load: PageServerLoad = async ({ locals, cookies, url }) => {
 
 	if (!verifyCookie) redirect(302, '/login');
 
-	return {
-		twoFactorForm: await superValidate(zod(twoFactorSchema))
-	};
+	try {
+		const validToken = await validateToken<{ id: string }>(verifyCookie);
+
+		return {
+			user: validToken,
+			twoFactorForm: await superValidate(zod(twoFactorSchema))
+		};
+	} catch (error) {
+		return {
+			twoFactorForm: await superValidate(zod(twoFactorSchema))
+		};
+	}
 };
 
 export const actions: Actions = {

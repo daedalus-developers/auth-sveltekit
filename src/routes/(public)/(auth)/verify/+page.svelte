@@ -8,6 +8,7 @@
 	const paramsMethod = queryParam('method', ssp.string(), {
 		showDefaults: false
 	});
+
 	const paramsProvider = queryParam('provider', ssp.string(), {
 		showDefaults: false
 	});

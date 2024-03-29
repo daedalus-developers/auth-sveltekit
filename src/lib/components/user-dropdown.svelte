@@ -17,7 +17,7 @@
 	<DropdownMenu.Trigger asChild let:builder>
 		<Button variant="ghost" builders={[builder]} class="relative h-8 w-8 rounded-full">
 			<Avatar.Root>
-				<Avatar.Image src={`${$page.data.user.avatar}`} alt="@shadcn" />
+				<Avatar.Image src={$page.data.user.avatar ?? ''} alt="@shadcn" />
 				<Avatar.Fallback>{initials}</Avatar.Fallback>
 			</Avatar.Root>
 		</Button>

@@ -35,6 +35,12 @@
 
 		lastScrollPosition = currentScrollPosition;
 	}, 200);
+
+	$: if ($page.url.pathname.includes('verify')) {
+		showHeader = false;
+	} else {
+		showHeader = true;
+	}
 </script>
 
 <svelte:window bind:scrollY={currentScrollPosition} on:scroll={handleScroll} />

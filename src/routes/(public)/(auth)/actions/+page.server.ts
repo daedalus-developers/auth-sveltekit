@@ -21,6 +21,7 @@ import { RateLimiter } from 'sveltekit-rate-limiter/server';
 import { verifyUserEmail } from '@server/mutations';
 import { dev } from '$app/environment';
 import { TimeSpan } from 'lucia';
+import { logger } from '@server/utils';
 
 const accountLoginLimiter = new RateLimiter({
 	IPUA: [5, '15m']
@@ -178,7 +179,7 @@ export const actions: Actions = {
 			});
 		}
 
-		redirect(302, `/verify?method=otp&provider${otpForm.data.provider}`);
+		redirect(302, `/verify?method=otp&provider=${otpForm.data.provider}`);
 	},
 	resendOTP: async (event) => {
 		const { cookies, locals } = event;
@@ -205,7 +206,13 @@ export const actions: Actions = {
 		const code = await generateOTP(user.id, user.email);
 
 		if (dev) {
-			console.log(`Generated code: ${code} for ${user.email}`);
+			logger.info(
+				{
+					code,
+					email: user.email
+				},
+				`Generated OTP`
+			);
 		} else {
 			await sendEmailOTP(user.email, code);
 		}

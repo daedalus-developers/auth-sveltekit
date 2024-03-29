@@ -111,7 +111,6 @@ export const GET: RequestHandler = async ({ params, cookies, url, locals, fetch 
 			});
 		}
 
-		console.log(error);
 		redirect(302, redirectUrl);
 	}
 };
