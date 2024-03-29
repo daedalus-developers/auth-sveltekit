@@ -2,6 +2,6 @@
 	import { AccountForm } from '@components';
 </script>
 
-<div class="mb-28 flex flex-col">
+<div class="flex h-[75vh] flex-col">
 	<AccountForm />
 </div>

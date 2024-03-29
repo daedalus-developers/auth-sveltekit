@@ -59,9 +59,13 @@
 
 	const { form: formData, enhance } = form;
 
+	const paramsMethod = queryParam('method', ssp.string(), {
+		showDefaults: false
+	});
+
 	$: if (verifyRoute) {
-		$formData.method = $page.url.searchParams.get('method') as TwoFactorMethods;
-		method = $formData.method;
+		$paramsMethod = method;
+		$formData.method = method;
 	} else {
 		method = $formData.method;
 	}
@@ -70,7 +74,7 @@
 </script>
 
 <div class={cn('space-y-3.5 p-4')}>
-	<TwoFactorFormHeader bind:method bind:provider />
+	<TwoFactorFormHeader method={$formData.method} bind:provider />
 	<form method="POST" action="?/verify" class="space-y-3.5" use:enhance>
 		<input class="hidden" type="text" name="method" bind:value={$formData.method} />
 		<input class="hidden" type="checkbox" name="sudo" bind:checked={$formData.sudo} />
@@ -126,31 +130,36 @@
 			</div>
 		{/key}
 		<Button type="submit" class="w-full text-lg">Verify</Button>
-		<Form.Fieldset {form} name="method" class="flex justify-center space-y-1 py-4">
-			<Form.Legend class="mx-auto text-muted-foreground">
-				Having Trouble? Select preffered method below.
-			</Form.Legend>
-			<RadioGroup.Root bind:value={$formData.method}>
-				<div class="flex space-x-4">
-					{#if $page.data.user}
-						<Form.Control let:attrs>
-							<RadioGroup.Item value="totp" {...attrs} />
-							<Form.Label class="ml-2 font-normal">TOTP</Form.Label>
-						</Form.Control>
-						{#if !verifyRoute}
+		{#if verifyRoute}
+			<p class="text-center">
+				Having trouble? Go back to login page <a href="/login" class="underline">here</a>.
+			</p>
+		{:else}
+			<Form.Fieldset {form} name="method" class="flex justify-center space-y-1 py-4">
+				<Form.Legend class="mx-auto text-muted-foreground">
+					Having Trouble? Select preffered method below.
+				</Form.Legend>
+				<RadioGroup.Root bind:value={$formData.method}>
+					<div class="flex space-x-4">
+						{#if $page.data.user}
 							<Form.Control let:attrs>
-								<RadioGroup.Item value="password" {...attrs} />
-								<Form.Label class="ml-2 font-normal">Password</Form.Label>
+								<RadioGroup.Item value="totp" {...attrs} />
+								<Form.Label class="ml-2 font-normal">TOTP</Form.Label>
 							</Form.Control>
+							{#if !verifyRoute}
+								<Form.Control let:attrs>
+									<RadioGroup.Item value="password" {...attrs} />
+									<Form.Label class="ml-2 font-normal">Password</Form.Label>
+								</Form.Control>
+							{/if}
 						{/if}
-					{/if}
-
-					<Form.Control let:attrs>
-						<RadioGroup.Item value="otp" {...attrs} />
-						<Form.Label class="ml-2 font-normal">OTP(Email/SMS)</Form.Label>
-					</Form.Control>
-				</div>
-			</RadioGroup.Root>
-		</Form.Fieldset>
+						<Form.Control let:attrs>
+							<RadioGroup.Item value="otp" {...attrs} />
+							<Form.Label class="ml-2 font-normal">OTP(Email/SMS)</Form.Label>
+						</Form.Control>
+					</div>
+				</RadioGroup.Root>
+			</Form.Fieldset>
+		{/if}
 	</form>
 </div>

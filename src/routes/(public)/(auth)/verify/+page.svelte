@@ -13,8 +13,8 @@
 		showDefaults: false
 	});
 
-	$: method = $paramsMethod as TwoFactorMethods;
-	$: provider = $paramsProvider as OtpProvider;
+	let method = $paramsMethod as TwoFactorMethods;
+	let provider = $paramsProvider as OtpProvider;
 </script>
 
 <div class="container my-16 flex flex-col justify-center py-16 md:w-1/2">
@@ -23,7 +23,7 @@
 	</h1>
 
 	<div>
-		<TwoFactorForm bind:method bind:provider />
+		<TwoFactorForm {method} {provider} />
 	</div>
 
 	{#if $page.url.pathname === '/mfa'}
