@@ -1,4 +1,4 @@
-import { or, eq, sql } from 'drizzle-orm';
+import { or, eq, sql, and } from 'drizzle-orm';
 import { db } from './db';
 import { oAuthAccounts, sessions, users } from './schemas';
 
@@ -46,7 +46,7 @@ export const queryUserIdAndPassword = db
 	.prepare('query_user_id_and_password');
 
 export const queryUserByEmail = db
-	.select({ id: users.id, email: users.email })
+	.select({ id: users.id, email: users.email, username: users.username })
 	.from(users)
 	.where(eq(users.email, sql.placeholder('email')))
 	.prepare('query_user_by_email');
@@ -56,6 +56,23 @@ export const queryUseroAuthAccounts = db
 	.from(oAuthAccounts)
 	.where(eq(oAuthAccounts.userId, sql.placeholder('userId')))
 	.prepare('query_user_oauth_accounts');
+
+export const queryUserOAuthAccountByProvider = db
+	.select()
+	.from(oAuthAccounts)
+	.where(
+		and(
+			eq(oAuthAccounts.providerAccountId, sql.placeholder('providerAccountId')),
+			eq(oAuthAccounts.provider, sql.placeholder('provider'))
+		)
+	)
+	.prepare('query_user_oauth_account_by_provider');
+
+export const queryUserOAuthAccountByProviderAccountId = db
+	.select()
+	.from(oAuthAccounts)
+	.where(eq(oAuthAccounts.providerAccountId, sql.placeholder('providerAccountId')))
+	.prepare('query_user_oauth_account_by_provider_account_id');
 
 export const queryUserSessions = db
 	.select()

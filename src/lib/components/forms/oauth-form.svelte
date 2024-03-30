@@ -25,11 +25,11 @@
 	{#if loading}
 		<LoaderCircle class="mx-auto h-10 w-10 animate-spin" />
 	{:else}
-		<Button class="w-full" on:click={() => handleClick('/auth/google')}>
+		<Button class="w-full" on:click={() => handleClick('/oauth/google/verify')}>
 			<Google class="mr-2 h-4 w-4" />
 			Google
 		</Button>
-		<Button class="w-full" on:click={() => handleClick('/auth/github')}>
+		<Button class="w-full" on:click={() => handleClick('/oauth/github/verify')}>
 			<Github class="mr-2 h-4 w-4" />
 			Github
 		</Button>

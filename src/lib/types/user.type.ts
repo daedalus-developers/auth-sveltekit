@@ -1,4 +1,6 @@
-import { MONTHS, PAYMENT_METHODS, PAYMENT_OCCURENCE, TIERS } from '$lib/constants';
+import { MONTHS, PAYMENT_OCCURENCE, TIERS } from '$lib/constants';
+
+export const PAYMENT_METHODS = ['card', 'google', 'paypal'] as const;
 
 import {
 	boolean,
@@ -51,6 +53,10 @@ const usernameSchema = requiredString('Username', { min: 3, max: 16 })
 	.regex(/^[a-zA-Z0-9_]+$/, {
 		message: 'Username can only contain letters, numbers, and underscores'
 	});
+
+const nameSchema = string()
+	.max(100)
+	.regex(/^[\p{L}\s-]+$/u, 'Name can only contain alphabets and hyphens');
 
 export const emailSchema = string({
 	required_error: 'Email address is required'
@@ -137,7 +143,7 @@ export type OAuthProviderLinkFormSchema = typeof oAuthProviderLinkSchema;
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024;
 
-const avatar = union([
+const avatarSchema = union([
 	string().url(),
 	zInstanceOf(File)
 		.refine((f) => f.size < MAX_FILE_SIZE, 'Max 1MB upload size.')
@@ -146,12 +152,9 @@ const avatar = union([
 
 export const accountForm = object({
 	// .refine((files) => files?.length == 1, "Image is required.")
-	avatar,
+	avatar: avatarSchema,
 	username: usernameSchema,
-	name: string()
-		.max(100)
-		.regex(/^[\p{L}\s-]+$/u, 'Name can only contain alphabets and hyphens')
-		.optional(),
+	name: nameSchema.optional(),
 	bio: string().max(160).optional()
 });
 
@@ -164,11 +167,10 @@ export type PaymentMethod = zInfer<typeof paymentMethod>;
 export const month = zEnum(MONTHS).default('January');
 
 const cardDetail = object({
-	name: string()
-		.min(1, 'Cardholder name is required')
-		.max(50, 'Your name is too long to fit in a card.')
-		.regex(/^[\p{L}\s-]+$/u, 'Name can only contain alphabets and hyphens'),
-	number: string().regex(/^\d{16}$/, 'Card number must be 16 digits'),
+	name: nameSchema.optional(),
+	number: string()
+		.regex(/^\d{16}$/, 'Card number must be 16 digits')
+		.optional(),
 	month,
 	year: number()
 		.min(new Date().getFullYear(), 'Invalid year')
@@ -202,3 +204,19 @@ export const tierForm = object({
 });
 
 export type TierFormSchema = typeof tierForm;
+
+export const oAuthSignUpFormSchema = object({
+	email: emailSchema,
+	username: usernameSchema,
+	avatar: string().url().optional(),
+	name: nameSchema.optional()
+});
+
+export type OAuthSignUpFormSchema = typeof oAuthSignUpFormSchema;
+
+export const linkUserSchema = object({
+	userId: string(),
+	email: string().email()
+});
+
+export type LinkUserFormSchema = typeof linkUserSchema;

@@ -3,9 +3,9 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
-	const { provider } = $page.params;
+	const { current_provider } = $page.params;
 
-	const transformedProvider = provider.charAt(0).toUpperCase() + provider.slice(1);
+	const transformedProvider = current_provider.charAt(0).toUpperCase() + current_provider.slice(1);
 
 	onMount(() => {
 		setTimeout(() => {

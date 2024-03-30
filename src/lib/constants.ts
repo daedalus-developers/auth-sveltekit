@@ -1,4 +1,4 @@
-import type { LinkWithIcon } from '@types';
+import type { LinkWithIcon, PAYMENT_METHODS } from '@types';
 import AppWindowMacIcon from 'lucide-svelte/icons/app-window-mac';
 import CreditCard from 'lucide-svelte/icons/credit-card';
 import MonitorSmartphone from 'lucide-svelte/icons/monitor-smartphone';
@@ -7,9 +7,19 @@ import User from 'lucide-svelte/icons/user';
 import ShieldCheck from 'lucide-svelte/icons/shield-check';
 import Paypal from '@components/icons/paypal.svelte';
 import PaymentCreditCard from '@components/icons/credit-card.svelte';
-import Google from '@components/icons/google.svelte';
-
 import type { ComponentType } from 'svelte';
+import { IconGithub, IconGoogle } from '@components';
+
+export const OAUTH_PROVIDERS: Array<{ name: string; icon: ComponentType }> = [
+	{
+		name: 'github',
+		icon: IconGithub
+	},
+	{
+		name: 'google',
+		icon: IconGoogle
+	}
+] as const;
 
 export const MONTHS = [
 	'January',
@@ -132,8 +142,6 @@ export const TIERS_FEATURES: Array<TierFeature> = [
 	}
 ] as const;
 
-export const PAYMENT_METHODS = ['card', 'google', 'paypal'] as const;
-
 type PaymentMethodWithIcoon = {
 	value: (typeof PAYMENT_METHODS)[number];
 	icon: ComponentType;
@@ -149,7 +157,7 @@ export const PAYMENT_METHODS_WITH_ICONS: Array<PaymentMethodWithIcoon> = [
 	{
 		value: 'google',
 		label: 'Google Pay',
-		icon: Google
+		icon: IconGoogle
 	},
 	{
 		value: 'paypal',

@@ -36,7 +36,7 @@
 		lastScrollPosition = currentScrollPosition;
 	}, 200);
 
-	$: if ($page.url.pathname.includes('verify')) {
+	$: if ($page.url.pathname.includes('verify') || $page.url.pathname.includes('oauth')) {
 		showHeader = false;
 	} else {
 		showHeader = true;

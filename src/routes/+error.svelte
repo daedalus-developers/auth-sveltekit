@@ -16,7 +16,7 @@
 		<h1 in:fade class="mb-4 text-7xl font-extrabold text-destructive lg:text-9xl">
 			{$page.status}
 		</h1>
-		<p class="mb-4 text-3xl tracking-tight md:text-4xl">{$page?.error?.message}</p>
+		<p class="mb-4 text-xl tracking-tight">{$page?.error?.message}</p>
 		{#if $page?.status === 404}
 			<p class="mb-4 text-xl">It seems that you are navigating on an unknown route.</p>
 		{:else if $page?.status === 401}

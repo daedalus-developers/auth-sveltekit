@@ -6,8 +6,18 @@ import { Argon2id } from 'oslo/password';
 import { oAuthAccounts, users } from '@server/schemas';
 import { db } from '@server/db';
 import { queryUserByEmail } from './queries';
+import { createUser, linkUserOAuth } from './mutations';
+import { logger } from './utils';
+import { generateNewUserCredentials } from './auth';
 
-export type GitHubUserResponse = {
+export type GithubUserResponse = {
+	login: string;
+	avatar_url: string;
+	name: string;
+	email: string;
+};
+
+export type GithubUserEmail = {
 	email: string;
 	primary: boolean;
 	verified: boolean;
@@ -21,6 +31,41 @@ export type GoogleUserResponse = {
 	locale: string;
 };
 
+export type TransformedOauthResponse = {
+	username?: string;
+	name: string;
+	avatar: string;
+	email: string;
+	verified: boolean;
+};
+
+export const getTransformedResponse = (
+	user: { details: GithubUserResponse; emails: Array<GithubUserEmail> } | GoogleUserResponse
+): Array<TransformedOauthResponse> => {
+	const data: Array<TransformedOauthResponse> = [];
+	if ('email_verified' in user) {
+		data.push({
+			username: user.email.split('@')[0],
+			name: user.name,
+			avatar: user.picture,
+			email: user.email,
+			verified: user.email_verified
+		});
+	} else {
+		user.emails.forEach((email) => {
+			data.push({
+				username: user.details.login,
+				name: user.details.name,
+				avatar: user.details.avatar_url,
+				email: email.email,
+				verified: email.verified
+			});
+		});
+	}
+
+	return data;
+};
+
 export const getProvider = (provider: string) => {
 	switch (provider) {
 		case 'github':
@@ -32,22 +77,50 @@ export const getProvider = (provider: string) => {
 	}
 };
 
-export const linkUserAccount = async (
-	userId: string,
-	provider: string,
-	providerAccountId: string
+export const linkUserAccount = async (user: {
+	userId: string;
+	provider: string;
+	providerAccountId: string;
+}) =>
+	await db
+		.insert(oAuthAccounts)
+		.values({
+			userId: user.userId,
+			provider: user.provider,
+			providerAccountId: user.providerAccountId
+		})
+		.returning({ id: oAuthAccounts.userId });
+
+export const signUpUserWithOAuth = async (
+	email: string,
+	provider: string
 ): Promise<string | undefined> => {
 	try {
-		await db
-			.insert(oAuthAccounts)
-			.values({
+		const [user] = await queryUserByEmail.execute({ email: email });
+
+		if (!user) {
+			const { userId, hashedPassword } = await generateNewUserCredentials();
+
+			const [newUser] = await createUser({
 				userId,
-				provider,
-				providerAccountId
-			})
-			.onConflictDoNothing();
-		return userId;
+				username: email,
+				email,
+				hashedPassword,
+				emailVerified: true
+			});
+
+			if (!newUser) return undefined;
+
+			// const [link] = await linkUserOAuth(newUser.id, provider, email);
+
+			// if (!link) return undefined;
+
+			return newUser.id;
+		}
+
+		return user.id;
 	} catch (error) {
+		logger.error(error);
 		return undefined;
 	}
 };
