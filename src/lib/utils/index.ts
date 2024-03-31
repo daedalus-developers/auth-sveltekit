@@ -32,6 +32,29 @@ export const mergeObject = <T>(original: T, updated: Partial<T>): T => {
 	};
 };
 
+export const formatUserAgent = (userAgent: string) => {
+	// Split the user agent string by space
+	const parts = userAgent.split(' ');
+
+	// Extract browser information
+	const browserInfo = parts.find((part) => part.includes('/'));
+	const browser = browserInfo ? browserInfo.split('/')[0] : 'Unknown Browser';
+
+	// Extract operating system (OS) information
+	const osInfoIndex = parts.findIndex((part) => part.includes('('));
+	let osInfo = osInfoIndex !== -1 ? parts.slice(osInfoIndex + 1).join(' ') : 'Unknown OS';
+
+	// Remove everything after the first semicolon in the OS information
+	const semicolonIndex = osInfo.indexOf(';');
+	osInfo = semicolonIndex !== -1 ? osInfo.slice(0, semicolonIndex) : osInfo;
+
+	// Determine if it's a mobile device
+	const isMobile = userAgent.toLowerCase().includes('mobile');
+	const deviceType = isMobile ? 'Mobile' : 'Desktop';
+
+	return `${browser} - ${deviceType} - ${osInfo}`;
+};
+
 export const slugifyString = (str: string) =>
 	str
 		.trim()

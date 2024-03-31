@@ -11,6 +11,9 @@ import { createJWT, validateJWT } from 'oslo/jwt';
 import type { TwoFactorMethods } from '@types';
 import { TOTPController } from 'oslo/otp';
 import { Argon2id } from 'oslo/password';
+import type { SessionDetails } from '@types';
+import { createSessionDetails } from './mutations';
+import { env } from '$env/dynamic/private';
 
 const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 
@@ -54,10 +57,68 @@ export const generateNewUserCredentials = async () => {
 	};
 };
 
-export const createSessionCookie = async (userId: string): Promise<Cookie> => {
+export const createSessionCookie = async (
+	userId: string,
+	details: SessionDetails
+): Promise<Cookie> => {
 	const session = await auth.createSession(userId, {});
+
+	let sessionDetails: SessionDetails;
+
+	if (dev) {
+		const ip = await fetch('https://ifconfig.me/all.json')
+			.then((response) => response.json())
+			.then((data) => data.ip_addr);
+		if (env.IP_LOCATION_API_KEY !== '') {
+			sessionDetails = {
+				...(await getSessionDetailsFromIpGeo(ip)),
+				userAgent: details.userAgent
+			};
+		} else {
+			sessionDetails = {
+				userAgent: details.userAgent,
+				ipAddress: ip
+			};
+		}
+	} else {
+		if (env.IP_LOCATION_API_KEY !== '') {
+			sessionDetails = {
+				...(await getSessionDetailsFromIpGeo(details.ipAddress ?? '')),
+				userAgent: details.userAgent
+			};
+		} else {
+			sessionDetails = {
+				userAgent: details.userAgent,
+				ipAddress: details.ipAddress
+			};
+		}
+	}
+
+	await createSessionDetails(session.id, sessionDetails);
+
 	return auth.createSessionCookie(session.id);
 };
+
+// NOTE: Change this part depending on your vendor
+export const getSessionDetailsFromIpGeo = async (
+	ip: string
+): Promise<Omit<SessionDetails, 'userAgent'>> =>
+	await fetch(`https://api.ip2location.io/?key=${env.IP_LOCATION_API_KEY}&ip=${ip}`)
+		.then((response) => response.json())
+		.then((data) => {
+			if (data.message) return { ipAddress: ip };
+			const sessionDetails: Omit<SessionDetails, 'userAgent'> = {
+				ipAddress: ip,
+				stateProvince: data.region_name,
+				country: data.country_name,
+				city: data.city_name,
+				latitude: data.latitude,
+				longitude: data.longitude,
+				isp: data.as,
+				timeZone: data.time_zone
+			};
+			return sessionDetails;
+		});
 
 export const generateOTP = async (
 	userId: string,
