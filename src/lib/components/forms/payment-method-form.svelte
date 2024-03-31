@@ -7,11 +7,12 @@
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { page } from '$app/stores';
 	import { type PaymentFormSchema } from '@types';
-	import { MONTHS, PAYMENT_METHODS_WITH_ICONS } from '$lib/constants';
+	import { MONTHS } from '@types';
 	import { DisclaimerAlert } from '@components';
 	import { onBoardingStepStore as store } from '@stores';
 	import { toast } from 'svelte-sonner';
 	import { Button } from '@components/ui/button';
+	import { PAYMENT_METHODS_WITH_ICONS } from '$lib/constants';
 
 	$: onboarding = $page.url.pathname.includes('onboarding');
 
@@ -172,7 +173,6 @@
 														{#each { length: 10 } as _, i}
 															<p class="hidden">{_}</p>
 															<Select.Item
-																labelOnly
 																value={new Date().getFullYear() + i}
 																label={`${new Date().getFullYear() + i}`}
 															>

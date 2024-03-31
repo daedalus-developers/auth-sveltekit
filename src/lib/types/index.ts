@@ -1,6 +1,6 @@
-export * from './user.type';
-
 import type { ComponentType } from 'svelte';
+
+export * from './user.type';
 
 export type LinkWithIcon = {
 	icon: ComponentType;

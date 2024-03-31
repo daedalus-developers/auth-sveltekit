@@ -43,7 +43,7 @@ dependencies:
     version: 3.6.0
   drizzle-orm:
     specifier: ^0.30.6
-    version: 0.30.6(pg@8.11.3)(postgres@3.4.4)
+    version: 0.30.6(pg@8.11.4)(postgres@3.4.4)
   formsnap:
     specifier: ^1.0.0
     version: 1.0.0(svelte@4.2.12)(sveltekit-superforms@2.12.2)
@@ -66,8 +66,8 @@ dependencies:
     specifier: ^1.2.0
     version: 1.2.0
   pg:
-    specifier: ^8.11.3
-    version: 8.11.3
+    specifier: ^8.11.4
+    version: 8.11.4
   pino:
     specifier: ^8.19.0
     version: 8.19.0
@@ -81,8 +81,8 @@ dependencies:
     specifier: ^0.2.2
     version: 0.2.2(svelte@4.2.12)
   svelte-sonner:
-    specifier: ^0.3.19
-    version: 0.3.19(svelte@4.2.12)
+    specifier: ^0.3.20
+    version: 0.3.20(svelte@4.2.12)
   sveltekit-search-params:
     specifier: ^2.1.2
     version: 2.1.2(@sveltejs/kit@2.5.5)(svelte@4.2.12)(vite@5.2.7)
@@ -95,6 +95,9 @@ dependencies:
   tailwind-variants:
     specifier: ^0.2.1
     version: 0.2.1(tailwindcss@3.4.3)
+  vaul-svelte:
+    specifier: ^0.3.0
+    version: 0.3.0(svelte@4.2.12)
   zod:
     specifier: ^3.22.4
     version: 3.22.4
@@ -1730,6 +1733,20 @@ packages:
       dequal: 2.0.3
       focus-trap: 7.5.4
       nanoid: 4.0.2
+      svelte: 4.2.12
+    dev: false
+
+  /@melt-ui/svelte@0.68.0(svelte@4.2.12):
+    resolution: {integrity: sha512-/QvA98hnYEodZtHJ71+ocum/WWp30hVNt3F8uiZKnNYwZDaiQYjlyR9AaGKYcZLCe6R68op1mfCzc0kTzJilyA==}
+    peerDependencies:
+      svelte: '>=3 <5'
+    dependencies:
+      '@floating-ui/core': 1.6.0
+      '@floating-ui/dom': 1.6.3
+      '@internationalized/date': 3.5.2
+      dequal: 2.0.3
+      focus-trap: 7.5.4
+      nanoid: 5.0.6
       svelte: 4.2.12
     dev: false
 
@@ -3702,6 +3719,17 @@ packages:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
 
+  /bits-ui@0.16.0(svelte@4.2.12):
+    resolution: {integrity: sha512-HEkuVDyUG9dTWtKujKpdDsGOe9GRmuYOEF9yGbjVwNazxMQDQa9deUX8vM3ofGBWaJgr1cEu88p38kP5Z5gQ8w==}
+    peerDependencies:
+      svelte: ^4.0.0
+    dependencies:
+      '@internationalized/date': 3.5.2
+      '@melt-ui/svelte': 0.68.0(svelte@4.2.12)
+      nanoid: 5.0.6
+      svelte: 4.2.12
+    dev: false
+
   /bits-ui@0.21.1(svelte@4.2.12):
     resolution: {integrity: sha512-G6agiFtmbgxV2XQBdsn3tYhZw4b4lETtxU1iTpiNOgMkhUo+oV+XDQA3coMzqKDfAsmfyaLEuYtSM/NiRHGjdw==}
     peerDependencies:
@@ -3762,11 +3790,6 @@ packages:
 
   /buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
-
-  /buffer-writer@2.0.0:
-    resolution: {integrity: sha512-a7ZpuTZU1TRtnwyCNW3I5dc0wWNC3VR9S++Ewyk2HHZdrO3CQJqSpd+95Us590V6AL7JqUAH2IwZ/398PmNFgw==}
-    engines: {node: '>=4'}
-    dev: false
 
   /buffer@6.0.3:
     resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
@@ -4432,7 +4455,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.30.6(pg@8.11.3)(postgres@3.4.4):
+  /drizzle-orm@0.30.6(pg@8.11.4)(postgres@3.4.4):
     resolution: {integrity: sha512-8RgNUmY7J03GRuRgBV5SaJNbYgLVPjdSWNS/bRkIMIHt2TFCA439lJsNpqYX8asyKMqkw8ceBiamUnCIXZIt9w==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -4512,7 +4535,7 @@ packages:
       sqlite3:
         optional: true
     dependencies:
-      pg: 8.11.3
+      pg: 8.11.4
       postgres: 3.4.4
     dev: false
 
@@ -6010,10 +6033,6 @@ packages:
       p-limit: 3.1.0
     dev: true
 
-  /packet-reader@1.0.0:
-    resolution: {integrity: sha512-HAKu/fG3HpHFO0AA8WE8q2g+gBJaZ9MG7fcKk+IJPLTGAD6Psw4443l+9DGRbOIh3/aXr7Phy0TjilYivJo5XQ==}
-    dev: false
-
   /parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -6076,8 +6095,8 @@ packages:
     dev: false
     optional: true
 
-  /pg-connection-string@2.6.2:
-    resolution: {integrity: sha512-ch6OwaeaPYcova4kKZ15sbJ2hKb/VP48ZD2gE7i1J+L4MspCtBMAx8nMgz7bksc7IojCIIWuEhHibSMFH8m8oA==}
+  /pg-connection-string@2.6.3:
+    resolution: {integrity: sha512-77FxhhKJQH+xJx6tDqkhhMa0nZvv3U1HYLDQgwZxZafVD583++O5LXn5oo5HaQZ0vXwYcZA1koYAJM3JvD6Gtw==}
     dev: false
 
   /pg-int8@1.0.1:
@@ -6085,16 +6104,16 @@ packages:
     engines: {node: '>=4.0.0'}
     dev: false
 
-  /pg-pool@3.6.1(pg@8.11.3):
-    resolution: {integrity: sha512-jizsIzhkIitxCGfPRzJn1ZdcosIt3pz9Sh3V01fm1vZnbnCMgmGl5wvGGdNN2EL9Rmb0EcFoCkixH4Pu+sP9Og==}
+  /pg-pool@3.6.2(pg@8.11.4):
+    resolution: {integrity: sha512-Htjbg8BlwXqSBQ9V8Vjtc+vzf/6fVUuak/3/XXKA9oxZprwW3IMDQTGHP+KDmVL7rtd+R1QjbnCFPuTHm3G4hg==}
     peerDependencies:
       pg: '>=8.0'
     dependencies:
-      pg: 8.11.3
+      pg: 8.11.4
     dev: false
 
-  /pg-protocol@1.6.0:
-    resolution: {integrity: sha512-M+PDm637OY5WM307051+bsDia5Xej6d9IR4GwJse1qA1DIhiKlksvrneZOYQq42OM+spubpcNYEo2FcKQrDk+Q==}
+  /pg-protocol@1.6.1:
+    resolution: {integrity: sha512-jPIlvgoD63hrEuihvIg+tJhoGjUsLPn6poJY9N5CnlPd91c2T18T/9zBtLxZSb1EhYxBRoZJtzScCaWlYLtktg==}
     dev: false
 
   /pg-types@2.2.0:
@@ -6108,8 +6127,8 @@ packages:
       postgres-interval: 1.2.0
     dev: false
 
-  /pg@8.11.3:
-    resolution: {integrity: sha512-+9iuvG8QfaaUrrph+kpF24cXkH1YOOUeArRNYIxq1viYHZagBxrTno7cecY1Fa44tJeZvaoG+Djpkc3JwehN5g==}
+  /pg@8.11.4:
+    resolution: {integrity: sha512-pWb7JKPxGk1UFbtq7jQ0m3IfPpb7LLACCEyN8/u9DYEom+Q/BSKy+4TRl4+Hh003AOYhppB/z+QK87/hx/bk0w==}
     engines: {node: '>= 8.0.0'}
     peerDependencies:
       pg-native: '>=3.0.1'
@@ -6117,11 +6136,9 @@ packages:
       pg-native:
         optional: true
     dependencies:
-      buffer-writer: 2.0.0
-      packet-reader: 1.0.0
-      pg-connection-string: 2.6.2
-      pg-pool: 3.6.1(pg@8.11.3)
-      pg-protocol: 1.6.0
+      pg-connection-string: 2.6.3
+      pg-pool: 3.6.2(pg@8.11.4)
+      pg-protocol: 1.6.1
       pg-types: 2.2.0
       pgpass: 1.0.5
     optionalDependencies:
@@ -6981,8 +6998,8 @@ packages:
       typescript: 5.4.3
     dev: true
 
-  /svelte-sonner@0.3.19(svelte@4.2.12):
-    resolution: {integrity: sha512-jpPOgLtHwRaB6Vqo2dUQMv15/yUV/BQWTjKpEqQ11uqRSHKjAYUKZyGrHB2cQsGmyjR0JUzBD58btpgNqINQ/Q==}
+  /svelte-sonner@0.3.20(svelte@4.2.12):
+    resolution: {integrity: sha512-Ya5sI/OLwjlh9cHxUpQJN9NpeNY1iWEVfA4mk+sGjyZAqEKNvf01KrI+edWTPGi42q+TS2ANN22e691uk5cg4w==}
     peerDependencies:
       svelte: '>=3 <5'
     dependencies:
@@ -7346,6 +7363,15 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /vaul-svelte@0.3.0(svelte@4.2.12):
+    resolution: {integrity: sha512-+PBfKDWl+xfloe8Tm1G8x3TqbCiUWoyUedU2WC5iE3v6LOYPKo8FyEtzNC5ZqFVVnUKSKNg+4Fi73nuzMkT7JA==}
+    peerDependencies:
+      svelte: ^4.0.0
+    dependencies:
+      bits-ui: 0.16.0(svelte@4.2.12)
+      svelte: 4.2.12
+    dev: false
 
   /vite-node@1.4.0(@types/node@20.12.2):
     resolution: {integrity: sha512-VZDAseqjrHgNd4Kh8icYHWzTKSCZMhia7GyHfhtzLW33fZlG9SwsB6CEhgyVOWkJfJ2pFLrp/Gj1FSfAiqH9Lw==}

@@ -1,4 +1,4 @@
-import type { LinkWithIcon, PAYMENT_METHODS } from '@types';
+import type { FEATURES, LinkWithIcon, PAYMENT_METHODS, TIERS } from '@types';
 import AppWindowMacIcon from 'lucide-svelte/icons/app-window-mac';
 import CreditCard from 'lucide-svelte/icons/credit-card';
 import MonitorSmartphone from 'lucide-svelte/icons/monitor-smartphone';
@@ -8,44 +8,7 @@ import ShieldCheck from 'lucide-svelte/icons/shield-check';
 import Paypal from '@components/icons/paypal.svelte';
 import PaymentCreditCard from '@components/icons/credit-card.svelte';
 import type { ComponentType } from 'svelte';
-import { IconGithub, IconGoogle } from '@components';
-
-export const OAUTH_PROVIDERS: Array<{ name: string; icon: ComponentType }> = [
-	{
-		name: 'github',
-		icon: IconGithub
-	},
-	{
-		name: 'google',
-		icon: IconGoogle
-	}
-] as const;
-
-export const MONTHS = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December'
-] as const;
-
-export const TIERS = ['Freemium', 'Pro', 'Custom'] as const;
-
-export const FEATURES = [
-	'Invoices',
-	'Clients',
-	'Products',
-	'Projects',
-	'Tasks per project',
-	'AI Prompts'
-] as const;
+import { IconGoogle } from '@components';
 
 type Feature = {
 	name: (typeof FEATURES)[number];
@@ -165,8 +128,6 @@ export const PAYMENT_METHODS_WITH_ICONS: Array<PaymentMethodWithIcoon> = [
 		icon: Paypal
 	}
 ] as const;
-
-export const PAYMENT_OCCURENCE = ['Weekly', 'Monthly', 'Annually'] as const;
 
 export const navLinks = [
 	{ label: 'Signup', href: '/signup' },

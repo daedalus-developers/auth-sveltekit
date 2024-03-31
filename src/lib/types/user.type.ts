@@ -1,7 +1,5 @@
-import { MONTHS, PAYMENT_OCCURENCE, TIERS } from '$lib/constants';
-
-export const PAYMENT_METHODS = ['card', 'google', 'paypal'] as const;
-
+import { IconGithub, IconGoogle } from '@components';
+import type { ComponentType } from 'svelte';
 import {
 	boolean,
 	number,
@@ -12,6 +10,47 @@ import {
 	enum as zEnum,
 	type infer as zInfer
 } from 'zod';
+
+export const OAUTH_PROVIDERS: Array<{ name: string; icon: ComponentType }> = [
+	{
+		name: 'github',
+		icon: IconGithub
+	},
+	{
+		name: 'google',
+		icon: IconGoogle
+	}
+] as const;
+
+export const PAYMENT_OCCURENCE = ['Weekly', 'Monthly', 'Annually'] as const;
+
+export const MONTHS = [
+	'January',
+	'February',
+	'March',
+	'April',
+	'May',
+	'June',
+	'July',
+	'August',
+	'September',
+	'October',
+	'November',
+	'December'
+] as const;
+
+export const TIERS = ['Freemium', 'Pro', 'Custom'] as const;
+
+export const FEATURES = [
+	'Invoices',
+	'Clients',
+	'Products',
+	'Projects',
+	'Tasks per project',
+	'AI Prompts'
+] as const;
+
+export const PAYMENT_METHODS = ['card', 'google', 'paypal'] as const;
 
 export const requiredString = (
 	name: string,
@@ -130,7 +169,10 @@ export const totpSetupSchema = object({
 
 export type TotpSetupFormSchema = typeof totpSetupSchema;
 
-export const oAuthProviders = zEnum(['github', 'google']);
+export const oAuthProviders = zEnum([
+	OAUTH_PROVIDERS[0].name,
+	...OAUTH_PROVIDERS.slice(1).map((provider) => provider.name)
+]);
 
 export type OAuthProviders = zInfer<typeof oAuthProviders>;
 

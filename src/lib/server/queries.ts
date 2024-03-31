@@ -80,6 +80,12 @@ export const queryUserSessions = db
 	.where(eq(sessions.userId, sql.placeholder('id')))
 	.prepare('query_user_sessions');
 
+export const queryCheckUsername = db
+	.select({ username: users.username })
+	.from(users)
+	.where(eq(users.username, sql.placeholder('username')))
+	.prepare('query_user_usernames');
+
 // export const queryUserDetailsWithUser = db.query.userDetails
 // 	.findFirst({
 // 		where: (details, { eq }) => eq(details.userId, sql.placeholder('id')),

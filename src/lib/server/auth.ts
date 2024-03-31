@@ -27,6 +27,7 @@ export const auth = new Lucia(adapter, {
 			email: attrs.email,
 			role: attrs.role,
 			twoFactorEnabled: attrs.twoFactorSecret !== null,
+			emailVerified: attrs.emailVerified,
 			avatar: attrs.avatar,
 			createdAt: attrs.createdAt,
 			updatedAt: attrs.updatedAt
@@ -42,11 +43,14 @@ declare module 'lucia' {
 }
 
 export const generateNewUserCredentials = async () => {
+	const userId = generateId(15);
+	const generatedPassword = generateRandomString(16, alphabet('a-z', 'A-Z', '0-9', '-'));
+	const hashedPassword = await new Argon2id().hash(generatedPassword);
+
 	return {
-		userId: generateId(15),
-		hashedPassword: await new Argon2id().hash(
-			generateRandomString(16, alphabet('a-z', 'A-Z', '0-9', '-'))
-		)
+		userId,
+		generatedPassword,
+		hashedPassword
 	};
 };
 

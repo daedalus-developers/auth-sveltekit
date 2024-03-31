@@ -67,17 +67,18 @@ SMTP_FROM_NAME="Auth Kit" # if with spaces
 SMTP_FROM_EMAIL=noreply@example.com # only used for verifications,
 SMTP_REPLY_TO=noreply@example.com #
 ORIGIN="https://example.com" # your domain name
-GITHUB_CLIENT_ID="" # This is provided by github
-GITHUB_CLIENT_SECRET="" # This is provided by github
-GITHUB_CALLBACK_URL="http://localhost:5173/login/github/callback"
-GOOGLE_CLIENTID="" # This is provided by google console
-GOOGLE_CLIENTSECRET="" # This is provided by google console
-GOOGLE_CALLBACK_URL="http://localhost:5173/login/google/callback"
+GITHUB_CLIENT_ID=""
+GITHUB_CLIENT_SECRET=""
+GITHUB_CALLBACK_URL=http://localhost:5173/oauth/github/callback
+GOOGLE_CLIENTID=""
+GOOGLE_CLIENTSECRET=""
+GOOGLE_CALLBACK_URL=http://localhost:5173/oauth/google/callback
 STORAGE_ACCESS_KEY=accesskey
 STORAGE_SECRET_KEY=secretkey
-STORAGE_URL=customdomain or .r2 # domain given by your provider
-STORAGE_ENDPOINT=https://your url.r2.cloudflarestorage.com # do not include /bucketname or any S3 provider
-STORAGE_BUCKET=bucketname #bucket name
+STORAGE_URL=  #customdomain or .r2 or s3 url
+# do not include /bucketname for r2,
+STORAGE_ENDPOINT=https://yoururl.r2.cloudflarestorage.com
+STORAGE_BUCKET=bucketname
 ```
 
 Create a bucket and get your credentials from the storage provider

@@ -1,7 +1,5 @@
 <script lang="ts">
-	import Google from '@components/icons/google.svelte';
-	import type { OAuthProviderWithIcon, OAuthProviders } from '@types';
-	import Github from '@components/icons/github.svelte';
+	import { OAUTH_PROVIDERS, type OAuthProviderWithIcon, type OAuthProviders } from '@types';
 	import Provider from './provider.svelte';
 	import { Separator } from '@components/ui/separator';
 	import * as AlertDialog from '@components/ui/alert-dialog';
@@ -9,20 +7,12 @@
 	import { capitalize } from '@utils';
 	import { superForm } from 'sveltekit-superforms';
 	import { toast } from 'svelte-sonner';
-	import { page } from '$app/stores';
-	import { invalidateAll } from '$app/navigation';
+	import { page, navigating } from '$app/stores';
+	import { goto, invalidateAll } from '$app/navigation';
+
 	import { LoaderCircle } from 'lucide-svelte';
 
-	let providers: Array<OAuthProviderWithIcon> = [
-		{
-			name: 'google',
-			icon: Google
-		},
-		{
-			name: 'github',
-			icon: Github
-		}
-	];
+	let providers: Array<OAuthProviderWithIcon> = [...OAUTH_PROVIDERS.map((provider) => provider)];
 
 	let open = false;
 	let action: 'link' | 'unlink' = 'link';
@@ -118,14 +108,20 @@
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action asChild>
-				{#if $delayed}
+				{#if $delayed || $navigating}
 					<LoaderCircle class="h-10 w-10 animate-spin" />
-				{:else}
+				{:else if action === 'unlink'}
 					<form method="POST" action={`?/${action}`} use:enhance>
 						<input class="hidden" name="userId" bind:value={$fields.userId} />
 						<input class="hidden" name="provider" bind:value={$fields.provider} />
 						<Button type="submit" class="w-full" variant="destructive">Confirm</Button>
 					</form>
+				{:else}
+					<Button
+						on:click={() => {
+							goto(`/oauth/${$fields.provider}/verify`);
+						}}>Continue</Button
+					>
 				{/if}
 			</AlertDialog.Action>
 		</AlertDialog.Footer>

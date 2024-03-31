@@ -2,15 +2,20 @@ import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { createSessionCookie, generateNewUserCredentials, validateToken } from '@server/auth';
 import { linkUserAccount, type TransformedOauthResponse } from '@server/auth-providers';
-import { queryUserByEmail, queryUserOAuthAccountByProviderAccountId } from '@server/queries';
+import {
+	queryCheckUsername,
+	queryUserByEmail,
+	queryUserOAuthAccountByProviderAccountId
+} from '@server/queries';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { linkUserSchema, oAuthSignUpFormSchema } from '@types';
 import { createUser, linkUserOAuth } from '@server/mutations';
 import { logger } from '@server/utils';
-import { PostgresError } from 'postgres';
+import { sendOAuthOnboardingDetails } from '@server/mailer';
+import { dev } from '$app/environment';
 
-export const load: PageServerLoad = async ({ params, cookies }) => {
+export const load: PageServerLoad = async ({ params, cookies, locals }) => {
 	const { current_provider } = params;
 
 	if (!current_provider) {
@@ -29,6 +34,22 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 
 	if (!oAuthCredentials) {
 		redirect(302, `/oauth/${current_provider}/invalid`);
+	}
+
+	const emails: TransformedOauthResponse['email'][] = oAuthCredentials.credentials.map(
+		({ email }) => email
+	);
+
+	if (locals.user) {
+		return {
+			linkUserForm: await superValidate(
+				zod(linkUserSchema, {
+					defaults: { userId: locals.user.id, email: oAuthCredentials.credentials[0].email }
+				})
+			),
+			user: locals.user,
+			emails
+		};
 	}
 
 	for (const credential of oAuthCredentials.credentials) {
@@ -50,7 +71,6 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 				email: credential.email
 			});
 			return {
-				signUpForm: await superValidate(zod(oAuthSignUpFormSchema)),
 				linkUserForm: await superValidate(
 					zod(linkUserSchema, {
 						defaults: {
@@ -60,18 +80,31 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 					})
 				),
 				user,
+				emails,
 				connectedProvider: alreadySignedUp.provider
 			};
+		} else {
+			const [user] = await queryUserByEmail.execute({
+				email: credential.email
+			});
+
+			if (user) {
+				return {
+					linkUserForm: await superValidate(
+						zod(linkUserSchema, {
+							defaults: { userId: user.id, email: credential.email }
+						})
+					),
+					user,
+					emails
+				};
+			}
 		}
 	}
 
 	const { name, username, avatar, email } = oAuthCredentials.credentials[0];
-	const emails: TransformedOauthResponse['email'][] = oAuthCredentials.credentials.map(
-		({ email }) => email
-	);
 
 	return {
-		linkUserForm: await superValidate(zod(linkUserSchema)),
 		signUpForm: await superValidate(
 			zod(oAuthSignUpFormSchema, {
 				defaults: {
@@ -87,7 +120,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 };
 
 export const actions: Actions = {
-	link: async ({ request, params, cookies }) => {
+	link: async ({ request, params, cookies, locals }) => {
 		const { current_provider } = params;
 
 		const form = await superValidate(request, zod(linkUserSchema));
@@ -103,6 +136,8 @@ export const actions: Actions = {
 				cookies.delete('oauth_credentials', {
 					path: '/'
 				});
+
+				if (locals.user) redirect(302, '/settings/social');
 
 				const sessionCookie = await createSessionCookie(user.id);
 
@@ -121,7 +156,11 @@ export const actions: Actions = {
 
 		const form = await superValidate(request, zod(oAuthSignUpFormSchema));
 
-		const { userId, hashedPassword } = await generateNewUserCredentials();
+		const [username] = await queryCheckUsername.execute({ username: form.data.username });
+
+		if (username) return setError(form, 'username', 'Username already taken');
+
+		const { userId, generatedPassword, hashedPassword } = await generateNewUserCredentials();
 
 		try {
 			const [newUser] = await createUser({
@@ -151,21 +190,24 @@ export const actions: Actions = {
 					...sessionCookie.attributes
 				});
 
+				if (!dev) sendOAuthOnboardingDetails(newUser.email, generatedPassword);
+
 				redirect(302, `/login`);
 			}
 		} catch (err) {
-			if (err instanceof PostgresError) {
-				logger.error(err);
-				if (err.message?.includes('username_unique')) {
-					return setError(form, 'username', 'Username is already taken');
-				}
-			}
+			logger.error(err);
+
+			redirect(302, `/login`);
 		}
 	},
-	cancel: async ({ cookies }) => {
+	cancel: async ({ cookies, locals }) => {
 		cookies.delete('oauth_credentials', {
 			path: '/'
 		});
+
+		if (locals.user) {
+			redirect(302, '/settings/socials');
+		}
 
 		redirect(302, `/login`);
 	}
