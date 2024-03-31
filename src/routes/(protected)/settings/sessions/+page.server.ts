@@ -6,11 +6,11 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 
 	const currentSession = locals.session;
 
-	const userSessions = queryUserSessions.execute({ id: user.id });
+	const sessions = queryUserSessions.execute({ id: user.id });
 
 	return {
 		user,
-		userSessions,
+		sessions,
 		currentSession
 	};
 };

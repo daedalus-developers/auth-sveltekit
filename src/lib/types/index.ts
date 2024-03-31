@@ -1,6 +1,7 @@
 import type { ComponentType } from 'svelte';
 
 export * from './user.type';
+export * from './auth.type';
 
 export type LinkWithIcon = {
 	icon: ComponentType;

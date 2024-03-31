@@ -102,6 +102,24 @@ export const sessions = pgTable('session', {
 	fresh: boolean('fresh').notNull().default(true)
 });
 
+export const sessionDetails = pgTable('session_details', {
+	id: text('id').notNull().primaryKey(),
+	sessionId: text('session_id')
+		.notNull()
+		.references(() => sessions.id, {
+			onDelete: 'cascade'
+		}),
+	userAgent: text('user_agent').notNull(),
+	country: text('country'),
+	stateProvince: text('state_province'),
+	city: text('city'),
+	latitude: text('latitude'),
+	longitude: text('longitude'),
+	ipAddress: text('ip_address'),
+	isp: text('isp'),
+	timeZone: text('time_zone')
+});
+
 export const oAuthAccounts = pgTable(
 	'oauth_account',
 	{
@@ -125,3 +143,6 @@ export type UserSchema = InferSelectModel<typeof users>;
 export type UserInsertSchema = InferInsertModel<typeof users>;
 export type UserDetailsSchema = InferSelectModel<typeof userDetails>;
 export type UserDetailsInsertSchema = InferInsertModel<typeof userDetails>;
+
+export type SessionSchema = InferSelectModel<typeof sessions>;
+export type SessionInsertSchema = InferInsertModel<typeof sessions>;

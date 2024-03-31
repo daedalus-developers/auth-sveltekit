@@ -15,7 +15,13 @@ import { logger } from '@server/utils';
 import { sendOAuthOnboardingDetails } from '@server/mailer';
 import { dev } from '$app/environment';
 
-export const load: PageServerLoad = async ({ params, cookies, locals }) => {
+export const load: PageServerLoad = async ({
+	params,
+	cookies,
+	locals,
+	getClientAddress,
+	request
+}) => {
 	const { current_provider } = params;
 
 	if (!current_provider) {
@@ -60,7 +66,10 @@ export const load: PageServerLoad = async ({ params, cookies, locals }) => {
 
 		// if it exists, create a session and redirect to dashboard
 		if (alreadySignedUp && alreadySignedUp.provider === current_provider) {
-			const sessionCookie = await createSessionCookie(alreadySignedUp.userId);
+			const sessionCookie = await createSessionCookie(alreadySignedUp.userId, {
+				ipAddress: getClientAddress(),
+				userAgent: request.headers.get('user-agent') || ''
+			});
 			cookies.set(sessionCookie.name, sessionCookie.value, {
 				path: '.',
 				...sessionCookie.attributes
@@ -120,7 +129,7 @@ export const load: PageServerLoad = async ({ params, cookies, locals }) => {
 };
 
 export const actions: Actions = {
-	link: async ({ request, params, cookies, locals }) => {
+	link: async ({ request, params, cookies, locals, getClientAddress }) => {
 		const { current_provider } = params;
 
 		const form = await superValidate(request, zod(linkUserSchema));
@@ -139,7 +148,10 @@ export const actions: Actions = {
 
 				if (locals.user) redirect(302, '/settings/social');
 
-				const sessionCookie = await createSessionCookie(user.id);
+				const sessionCookie = await createSessionCookie(user.id, {
+					ipAddress: getClientAddress(),
+					userAgent: request.headers.get('user-agent') || ''
+				});
 
 				cookies.set(sessionCookie.name, sessionCookie.value, {
 					path: '.',
@@ -151,7 +163,7 @@ export const actions: Actions = {
 			redirect(302, `/login`);
 		}
 	},
-	signup: async ({ cookies, request, params }) => {
+	signup: async ({ cookies, request, params, getClientAddress }) => {
 		const { current_provider } = params;
 
 		const form = await superValidate(request, zod(oAuthSignUpFormSchema));
@@ -179,7 +191,10 @@ export const actions: Actions = {
 					providerAccountId: form.data.email
 				});
 
-				const sessionCookie = await createSessionCookie(user.id);
+				const sessionCookie = await createSessionCookie(user.id, {
+					ipAddress: getClientAddress(),
+					userAgent: request.headers.get('user-agent') || ''
+				});
 
 				cookies.delete('oauth_credentials', {
 					path: '/'

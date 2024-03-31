@@ -1,7 +1,9 @@
 import { eq } from 'drizzle-orm';
 import { db } from './db';
-import { oAuthAccounts, users } from './schemas';
+import { oAuthAccounts, sessionDetails, users } from './schemas';
 import { logger } from './utils';
+import type { SessionDetails } from '@types';
+import { generateId } from 'lucia';
 
 export const verifyUserEmail = async (id: string) =>
 	await db.update(users).set({ emailVerified: true }).where(eq(users.id, id));
@@ -56,3 +58,10 @@ export const linkUserOAuth = async (user: LinkUserOAuthParams) =>
 			providerAccountId: user.providerAccountId
 		})
 		.returning({ id: oAuthAccounts.userId });
+
+export const createSessionDetails = async (sessionId: string, details: SessionDetails) =>
+	await db.insert(sessionDetails).values({
+		...details,
+		id: generateId(15),
+		sessionId
+	});

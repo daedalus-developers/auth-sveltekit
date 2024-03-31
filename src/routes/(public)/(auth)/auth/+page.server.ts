@@ -11,6 +11,7 @@ import {
 } from '@server/queries';
 import {
 	auth,
+	createSessionCookie,
 	createToken,
 	generateOTP,
 	twoFactorMethodsVerifier,
@@ -50,7 +51,7 @@ export const actions: Actions = {
 		redirect(302, '/login');
 	},
 	account: async (event) => {
-		const { request, cookies, url } = event;
+		const { request, cookies, url, getClientAddress } = event;
 
 		const accountForm = await superValidate(request, zod(authSchema));
 
@@ -117,8 +118,10 @@ export const actions: Actions = {
 			redirect(302, '/verify?method=totp');
 		}
 
-		const session = await auth.createSession(existingUser.id, {});
-		const sessionCookie = auth.createSessionCookie(session.id);
+		const sessionCookie = await createSessionCookie(existingUser.id, {
+			ipAddress: getClientAddress(),
+			userAgent: request.headers.get('user-agent') || ''
+		});
 
 		cookies.set(sessionCookie.name, sessionCookie.value, {
 			path: '.',
@@ -228,7 +231,7 @@ export const actions: Actions = {
 		};
 	},
 	verify: async (event) => {
-		const { request, cookies, locals } = event;
+		const { request, cookies, locals, getClientAddress } = event;
 
 		let userId: string;
 
@@ -280,8 +283,11 @@ export const actions: Actions = {
 				});
 			}
 
-			const session = await auth.createSession(user.id, {});
-			const sessionCookie = auth.createSessionCookie(session.id);
+			const sessionCookie = await createSessionCookie(user.id, {
+				ipAddress: getClientAddress(),
+				userAgent: request.headers.get('user-agent') || ''
+			});
+
 			cookies.set(sessionCookie.name, sessionCookie.value, {
 				path: '.',
 				...sessionCookie.attributes

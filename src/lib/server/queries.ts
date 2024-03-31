@@ -1,6 +1,6 @@
 import { or, eq, sql, and } from 'drizzle-orm';
 import { db } from './db';
-import { oAuthAccounts, sessions, users } from './schemas';
+import { oAuthAccounts, sessionDetails, sessions, users } from './schemas';
 
 export const queryUsers = db.select().from(users).prepare('query_users');
 
@@ -77,6 +77,7 @@ export const queryUserOAuthAccountByProviderAccountId = db
 export const queryUserSessions = db
 	.select()
 	.from(sessions)
+	.leftJoin(sessionDetails, eq(sessions.id, sessionDetails.sessionId))
 	.where(eq(sessions.userId, sql.placeholder('id')))
 	.prepare('query_user_sessions');
 
