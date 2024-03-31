@@ -1,7 +1,7 @@
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { db } from './db';
 import { passwordResetToken, sessions, users, usersOtp, type UserInsertSchema } from './schemas';
-import { Lucia, TimeSpan, generateId } from 'lucia';
+import { Cookie, Lucia, TimeSpan, generateId } from 'lucia';
 import { dev } from '$app/environment';
 import { and, eq } from 'drizzle-orm';
 import { generateRandomString, alphabet, sha256, HMAC } from 'oslo/crypto';
@@ -27,6 +27,7 @@ export const auth = new Lucia(adapter, {
 			email: attrs.email,
 			role: attrs.role,
 			twoFactorEnabled: attrs.twoFactorSecret !== null,
+			emailVerified: attrs.emailVerified,
 			avatar: attrs.avatar,
 			createdAt: attrs.createdAt,
 			updatedAt: attrs.updatedAt
@@ -40,6 +41,23 @@ declare module 'lucia' {
 		DatabaseUserAttributes: UserInsertSchema;
 	}
 }
+
+export const generateNewUserCredentials = async () => {
+	const userId = generateId(15);
+	const generatedPassword = generateRandomString(16, alphabet('a-z', 'A-Z', '0-9', '-'));
+	const hashedPassword = await new Argon2id().hash(generatedPassword);
+
+	return {
+		userId,
+		generatedPassword,
+		hashedPassword
+	};
+};
+
+export const createSessionCookie = async (userId: string): Promise<Cookie> => {
+	const session = await auth.createSession(userId, {});
+	return auth.createSessionCookie(session.id);
+};
 
 export const generateOTP = async (
 	userId: string,

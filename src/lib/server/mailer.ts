@@ -72,6 +72,26 @@ export const sendFailedRegistrationAttempt = (email: string, url: string) =>
 `
 	});
 
+export const sendOAuthOnboardingDetails = (email: string, generatedPassword: string) =>
+	transporter.sendMail({
+		from: `Auth Kit<${env.SMTP_FROM_EMAIL}>`,
+		to: email,
+		subject: 'Welcome to our platform!',
+		html: `
+
+    <h2>Welcome to our platform!</h2>
+
+    <p>The following is your login details</p>
+
+    <div>
+      <p>Email: <span style="font-weight:bold">${email}</span></p>
+      <p>Password: <strong>${generatedPassword} </strong></p>
+    </div>
+
+    <p>-<i>Auth Kit Team</i></p>
+`
+	});
+
 export const sendOnboardingDetails = (
 	email: string,
 	generatedPassword: string,

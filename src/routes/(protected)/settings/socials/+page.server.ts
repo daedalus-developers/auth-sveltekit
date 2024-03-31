@@ -38,7 +38,7 @@ export const actions: Actions = {
 			});
 		}
 
-		redirect(302, `/auth/${form.data.provider}`);
+		redirect(302, `/oauth/${form.data.provider}/verify`);
 	},
 	unlink: async ({ locals, request }) => {
 		if (!locals.user) return fail(401, { message: 'Unauthorized' });

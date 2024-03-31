@@ -17,7 +17,7 @@
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action asChild>
-				<form method="POST" action="/actions/?/signout" use:enhance>
+				<form method="POST" action="/auth/?/signout" use:enhance>
 					<Button type="submit" class="w-full" variant="destructive">Confirm</Button>
 				</form>
 			</AlertDialog.Action>

@@ -11,12 +11,13 @@
 	import { onMount } from 'svelte';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { tierForm, type TierFormSchema } from '@types';
-	import { TIERS, FEATURES, TIERS_FEATURES, PAYMENT_OCCURENCE } from '$lib/constants';
+	import { TIERS, FEATURES, PAYMENT_OCCURENCE } from '@types';
 	import { IconTierDiamond } from '@components/icons';
 	import { ScrollArea } from '@components/ui/scroll-area';
 	import { DisclaimerAlert } from '@components';
 	import { toast } from 'svelte-sonner';
 	import { zod } from 'sveltekit-superforms/adapters';
+	import { TIERS_FEATURES } from '$lib/constants';
 
 	$: pathname = $page.url.pathname;
 

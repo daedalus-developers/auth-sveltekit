@@ -6,13 +6,13 @@
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { page } from '$app/stores';
-	import { paymentForm, type PaymentFormSchema } from '@types';
-	import { MONTHS, PAYMENT_METHODS_WITH_ICONS } from '$lib/constants';
+	import { type PaymentFormSchema } from '@types';
+	import { MONTHS } from '@types';
 	import { DisclaimerAlert } from '@components';
 	import { onBoardingStepStore as store } from '@stores';
 	import { toast } from 'svelte-sonner';
-	import { zod } from 'sveltekit-superforms/adapters';
 	import { Button } from '@components/ui/button';
+	import { PAYMENT_METHODS_WITH_ICONS } from '$lib/constants';
 
 	$: onboarding = $page.url.pathname.includes('onboarding');
 
@@ -21,7 +21,7 @@
 
 	const form = superForm(data, {
 		dataType: 'json',
-		validators: zod(paymentForm),
+		resetForm: true,
 		onUpdate({ result, form }) {
 			if (result.type === 'success') {
 				if (onboarding) {
@@ -30,7 +30,8 @@
 					toast.success(form.message?.text ?? '');
 				}
 			} else if (result.type === 'failure') {
-				if (form.message) toast.error(form.message.text);
+				if (form.message?.type === 'error') toast.error(form.message.text);
+				else toast.success(form.message?.text ?? '');
 			}
 		}
 	});
@@ -172,7 +173,6 @@
 														{#each { length: 10 } as _, i}
 															<p class="hidden">{_}</p>
 															<Select.Item
-																labelOnly
 																value={new Date().getFullYear() + i}
 																label={`${new Date().getFullYear() + i}`}
 															>
@@ -225,6 +225,6 @@
 
 {#if onboarding}
 	<div class="flex justify-end py-2">
-		<Button variant="ghost" class="" on:click={() => store.nextStep(1)}>Skip</Button>
+		<Button variant="ghost" class="" on:click={() => store.nextStep()}>Skip</Button>
 	</div>
 {/if}

@@ -19,7 +19,7 @@ const config = {
 			'@utils': './src/lib/utils',
 			'@types': './src/lib/types',
 			'@stores': './src/lib/stores',
-			'@authActions': './src/routes/(public)/(auth)/actions/'
+			'@authActions': './src/routes/(public)/(auth)/auth/'
 		},
 		csrf: { checkOrigin: dev }
 	}

@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { db } from './db';
-import { users } from './schemas';
+import { oAuthAccounts, users } from './schemas';
 import { logger } from './utils';
 
 export const verifyUserEmail = async (id: string) =>
@@ -15,3 +15,44 @@ export const updateUserUsername = async (id: string, username: string): Promise<
 		return false;
 	}
 };
+
+type CreateUserParams = {
+	userId: string;
+	email: string;
+	username: string;
+	hashedPassword: string;
+	emailVerified: boolean;
+	avatar?: string;
+};
+
+export const createUser = async (user: CreateUserParams) =>
+	await db
+		.insert(users)
+		.values({
+			id: user.userId,
+			username: user.username,
+			email: user.email,
+			password: user.hashedPassword,
+			emailVerified: user.emailVerified,
+			avatar: user.avatar
+		})
+		.returning({
+			id: users.id,
+			email: users.email
+		});
+
+type LinkUserOAuthParams = {
+	userId: string;
+	provider: string;
+	providerAccountId: string;
+};
+
+export const linkUserOAuth = async (user: LinkUserOAuthParams) =>
+	await db
+		.insert(oAuthAccounts)
+		.values({
+			userId: user.userId,
+			provider: user.provider,
+			providerAccountId: user.providerAccountId
+		})
+		.returning({ id: oAuthAccounts.userId });

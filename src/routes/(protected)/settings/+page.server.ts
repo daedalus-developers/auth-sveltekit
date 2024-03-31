@@ -1,7 +1,7 @@
 import { fail, message, setError, superValidate, withFiles } from 'sveltekit-superforms';
 import type { Actions } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
-import { accountForm, paymentForm, tierForm } from '@types';
+import { accountForm, emailSchema, paymentForm, tierForm } from '@types';
 import { db } from '@server/db';
 import { userDetails, users } from '@server/schemas';
 import { eq } from 'drizzle-orm';
@@ -131,7 +131,14 @@ export const actions: Actions = {
 		// Validate Form
 		const form = await superValidate(request, zod(paymentForm));
 
-		if (!form.valid) return fail(400, { form });
+		if (form.data.method === 'card' && !form.valid) {
+			return fail(400, { form });
+		} else if (form.data.method === 'google' || form.data.method === 'paypal') {
+			const parse = emailSchema.safeParse(form.data.account);
+			if (!parse.success) {
+				return setError(form, 'account', 'Invalid email');
+			}
+		}
 
 		return message(form, {
 			type: 'success',

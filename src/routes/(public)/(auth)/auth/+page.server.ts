@@ -138,29 +138,21 @@ export const actions: Actions = {
 				text: 'You have sent too many OTPs, please try again in 15 minutes'
 			});
 
-		const responseMessage: ResponseMessage = {
-			type: 'success',
-			text: 'If you have an account with us, we have sent an OTP to your email, your code expires in 5 minutes.'
-		};
+		// const responseMessage: ResponseMessage = {
+		// 	type: 'success',
+		// 	text: 'If you have an account with us, we have sent an OTP to your email, your code expires in 5 minutes.'
+		// };
 
 		const [user] = await queryUserForOtpByEmail.execute({ email: otpForm.data.key });
 
+		// if (!user) {
+		// 	return message(otpForm, {
+		// 		...responseMessage
+		// 	});
+		// }
+
 		if (!user) {
-			return message(otpForm, {
-				...responseMessage
-			});
-		}
-
-		if (user.id) {
-			const code = await generateOTP(user.id, user.email);
-
-			if (dev) {
-				console.log(`Generated code: ${code} for ${user.email}`);
-			} else {
-				await sendEmailOTP(otpForm.data.key, code);
-			}
-
-			const token = await createToken({ id: user.id }, 30, 'm');
+			const token = await createToken({ id: 'invaliduser' }, 30, 'm');
 
 			cookies.set('user_verify', token, {
 				path: '.',
@@ -169,7 +161,21 @@ export const actions: Actions = {
 				maxAge: new TimeSpan(30, 'm').milliseconds()
 			});
 		} else {
-			const token = await createToken({ id: 'invaliduser' }, 30, 'm');
+			const code = await generateOTP(user.id, user.email);
+
+			if (dev) {
+				logger.info(
+					{
+						code,
+						email: user.email
+					},
+					'Generated OTP for user'
+				);
+			} else {
+				await sendEmailOTP(otpForm.data.key, code);
+			}
+
+			const token = await createToken({ id: user.id }, 30, 'm');
 
 			cookies.set('user_verify', token, {
 				path: '.',
