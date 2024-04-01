@@ -1,15 +1,15 @@
 <script lang="ts">
 	import LightSwitch from './light-switch.svelte';
 	import Link from './link.svelte';
-	import UserDropdown from './user-dropdown.svelte';
 	import { Fingerprint } from 'lucide-svelte';
 	import { cn, lgScreen } from '@utils';
 	import { debounce } from '@utils';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import { setupViewTransition } from 'sveltekit-view-transition';
-	import LinksDropdown from './links-dropdown.svelte';
 	import { navLinks } from '$lib/constants';
+	import LinksDropdown from './modals/links-dropdown.svelte';
+	import UserDropdown from './modals/user-dropdown.svelte';
 
 	let showHeader = true;
 	let currentScrollPosition: number;
