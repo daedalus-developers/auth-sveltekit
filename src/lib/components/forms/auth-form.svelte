@@ -1,6 +1,4 @@
 <script lang="ts">
-	import * as Card from '@components/ui/card';
-	import * as Form from '@components/ui/form';
 	import { Input } from '@components/ui/input';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import { superForm } from 'sveltekit-superforms';
@@ -11,6 +9,15 @@
 	import { Button } from '@components/ui/button';
 	import { page } from '$app/stores';
 	import { OauthForm } from '@components';
+	import {
+		Card,
+		CardDescription,
+		CardContent,
+		CardFooter,
+		CardHeader,
+		CardTitle
+	} from '@components/ui/card';
+	import { FormField, FormControl, FormLabel, FormButton } from '@components/ui/form';
 
 	export let formData: SuperValidated<Infer<AuthFormSchema>> = $page.data.authForm;
 
@@ -46,10 +53,10 @@
 </script>
 
 <form method="POST" action={`?/account${key !== undefined ? `&key=${key}` : ''}`} use:enhance>
-	<Card.Root class="border-transparent shadow-none">
-		<Card.Header>
-			<Card.Title class="text-center">Password Based Auth</Card.Title>
-			<Card.Description class="text-center">
+	<Card class="border-transparent shadow-none">
+		<CardHeader>
+			<CardTitle class="text-center">Password Based Auth</CardTitle>
+			<CardDescription class="text-center">
 				{#key $message}
 					{#if $message}
 						<span
@@ -62,24 +69,24 @@
 						Sign in using your username/email and password
 					{/if}
 				{/key}
-			</Card.Description>
-		</Card.Header>
-		<Card.Content class="space-y-4">
-			<Form.Field {form} name="key">
-				<Form.Control let:attrs>
-					<Form.Label>Email or Username</Form.Label>
+			</CardDescription>
+		</CardHeader>
+		<CardContent class="space-y-4">
+			<FormField {form} name="key">
+				<FormControl let:attrs>
+					<FormLabel>Email or Username</FormLabel>
 					<Input class="text-base" {...attrs} autofocus type="text" bind:value={$data.key} />
-				</Form.Control>
-			</Form.Field>
-			<Form.Field {form} name="password">
-				<Form.Control let:attrs>
-					<Form.Label>Password</Form.Label>
+				</FormControl>
+			</FormField>
+			<FormField {form} name="password">
+				<FormControl let:attrs>
+					<FormLabel>Password</FormLabel>
 					<Input {...attrs} type="password" bind:value={$data.password} />
-				</Form.Control>
-			</Form.Field>
-		</Card.Content>
-		<Card.Footer class="flex flex-col ">
-			<Form.Button class="w-full">Login</Form.Button>
+				</FormControl>
+			</FormField>
+		</CardContent>
+		<CardFooter class="flex flex-col ">
+			<FormButton class="w-full">Login</FormButton>
 			<Button variant="link" href="/signup" class="text-muted-foreground">
 				No account? Create one
 			</Button>
@@ -87,6 +94,6 @@
 				Forgot password?
 			</Button>
 			<OauthForm />
-		</Card.Footer>
-	</Card.Root>
+		</CardFooter>
+	</Card>
 </form>

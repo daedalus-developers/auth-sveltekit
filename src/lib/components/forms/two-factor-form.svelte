@@ -2,17 +2,24 @@
 	import type { OtpProvider, TwoFactorFormSchema, TwoFactorMethods } from '@types';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { page } from '$app/stores';
-	import * as Form from '@components/ui/form';
 	import { toast } from 'svelte-sonner';
 	import { Input } from '@components/ui/input';
 	import { Button } from '@components/ui/button';
 	import { goto, replaceState } from '$app/navigation';
 	import { cn } from '@utils';
 	import TwoFactorFormHeader from './two-factor-form-header.svelte';
-	import * as RadioGroup from '@components/ui/radio-group';
 	import { Eye, EyeOff } from 'lucide-svelte';
 	import { queryParam, ssp } from 'sveltekit-search-params';
 	import { fade } from 'svelte/transition';
+	import {
+		FormLegend,
+		FormField,
+		FormFieldset,
+		FormControl,
+		FormFieldErrors,
+		FormLabel
+	} from '@components/ui/form';
+	import { RadioGroup, RadioGroupItem } from '@components/ui/radio-group';
 
 	let data: SuperValidated<Infer<TwoFactorFormSchema>> = $page.data.twoFactorForm;
 
@@ -80,9 +87,9 @@
 		<input class="hidden" type="checkbox" name="sudo" bind:checked={$formData.sudo} />
 		{#key $formData.method}
 			<div in:fade={{ duration: 300 }}>
-				<Form.Field {form} name="key">
-					<Form.Control let:attrs>
-						<Form.Label class="text-md">
+				<FormField {form} name="key">
+					<FormControl let:attrs>
+						<FormLabel class="text-md">
 							{#if $formData.method === 'totp'}
 								Code
 							{:else if $formData.method === 'otp'}
@@ -90,7 +97,7 @@
 							{:else}
 								Password
 							{/if}
-						</Form.Label>
+						</FormLabel>
 						{#if $formData.method === 'password'}
 							<div class="flex">
 								<Input
@@ -124,9 +131,9 @@
 								placeholder={'XXXXXX'}
 							/>
 						{/if}
-						<Form.FieldErrors class="h-[18px] text-center" />
-					</Form.Control>
-				</Form.Field>
+						<FormFieldErrors class="h-[18px] text-center" />
+					</FormControl>
+				</FormField>
 			</div>
 		{/key}
 		<Button type="submit" class="w-full text-lg">Verify</Button>
@@ -135,31 +142,31 @@
 				Having trouble? Go back to login page <a href="/login" class="underline">here</a>.
 			</p>
 		{:else}
-			<Form.Fieldset {form} name="method" class="flex justify-center space-y-1 py-4">
-				<Form.Legend class="mx-auto text-muted-foreground">
+			<FormFieldset {form} name="method" class="flex justify-center space-y-1 py-4">
+				<FormLegend class="mx-auto text-muted-foreground">
 					Having Trouble? Select preffered method below.
-				</Form.Legend>
-				<RadioGroup.Root bind:value={$formData.method}>
+				</FormLegend>
+				<RadioGroup bind:value={$formData.method}>
 					<div class="flex space-x-4">
 						{#if $page.data.user}
-							<Form.Control let:attrs>
-								<RadioGroup.Item value="totp" {...attrs} />
-								<Form.Label class="ml-2 font-normal">TOTP</Form.Label>
-							</Form.Control>
+							<FormControl let:attrs>
+								<RadioGroupItem value="totp" {...attrs} />
+								<FormLabel class="ml-2 font-normal">TOTP</FormLabel>
+							</FormControl>
 							{#if !verifyRoute}
-								<Form.Control let:attrs>
-									<RadioGroup.Item value="password" {...attrs} />
-									<Form.Label class="ml-2 font-normal">Password</Form.Label>
-								</Form.Control>
+								<FormControl let:attrs>
+									<RadioGroupItem value="password" {...attrs} />
+									<FormLabel class="ml-2 font-normal">Password</FormLabel>
+								</FormControl>
 							{/if}
 						{/if}
-						<Form.Control let:attrs>
-							<RadioGroup.Item value="otp" {...attrs} />
-							<Form.Label class="ml-2 font-normal">OTP(Email/SMS)</Form.Label>
-						</Form.Control>
+						<FormControl let:attrs>
+							<RadioGroupItem value="otp" {...attrs} />
+							<FormLabel class="ml-2 font-normal">OTP(Email/SMS)</FormLabel>
+						</FormControl>
 					</div>
-				</RadioGroup.Root>
-			</Form.Fieldset>
+				</RadioGroup>
+			</FormFieldset>
 		{/if}
 	</form>
 </div>

@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import * as Card from '@components/ui/card';
-	import * as Form from '@components/ui/form';
 	import { Input } from '@components/ui/input';
 	import { Switch } from '@components/ui/switch';
 	import { Button } from '@components/ui/button';
@@ -12,6 +10,14 @@
 	import { goto } from '$app/navigation';
 	import { queryParam, ssp } from 'sveltekit-search-params';
 	import { Label } from '@components/ui/label';
+	import { CardFooter, CardContent } from '@components/ui/card';
+	import {
+		FormButton,
+		FormField,
+		FormControl,
+		FormLabel,
+		FormFieldErrors
+	} from '@components/ui/form';
 
 	let formData: SuperValidated<Infer<OtpFormSchema>> = $page.data.otpForm;
 
@@ -90,13 +96,13 @@
 </div>
 
 <form method="POST" use:enhance action="?/otp">
-	<Card.Content class="space-y-2">
+	<CardContent class="space-y-2">
 		<input class="hidden" type="text" name="provider" bind:value={$fields.provider} />
-		<Form.Field {form} name="key">
-			<Form.Control let:attrs>
-				<Form.Label class="flex justify-between text-base">
+		<FormField {form} name="key">
+			<FormControl let:attrs>
+				<FormLabel class="flex justify-between text-base">
 					{selectedProvider ? 'Phone Number' : 'Email'}
-				</Form.Label>
+				</FormLabel>
 				<Input
 					class="text-base"
 					autofocus
@@ -104,22 +110,22 @@
 					type={selectedProvider ? 'text' : 'email'}
 					bind:value={$fields.key}
 				/>
-				<Form.FieldErrors class="h-[18px] text-center" />
-			</Form.Control>
-		</Form.Field>
-	</Card.Content>
-	<Card.Footer>
+				<FormFieldErrors class="h-[18px] text-center" />
+			</FormControl>
+		</FormField>
+	</CardContent>
+	<CardFooter>
 		<div class="flex w-full flex-col gap-y-2">
-			<Form.Button class="w-full" disabled={$delayed}>
+			<FormButton class="w-full" disabled={$delayed}>
 				{#if $delayed}
 					Sending OTP <LoaderCircle class="animate-spin" />
 				{:else}
 					Send OTP
 				{/if}
-			</Form.Button>
+			</FormButton>
 			<Button variant="link" href="/signup" class="text-muted-foreground">
 				No account? Create one
 			</Button>
 		</div>
-	</Card.Footer>
+	</CardFooter>
 </form>

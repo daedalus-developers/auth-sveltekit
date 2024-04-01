@@ -1,7 +1,16 @@
 <script lang="ts">
+	import {
+		AlertDialog,
+		AlertDialogAction,
+		AlertDialogCancel,
+		AlertDialogContent,
+		AlertDialogDescription,
+		AlertDialogFooter,
+		AlertDialogHeader,
+		AlertDialogTitle
+	} from '@components/ui/alert-dialog';
 	import { applyAction, enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
-	import * as AlertDialog from '@components/ui/alert-dialog';
 	import { Button } from '@components/ui/button';
 	import { toast } from 'svelte-sonner';
 
@@ -17,17 +26,17 @@
 </script>
 
 <div class="p-12">
-	<AlertDialog.Root bind:open closeOnOutsideClick={true}>
-		<AlertDialog.Content>
-			<AlertDialog.Header>
-				<AlertDialog.Title>{title}</AlertDialog.Title>
-				<AlertDialog.Description>
+	<AlertDialog bind:open closeOnOutsideClick={true}>
+		<AlertDialogContent>
+			<AlertDialogHeader>
+				<AlertDialogTitle>{title}</AlertDialogTitle>
+				<AlertDialogDescription>
 					<slot />
-				</AlertDialog.Description>
-			</AlertDialog.Header>
-			<AlertDialog.Footer>
-				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-				<AlertDialog.Action asChild>
+				</AlertDialogDescription>
+			</AlertDialogHeader>
+			<AlertDialogFooter>
+				<AlertDialogCancel>Cancel</AlertDialogCancel>
+				<AlertDialogAction asChild>
 					<form
 						method="POST"
 						{action}
@@ -58,8 +67,8 @@
 						<slot name="form" />
 						<Button type="submit" class="w-full" variant="destructive">Confirm</Button>
 					</form>
-				</AlertDialog.Action>
-			</AlertDialog.Footer>
-		</AlertDialog.Content>
-	</AlertDialog.Root>
+				</AlertDialogAction>
+			</AlertDialogFooter>
+		</AlertDialogContent>
+	</AlertDialog>
 </div>

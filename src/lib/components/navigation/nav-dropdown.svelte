@@ -1,7 +1,12 @@
 <script lang="ts">
+	import {
+		DropdownMenu,
+		DropdownMenuContent,
+		DropdownMenuItem,
+		DropdownMenuTrigger
+	} from '@components/ui/dropdown-menu';
+	import { BreadcrumbItem } from '@components/ui/breadcrumb';
 	import Link from '@components/link.svelte';
-	import * as Breadcrumb from '@components/ui/breadcrumb';
-	import * as DropdownMenu from '@components/ui/dropdown-menu';
 	import { ChevronDown } from 'lucide-svelte';
 	import type { LinkWithIcon } from '@types';
 
@@ -9,18 +14,18 @@
 	export let name: string = 'Default';
 </script>
 
-<Breadcrumb.Item>
-	<DropdownMenu.Root>
-		<DropdownMenu.Trigger class="flex items-center gap-1">
+<BreadcrumbItem>
+	<DropdownMenu>
+		<DropdownMenuTrigger class="flex items-center gap-1">
 			{name}
 			<ChevronDown class="h-4 w-4" />
-		</DropdownMenu.Trigger>
-		<DropdownMenu.Content align="start">
+		</DropdownMenuTrigger>
+		<DropdownMenuContent align="start">
 			{#each links as { href, title }}
-				<DropdownMenu.Item>
+				<DropdownMenuItem>
 					<Link {href}>{title}</Link>
-				</DropdownMenu.Item>
+				</DropdownMenuItem>
 			{/each}
-		</DropdownMenu.Content>
-	</DropdownMenu.Root>
-</Breadcrumb.Item>
+		</DropdownMenuContent>
+	</DropdownMenu>
+</BreadcrumbItem>

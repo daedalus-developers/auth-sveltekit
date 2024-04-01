@@ -1,6 +1,12 @@
 <script lang="ts">
+	import {
+		Dialog,
+		DialogContent,
+		DialogDescription,
+		DialogHeader,
+		DialogTitle
+	} from '@components/ui/dialog';
 	import { Button } from './ui/button';
-	import * as Dialog from './ui/dialog';
 
 	export let open = false;
 	export let title = 'Title';
@@ -17,16 +23,16 @@
 	{displayName}
 </Button>
 
-<Dialog.Root bind:open>
-	<Dialog.Content>
-		<Dialog.Header>
-			<Dialog.Title>
+<Dialog bind:open>
+	<DialogContent>
+		<DialogHeader>
+			<DialogTitle>
 				{title}
-			</Dialog.Title>
-			<Dialog.Description>{description}</Dialog.Description>
-		</Dialog.Header>
+			</DialogTitle>
+			<DialogDescription>{description}</DialogDescription>
+		</DialogHeader>
 		<div class="my-6">
 			<slot />
 		</div>
-	</Dialog.Content>
-</Dialog.Root>
+	</DialogContent>
+</Dialog>

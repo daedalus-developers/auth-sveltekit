@@ -1,10 +1,5 @@
 <script lang="ts">
-	import * as Card from '@components/ui/card';
-	import * as Table from '@components/ui/table';
 	import { Button } from '@components/ui/button';
-	import * as Form from '$lib/components/ui/form/index.js';
-	import * as RadioGroup from '@components/ui/radio-group';
-	import * as Select from '@components/ui/select';
 	import { onBoardingStepStore as store } from '@stores';
 	import { cn, lgScreen } from '@utils';
 	import { page } from '$app/stores';
@@ -18,6 +13,32 @@
 	import { toast } from 'svelte-sonner';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { TIERS_FEATURES } from '$lib/constants';
+	import { FormField, FormControl, FormLabel, FormButton } from '$lib/components/ui/form';
+	import {
+		Select,
+		SelectValue,
+		SelectTrigger,
+		SelectContent,
+		SelectItem
+	} from '@components/ui/select';
+	import { RadioGroup, RadioGroupItem } from '@components/ui/radio-group';
+	import {
+		Card,
+		CardHeader,
+		CardTitle,
+		CardDescription,
+		CardContent,
+		CardFooter
+	} from '@components/ui/card';
+	import {
+		Table,
+		TableBody,
+		TableHead,
+		TableHeader,
+		TableRow,
+		TableCell,
+		TableCaption
+	} from '@components/ui/table';
 
 	$: pathname = $page.url.pathname;
 
@@ -61,27 +82,27 @@
 		: undefined;
 </script>
 
-<Card.Root class="border-0">
+<Card class="border-0">
 	<form method="POST" use:enhance action="/settings?/updateTierSubscription">
-		<Card.Header class="pb-2">
-			<Card.Title>Tier</Card.Title>
-			<Card.Description class="flex flex-col gap-y-2">
+		<CardHeader class="pb-2">
+			<CardTitle>Tier</CardTitle>
+			<CardDescription class="flex flex-col gap-y-2">
 				<p>Select a Subscription Plan</p>
 				<DisclaimerAlert
 					title="This is only a demo"
 					description="Everything you do here is not gonna be persisted on our database, this will only be stored in the cookies"
 				/>
-			</Card.Description>
-		</Card.Header>
-		<Card.Content class="grid grid-cols-1 md:gap-6 lg:grid-cols-4">
-			<Form.Field {form} name="tier">
-				<RadioGroup.Root
+			</CardDescription>
+		</CardHeader>
+		<CardContent class="grid grid-cols-1 md:gap-6 lg:grid-cols-4">
+			<FormField {form} name="tier">
+				<RadioGroup
 					bind:value={$formData.tier}
 					class="col-span-1 grid h-full w-full grid-cols-3 items-center justify-between lg:grid-cols-1"
 				>
 					{#each TIERS as tier}
-						<Form.Control let:attrs>
-							<Form.Label
+						<FormControl let:attrs>
+							<FormLabel
 								class="flex flex-col items-center justify-between rounded-md 
               border-2 border-muted bg-popover p-4  hover:bg-accent hover:text-accent-foreground 
               [&:has([data-state=checked])]:border-primary 
@@ -91,16 +112,16 @@
 								<p class="dark:text-white">
 									{tier}
 								</p>
-								<RadioGroup.Item value={tier} {...attrs} class="sr-only" />
-							</Form.Label>
-						</Form.Control>
+								<RadioGroupItem value={tier} {...attrs} class="sr-only" />
+							</FormLabel>
+						</FormControl>
 					{/each}
-				</RadioGroup.Root>
-			</Form.Field>
+				</RadioGroup>
+			</FormField>
 			<div class="col-span-4 md:col-span-3">
 				<ScrollArea orientation="both" class="py-4">
-					<Table.Root>
-						<Table.Caption
+					<Table>
+						<TableCaption
 							><div>
 								<p class="text-lg">
 									For more details check our pricing and features <Button
@@ -108,14 +129,14 @@
 										href="/pricing">here</Button
 									>
 								</p>
-							</div></Table.Caption
+							</div></TableCaption
 						>
-						<Table.Header class="md:text-xl">
-							<Table.Row>
-								<Table.Head>Feature</Table.Head>
+						<TableHeader class="md:text-xl">
+							<TableRow>
+								<TableHead>Feature</TableHead>
 								{#if $lgScreen}
 									{#each TIERS_FEATURES as tier (tier.value)}
-										<Table.Head
+										<TableHead
 											class={cn(
 												`md:text-xl`,
 												$formData.tier === tier.value ? 'md:bg-indigo-200 md:text-black' : ''
@@ -123,24 +144,24 @@
 										>
 											{tier.value}
 											<IconTierDiamond class="inline-flex" />
-										</Table.Head>
+										</TableHead>
 									{/each}
 								{:else}
-									<Table.Head class="md:text-xl">{$formData.tier}</Table.Head>
+									<TableHead class="md:text-xl">{$formData.tier}</TableHead>
 								{/if}
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
 							{#each FEATURES as feature}
-								<Table.Row>
-									<Table.Cell class="line-clamp-1">{feature}</Table.Cell>
+								<TableRow>
+									<TableCell class="line-clamp-1">{feature}</TableCell>
 									{#each TIERS_FEATURES as tier}
 										{@const name = tier.features.find((f) => f.name === feature)?.name}
 										{@const limit = tier.features.find((f) => f.name === feature)?.limit}
 										{@const frequency = tier.features.find((f) => f.name === feature)?.frequency}
 										{#if $lgScreen}
 											{#if name}
-												<Table.Cell
+												<TableCell
 													class={cn(
 														$formData.tier === tier.value ? 'md:bg-indigo-200 md:text-black' : ''
 													)}
@@ -151,76 +172,76 @@
 													{#if frequency}
 														{`/  ${frequency}`}
 													{/if}
-												</Table.Cell>
+												</TableCell>
 											{/if}
 										{:else if tier.value === $formData.tier}
 											{#if name}
-												<Table.Cell>
+												<TableCell>
 													{#if limit}
 														{limit > 999 ? 'Unlimited' : limit}
 													{/if}
 													{#if frequency}
 														{`/  ${frequency}`}
 													{/if}
-												</Table.Cell>
+												</TableCell>
 											{/if}
 										{/if}
 									{/each}
-								</Table.Row>
+								</TableRow>
 							{/each}
-							<Table.Row class="text-lg">
-								<Table.Cell>Price</Table.Cell>
+							<TableRow class="text-lg">
+								<TableCell>Price</TableCell>
 								{#each TIERS_FEATURES as tier}
 									{#if $lgScreen}
-										<Table.Cell
+										<TableCell
 											class={cn($formData.tier === tier.value ? 'bg-indigo-200 text-black' : '')}
 										>
 											{tier.price === 0 ? 'Free' : tier.price ? `${tier.price}$` : '$$$'}
-										</Table.Cell>
+										</TableCell>
 									{:else if tier.value === $formData.tier}
-										<Table.Cell>
+										<TableCell>
 											{tier.price === 0 ? 'Free' : tier.price ? `${tier.price}$` : '$$$'}
-										</Table.Cell>
+										</TableCell>
 									{/if}
 								{/each}
-							</Table.Row>
-						</Table.Body>
-					</Table.Root>
+							</TableRow>
+						</TableBody>
+					</Table>
 				</ScrollArea>
 			</div>
 			<div class="col-span-4 justify-end">
-				<Form.Field {form} name="occurence">
-					<Form.Control let:attrs>
-						<Form.Label>Billing Cyle</Form.Label>
-						<Select.Root
+				<FormField {form} name="occurence">
+					<FormControl let:attrs>
+						<FormLabel>Billing Cyle</FormLabel>
+						<Select
 							selected={selectedOccurence}
 							onSelectedChange={(v) => {
 								v && ($formData.occurence = v.value);
 							}}
 						>
-							<Select.Trigger {...attrs}>
-								<Select.Value placeholder="Month" />
-							</Select.Trigger>
-							<Select.Content>
+							<SelectTrigger {...attrs}>
+								<SelectValue placeholder="Month" />
+							</SelectTrigger>
+							<SelectContent>
 								{#each PAYMENT_OCCURENCE as occurence}
-									<Select.Item value={occurence} label={occurence}>
+									<SelectItem value={occurence} label={occurence}>
 										{occurence}
-									</Select.Item>
+									</SelectItem>
 								{/each}
-							</Select.Content>
-						</Select.Root>
+							</SelectContent>
+						</Select>
 						<input hidden bind:value={$formData.occurence} name={attrs.name} />
-					</Form.Control>
-				</Form.Field>
+					</FormControl>
+				</FormField>
 			</div>
-		</Card.Content>
-		<Card.Footer>
-			<Form.Button disabled={disableSubmit} class="w-full"
+		</CardContent>
+		<CardFooter>
+			<FormButton disabled={disableSubmit} class="w-full"
 				>{pathname.includes('onboarding') ? 'Continue' : 'Update'}
-			</Form.Button>
-		</Card.Footer>
+			</FormButton>
+		</CardFooter>
 	</form>
-</Card.Root>
+</Card>
 
 {#if pathname.includes('onboarding')}
 	<div class="flex justify-end py-2">

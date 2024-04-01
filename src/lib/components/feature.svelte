@@ -1,24 +1,24 @@
 <script lang="ts">
-	import { Lock } from 'lucide-svelte';
-	import * as Card from './ui/card';
+	import { Card, CardContent, CardHeader, CardTitle } from '@components/ui/card';
+	import Lock from 'lucide-svelte/icons/lock';
 
 	export let title: string = 'Features';
 </script>
 
-<Card.Root
+<Card
 	class="h-full w-full border-transparent bg-opacity-75 group-hover:scale-y-105 group-hover:bg-opacity-100 group-hover:shadow-2xl"
 >
-	<Card.Header>
-		<Card.Title>
+	<CardHeader>
+		<CardTitle>
 			<p class="flex">
 				<slot name="icon">
 					<Lock />
 				</slot>
 				<span class="ml-5 group-hover:text-teal-400">{title}</span>
 			</p>
-		</Card.Title>
-	</Card.Header>
-	<Card.Content>
+		</CardTitle>
+	</CardHeader>
+	<CardContent>
 		<p class="md:line-clamp-2 md:group-hover:line-clamp-none">
 			<slot>
 				Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, modi iste ratione dolorem,
@@ -26,5 +26,5 @@
 				ipsam quas debitis!
 			</slot>
 		</p>
-	</Card.Content>
-</Card.Root>
+	</CardContent>
+</Card>
