@@ -1,20 +1,27 @@
 <script lang="ts">
-	import * as Accordion from '@components/ui/accordion';
-	import * as DropdownMenu from '@components/ui/dropdown-menu';
-	import * as Form from '@components/ui/form';
-	import { Copy, SquareChevronDown, TabletSmartphone } from 'lucide-svelte';
+	import { AccordionContent, AccordionItem, AccordionTrigger } from '@components/ui/accordion';
+	import {
+		DropdownMenu,
+		DropdownMenuContent,
+		DropdownMenuItem,
+		DropdownMenuTrigger
+	} from '@components/ui/dropdown-menu';
+	import { FormField, FormFieldErrors, FormControl, FormLabel } from '@components/ui/form';
+	// import Copy from 'lucide-svelte/icons/copy'
+	// import { copy, type CopyDetail } from '@svelte-put/copy';
+	import SquareChevronDown from 'lucide-svelte/icons/square-chevron-down';
+	import TabletSmartphone from 'lucide-svelte/icons/tablet-smartphone';
 	import { Button } from '@components/ui/button';
 	import { qr } from '@svelte-put/qr/svg';
 	import { Input } from '@components/ui/input';
 	import fingerprint from '@components/assets/fingerprint.svg';
-	import InfoDialog from '@components/info-dialog.svelte';
+	import { InfoDialog } from '@components';
 	import { toast } from 'svelte-sonner';
 	import { type TotpSetupFormSchema } from '@types';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { SetupApp2FAButton } from '@components';
-	import { copy, type CopyDetail } from '@svelte-put/copy';
 
 	export let active2FASectionValue: string | string[] | undefined = undefined;
 
@@ -51,7 +58,7 @@
 	const { form: fields, enhance } = form;
 </script>
 
-<Accordion.Item value="totp" class="py-2">
+<AccordionItem value="totp" class="py-2">
 	<div class="flex items-center justify-between">
 		<p class="flex">
 			<TabletSmartphone /> <span class="ml-2"> Authenticator App</span>
@@ -59,10 +66,10 @@
 				<span class="ml-2 text-green-500">(enabled)</span>
 			{/if}
 		</p>
-		<Accordion.Trigger asChild class="ml-auto" showIcon={false}>
+		<AccordionTrigger asChild class="ml-auto" showIcon={false}>
 			{#if $page.data.user.twoFactorEnabled}
-				<DropdownMenu.Root>
-					<DropdownMenu.Trigger asChild let:builder>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild let:builder>
 						<Button
 							builders={[builder]}
 							variant="ghost"
@@ -76,9 +83,9 @@
 								<SquareChevronDown class="h-4 w-4" />
 							{/if}
 						</Button>
-					</DropdownMenu.Trigger>
-					<DropdownMenu.Content class="justify-center">
-						<DropdownMenu.Item>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent class="justify-center">
+						<DropdownMenuItem>
 							<SetupApp2FAButton
 								variant="ghost"
 								disabled={active2FASectionValue === 'totp'}
@@ -89,8 +96,8 @@
 							>
 								Edit
 							</SetupApp2FAButton>
-						</DropdownMenu.Item>
-						<DropdownMenu.Item>
+						</DropdownMenuItem>
+						<DropdownMenuItem>
 							<Button
 								variant="ghost"
 								size="sm"
@@ -101,9 +108,9 @@
 							>
 								Disable
 							</Button>
-						</DropdownMenu.Item>
-					</DropdownMenu.Content>
-				</DropdownMenu.Root>
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			{:else}
 				<SetupApp2FAButton
 					disabled={active2FASectionValue === 'totp'}
@@ -115,9 +122,9 @@
 					Enable
 				</SetupApp2FAButton>
 			{/if}
-		</Accordion.Trigger>
+		</AccordionTrigger>
 	</div>
-	<Accordion.Content class="px-2 py-4">
+	<AccordionContent class="px-2 py-4">
 		<p>
 			Authenticator apps and browser extensions are supported e.g Bitwarden, 1password, Authy,
 			Google Authenticator, etc.
@@ -145,9 +152,9 @@
 		</p>
 
 		<form action="?/totpVerify" class="w-1/2 space-y-3.5" method="POST" use:enhance>
-			<Form.Field {form} name="code">
-				<Form.Control let:attrs>
-					<Form.Label>Code</Form.Label>
+			<FormField {form} name="code">
+				<FormControl let:attrs>
+					<FormLabel>Code</FormLabel>
 					<Input
 						{...attrs}
 						type="string"
@@ -156,9 +163,9 @@
 						placeholder="XXXXXXX"
 						bind:value={$fields.code}
 					/>
-					<Form.FieldErrors />
-				</Form.Control>
-			</Form.Field>
+					<FormFieldErrors />
+				</FormControl>
+			</FormField>
 			<div class="grid w-1/2 grid-cols-2 gap-2">
 				<Button type="submit" size="sm">Save</Button>
 				<SetupApp2FAButton
@@ -172,5 +179,5 @@
 				</SetupApp2FAButton>
 			</div>
 		</form>
-	</Accordion.Content>
-</Accordion.Item>
+	</AccordionContent>
+</AccordionItem>

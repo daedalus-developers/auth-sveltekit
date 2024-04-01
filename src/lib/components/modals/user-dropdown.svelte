@@ -10,9 +10,9 @@
 		DropdownMenuShortcut
 	} from '@components/ui/dropdown-menu';
 	import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
-	import LightSwitch from './light-switch.svelte';
+	import LightSwitch from '@components/light-switch.svelte';
 	import LogoutFormDialog from './logout-form-dialog.svelte';
-	import { Button } from './ui/button';
+	import { Button } from '@components/ui/button';
 	import { goto } from '$app/navigation';
 	import { lgScreen } from '@utils';
 	import { page } from '$app/stores';

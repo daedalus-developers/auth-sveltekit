@@ -6,7 +6,7 @@
 		DialogHeader,
 		DialogTitle
 	} from '@components/ui/dialog';
-	import { Button } from './ui/button';
+	import { Button } from '@components/ui/button';
 
 	export let open = false;
 	export let title = 'Title';

@@ -7,10 +7,10 @@
 		DropdownMenuSeparator,
 		DropdownMenuTrigger
 	} from '@components/ui/dropdown-menu';
-	import LightSwitch from './light-switch.svelte';
+	import LightSwitch from '@components/light-switch.svelte';
 	import LogoutFormDialog from './logout-form-dialog.svelte';
-	import { Button } from './ui/button';
-	import Link from './link.svelte';
+	import { Button } from '@components/ui/button';
+	import Link from '@components/link.svelte';
 	import { navLinks } from '$lib/constants';
 	import { Menu } from 'lucide-svelte';
 
