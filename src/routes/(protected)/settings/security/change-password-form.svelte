@@ -1,9 +1,24 @@
 <script lang="ts">
+	import {
+		FormButton,
+		FormControl,
+		FormField,
+		FormFieldErrors,
+		FormLabel
+	} from '@components/ui/form';
+	import {
+		AlertDialog,
+		AlertDialogAction,
+		AlertDialogCancel,
+		AlertDialogContent,
+		AlertDialogDescription,
+		AlertDialogFooter,
+		AlertDialogHeader,
+		AlertDialogTitle
+	} from '@components/ui/alert-dialog';
 	import { enhance as forgotPasswordEnhance } from '$app/forms';
-	import * as AlertDialog from '@components/ui/alert-dialog';
 	import PasswordDescription from '@components/password-description.svelte';
 	import { Button } from '@components/ui/button';
-	import * as Form from '@components/ui/form';
 	import { Input } from '@components/ui/input';
 	import { changePasswordSchema, type ChangePasswordFormSchema } from '@types';
 	import { LoaderCircle } from 'lucide-svelte';
@@ -41,26 +56,26 @@
 </script>
 
 <form method="POST" class="space-y-3.5 md:w-1/2" use:enhance action="?/changePassword">
-	<Form.Field {form} name="oldPasswod">
-		<Form.Control let:attrs>
-			<Form.Label>Old Password</Form.Label>
+	<FormField {form} name="oldPasswod">
+		<FormControl let:attrs>
+			<FormLabel>Old Password</FormLabel>
 			<Input {...attrs} type="password" bind:value={$field.oldPasswod} />
-		</Form.Control>
-	</Form.Field>
-	<Form.Field {form} name="password">
-		<Form.Control let:attrs>
-			<Form.Label>Password</Form.Label>
+		</FormControl>
+	</FormField>
+	<FormField {form} name="password">
+		<FormControl let:attrs>
+			<FormLabel>Password</FormLabel>
 			<Input {...attrs} type="password" bind:value={$field.password} />
-			<Form.FieldErrors />
-		</Form.Control>
-	</Form.Field>
-	<Form.Field {form} class="mb-6" name="passwordConfirm">
-		<Form.Control let:attrs>
-			<Form.Label>Password Confirm</Form.Label>
+			<FormFieldErrors />
+		</FormControl>
+	</FormField>
+	<FormField {form} class="mb-6" name="passwordConfirm">
+		<FormControl let:attrs>
+			<FormLabel>Password Confirm</FormLabel>
 			<Input {...attrs} type="password" bind:value={$field.passwordConfirm} />
-			<Form.FieldErrors />
-		</Form.Control>
-	</Form.Field>
+			<FormFieldErrors />
+		</FormControl>
+	</FormField>
 	<PasswordDescription />
 	<Button
 		variant="link"
@@ -70,32 +85,32 @@
 		Forgot password?
 	</Button>
 	<div class="flex w-full flex-col gap-y-2">
-		<Form.Button class="w-full" disabled={$delayed || !$tainted}>
+		<FormButton class="w-full" disabled={$delayed || !$tainted}>
 			{#if $delayed}
 				Updating password...<LoaderCircle class="animate-spin" />
 			{:else}
 				Change Password
 			{/if}
-		</Form.Button>
+		</FormButton>
 	</div>
 </form>
 
-<AlertDialog.Root bind:open={forgotPasswordDialogOpen} closeOnOutsideClick={true}>
-	<AlertDialog.Content>
-		<AlertDialog.Header>
-			<AlertDialog.Title>You are about to invalidate this session</AlertDialog.Title>
-			<AlertDialog.Description>
+<AlertDialog bind:open={forgotPasswordDialogOpen} closeOnOutsideClick={true}>
+	<AlertDialogContent>
+		<AlertDialogHeader>
+			<AlertDialogTitle>You are about to invalidate this session</AlertDialogTitle>
+			<AlertDialogDescription>
 				This action invalidates your current session and will redirect you to the reset password
 				page.
-			</AlertDialog.Description>
-		</AlertDialog.Header>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action asChild>
+			</AlertDialogDescription>
+		</AlertDialogHeader>
+		<AlertDialogFooter>
+			<AlertDialogCancel>Cancel</AlertDialogCancel>
+			<AlertDialogAction asChild>
 				<form method="POST" action="?/forgotPassword" use:forgotPasswordEnhance>
 					<Button type="submit" class="w-full" variant="destructive">Confirm</Button>
 				</form>
-			</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+			</AlertDialogAction>
+		</AlertDialogFooter>
+	</AlertDialogContent>
+</AlertDialog>

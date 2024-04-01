@@ -1,6 +1,12 @@
 <script lang="ts">
-	import * as Card from '@components/ui/card';
-	import * as Form from '@components/ui/form';
+	import { Card, CardContent, CardFooter, CardHeader } from '@components/ui/card';
+	import {
+		FormField,
+		FormControl,
+		FormLabel,
+		FormFieldErrors,
+		FormButton
+	} from '@components/ui/form';
 	import { Input } from '@components/ui/input';
 	import { UndrawResetPassword } from '@components';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -53,37 +59,37 @@
 		<UndrawResetPassword class="-my-36 w-full md:my-0 md:block md:w-[50%]" />
 	</div>
 	<div class="flex">
-		<Card.Root class="w-full border-transparent shadow-none">
-			<Card.Header class="text-center">
+		<Card class="w-full border-transparent shadow-none">
+			<CardHeader class="text-center">
 				<span class="text-2xl">Reset your password.</span>
 				{#if message}
 					<span class={cn(message.includes('tried') ? 'text-destructive' : 'text-green-500')}
 						>{message}</span
 					>
 				{/if}
-			</Card.Header>
+			</CardHeader>
 			<form method="POST" use:enhance>
-				<Card.Content class="space-y-2">
-					<Form.Field {form} name="email">
-						<Form.Control let:attrs>
-							<Form.Label>Email</Form.Label>
+				<CardContent class="space-y-2">
+					<FormField {form} name="email">
+						<FormControl let:attrs>
+							<FormLabel>Email</FormLabel>
 							<Input {...attrs} type="text" bind:value={$field.email} />
-							<Form.FieldErrors />
-						</Form.Control>
-					</Form.Field>
-				</Card.Content>
-				<Card.Footer>
+							<FormFieldErrors />
+						</FormControl>
+					</FormField>
+				</CardContent>
+				<CardFooter>
 					<div class="flex w-full flex-col gap-y-2">
-						<Form.Button class="w-full" disabled={$delayed}>
+						<FormButton class="w-full" disabled={$delayed}>
 							{#if $delayed}
 								Sending verication code <LoaderCircle class="animate-spin" />
 							{:else}
 								Send Verification Code
 							{/if}
-						</Form.Button>
+						</FormButton>
 					</div>
-				</Card.Footer>
+				</CardFooter>
 			</form>
-		</Card.Root>
+		</Card>
 	</div>
 </div>

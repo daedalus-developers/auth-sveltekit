@@ -1,8 +1,16 @@
 <script lang="ts">
-	import * as Accordion from '@components/ui/accordion';
-	import * as Card from '@components/ui/card';
+	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@components/ui/card';
+	import {
+		Accordion,
+		AccordionContent,
+		AccordionItem,
+		AccordionTrigger
+	} from '@components/ui/accordion';
 	import { TotpActionModal } from '@components';
-	import { Mails, Smartphone, Vibrate } from 'lucide-svelte';
+	import Mails from 'lucide-svelte/icons/mails';
+	import Smartphone from 'lucide-svelte/icons/smartphone';
+	import Vibrate from 'lucide-svelte/icons/vibrate';
+
 	import TotpSetup from './totp-setup.svelte';
 
 	let active2FASectionValue: string | string[] | undefined = undefined;
@@ -11,54 +19,54 @@
 </script>
 
 <div class="my-4 space-y-4">
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>Preferred 2FA method</Card.Title>
-			<Card.Description>
+	<Card>
+		<CardHeader>
+			<CardTitle>Preferred 2FA method</CardTitle>
+			<CardDescription>
 				Set preferred method to use tw-factor authentication when signing into our Platform.
-			</Card.Description>
-		</Card.Header>
-		<Card.Content></Card.Content>
-	</Card.Root>
+			</CardDescription>
+		</CardHeader>
+		<CardContent></CardContent>
+	</Card>
 
-	<Card.Root>
-		<Card.Header class="bg-gray-100 dark:bg-gray-700">
-			<Card.Title class="-my-2">Two-factor methods</Card.Title>
-			<Card.Description class="-m-y-1">Only 2FA is currently supported.</Card.Description>
-		</Card.Header>
-		<Card.Content class="my-4">
-			<Accordion.Root class="w-full space-y-3" bind:value={active2FASectionValue}>
+	<Card>
+		<CardHeader class="bg-gray-100 dark:bg-gray-700">
+			<CardTitle class="-my-2">Two-factor methods</CardTitle>
+			<CardDescription class="-m-y-1">Only 2FA is currently supported.</CardDescription>
+		</CardHeader>
+		<CardContent class="my-4">
+			<Accordion class="w-full space-y-3" bind:value={active2FASectionValue}>
 				<TotpSetup
 					bind:showSetupActionDialog={showSetupAppActionDialog}
 					bind:active2FASectionValue
 				/>
-				<Accordion.Item value="email-otp">
-					<Accordion.Trigger class="hover:no-underline">
+				<AccordionItem value="email-otp">
+					<AccordionTrigger class="hover:no-underline">
 						<p class="flex gap-x-2">
 							<Mails /> Email<span class="text-green-500">(enabled)</span>
 						</p>
-					</Accordion.Trigger>
-					<Accordion.Content>Upon First Login this was enabled by default.</Accordion.Content>
-				</Accordion.Item>
-				<Accordion.Item value="sms-otp">
-					<Accordion.Trigger class="hover:no-underline">
+					</AccordionTrigger>
+					<AccordionContent>Upon First Login this was enabled by default.</AccordionContent>
+				</AccordionItem>
+				<AccordionItem value="sms-otp">
+					<AccordionTrigger class="hover:no-underline">
 						<p class="flex gap-x-2">
 							<Smartphone /> SMS<span class="text-muted-foreground">(check roadmap)</span>
 						</p>
-					</Accordion.Trigger>
-					<Accordion.Content>wip</Accordion.Content>
-				</Accordion.Item>
-				<Accordion.Item value="mobile-2fa">
-					<Accordion.Trigger class="hover:no-underline">
+					</AccordionTrigger>
+					<AccordionContent>wip</AccordionContent>
+				</AccordionItem>
+				<AccordionItem value="mobile-2fa">
+					<AccordionTrigger class="hover:no-underline">
 						<p class="flex gap-x-2">
 							<Vibrate /> AuthKit Mobile<span class="text-muted-foreground">(check roadmap)</span>
 						</p>
-					</Accordion.Trigger>
-					<Accordion.Content>wip</Accordion.Content>
-				</Accordion.Item>
-			</Accordion.Root>
-		</Card.Content>
-	</Card.Root>
+					</AccordionTrigger>
+					<AccordionContent>wip</AccordionContent>
+				</AccordionItem>
+			</Accordion>
+		</CardContent>
+	</Card>
 </div>
 
 <TotpActionModal

@@ -1,5 +1,12 @@
 <script lang="ts">
-	import * as Breadcrumb from '@components/ui/breadcrumb';
+	import {
+		Breadcrumb,
+		BreadcrumbItem,
+		BreadcrumbLink,
+		BreadcrumbList,
+		BreadcrumbPage,
+		BreadcrumbSeparator
+	} from '@components/ui/breadcrumb';
 	import { lgScreen } from '@utils';
 	import { page } from '$app/stores';
 	import NavDropdown from './nav-dropdown.svelte';
@@ -7,20 +14,20 @@
 	import { transformPathname } from '@utils';
 </script>
 
-<Breadcrumb.Root class="{$lgScreen ? 'container' : 'mx-4'} py-4">
-	<Breadcrumb.List>
-		<Breadcrumb.Item>
-			<Breadcrumb.Link href="/">Home</Breadcrumb.Link>
-		</Breadcrumb.Item>
+<Breadcrumb class="{$lgScreen ? 'container' : 'mx-4'} py-4">
+	<BreadcrumbList>
+		<BreadcrumbItem>
+			<BreadcrumbLink href="/">Home</BreadcrumbLink>
+		</BreadcrumbItem>
 		{#if $page.url.pathname.includes('settings')}
-			<Breadcrumb.Separator />
+			<BreadcrumbSeparator />
 			<NavDropdown name="Settings" links={settingsLinks} />
 		{/if}
-		<Breadcrumb.Separator />
-		<Breadcrumb.Item>
-			<Breadcrumb.Page class="font-semibold tracking-wide">
+		<BreadcrumbSeparator />
+		<BreadcrumbItem>
+			<BreadcrumbPage class="font-semibold tracking-wide">
 				{transformPathname($page.url.pathname)}
-			</Breadcrumb.Page>
-		</Breadcrumb.Item>
-	</Breadcrumb.List>
-</Breadcrumb.Root>
+			</BreadcrumbPage>
+		</BreadcrumbItem>
+	</BreadcrumbList>
+</Breadcrumb>

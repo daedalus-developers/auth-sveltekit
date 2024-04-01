@@ -1,7 +1,10 @@
 <script>
 	import Feature from '@components/feature.svelte';
 	import { DotsBackground } from '@components/ui/backgrounds';
-	import { KeySquare, RectangleEllipsis, ShieldEllipsis } from 'lucide-svelte';
+	import KeySquare from 'lucide-svelte/icons/key-square';
+	import RectangleEllipsis from 'lucide-svelte/icons/rectangle-ellipsis';
+	import ShieldEllipsis from 'lucide-svelte/icons/shield-ellipsis';
+
 	import { lgScreen } from '@utils';
 </script>
 

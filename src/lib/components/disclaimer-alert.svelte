@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert';
 	import OctagonAlert from 'lucide-svelte/icons/octagon-alert';
-	import * as Alert from '@components/ui/alert';
 	import Button from './ui/button/button.svelte';
 	import X from 'lucide-svelte/icons/x';
 
@@ -11,12 +11,12 @@
 </script>
 
 {#if !discard}
-	<Alert.Root>
+	<Alert>
 		<OctagonAlert />
-		<Alert.Title>{title}</Alert.Title>
-		<Alert.Description>{description}</Alert.Description>
+		<AlertTitle>{title}</AlertTitle>
+		<AlertDescription>{description}</AlertDescription>
 		<Button on:click={() => (discard = true)} size="sm" variant="link" class="-m-4 ml-auto flex">
 			<X class="inline-flex h-4 w-4" />
 		</Button>
-	</Alert.Root>
+	</Alert>
 {/if}

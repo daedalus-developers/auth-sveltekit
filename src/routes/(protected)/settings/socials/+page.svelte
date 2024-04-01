@@ -1,8 +1,17 @@
 <script lang="ts">
+	import {
+		AlertDialog,
+		AlertDialogContent,
+		AlertDialogAction,
+		AlertDialogFooter,
+		AlertDialogHeader,
+		AlertDialogCancel,
+		AlertDialogTitle,
+		AlertDialogDescription
+	} from '@components/ui/alert-dialog';
 	import { OAUTH_PROVIDERS, type OAuthProviderWithIcon, type OAuthProviders } from '@types';
 	import Provider from './provider.svelte';
 	import { Separator } from '@components/ui/separator';
-	import * as AlertDialog from '@components/ui/alert-dialog';
 	import { Button } from '@components/ui/button';
 	import { capitalize } from '@utils';
 	import { superForm } from 'sveltekit-superforms';
@@ -97,17 +106,17 @@
 	</div>
 </div>
 
-<AlertDialog.Root bind:open closeOnOutsideClick={true}>
-	<AlertDialog.Content>
-		<AlertDialog.Header>
-			<AlertDialog.Title>{dialogTitle}</AlertDialog.Title>
-			<AlertDialog.Description>
+<AlertDialog bind:open closeOnOutsideClick={true}>
+	<AlertDialogContent>
+		<AlertDialogHeader>
+			<AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
+			<AlertDialogDescription>
 				{dialogDescription}
-			</AlertDialog.Description>
-		</AlertDialog.Header>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action asChild>
+			</AlertDialogDescription>
+		</AlertDialogHeader>
+		<AlertDialogFooter>
+			<AlertDialogCancel>Cancel</AlertDialogCancel>
+			<AlertDialogAction asChild>
 				{#if $delayed || $navigating}
 					<LoaderCircle class="h-10 w-10 animate-spin" />
 				{:else if action === 'unlink'}
@@ -123,7 +132,7 @@
 						}}>Continue</Button
 					>
 				{/if}
-			</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+			</AlertDialogAction>
+		</AlertDialogFooter>
+	</AlertDialogContent>
+</AlertDialog>

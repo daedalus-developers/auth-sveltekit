@@ -1,15 +1,22 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import * as Avatar from '@components/ui/avatar';
 	import { Input } from '@components/ui/input';
 	import { Textarea } from '@components/ui/textarea';
-	import * as Form from '@components/ui/form';
 	import type { AccountFormSchema } from '@types';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { toast } from 'svelte-sonner';
 	import { onBoardingStepStore as store } from '@stores';
 	import { onMount } from 'svelte';
 	import { Button } from '@components/ui/button';
+	import {
+		FormField,
+		FormControl,
+		FormLabel,
+		FormFieldErrors,
+		FormDescription,
+		FormButton
+	} from '@components/ui/form';
+	import { Avatar, AvatarImage, AvatarFallback } from '@components/ui/avatar';
 
 	let data: SuperValidated<Infer<AccountFormSchema>> = $page.data.accountForm;
 	export { data as form };
@@ -92,51 +99,51 @@
 	use:enhance
 >
 	<div class="col-span-2 justify-center md:col-span-1">
-		<Avatar.Root class="mx-auto flex h-[150px] w-[150px] md:h-[300px] md:w-[300px]">
-			<Avatar.Image src={avatar} alt={$page.data.user.email} />
-			<Avatar.Fallback class="text-6xl md:text-9xl">{initials}</Avatar.Fallback>
-		</Avatar.Root>
+		<Avatar class="mx-auto flex h-[150px] w-[150px] md:h-[300px] md:w-[300px]">
+			<AvatarImage src={avatar} alt={$page.data.user.email} />
+			<AvatarFallback class="text-6xl md:text-9xl">{initials}</AvatarFallback>
+		</Avatar>
 
-		<Form.Field {form} name="avatar">
-			<Form.Control let:attrs>
-				<Form.Label>Avatar</Form.Label>
+		<FormField {form} name="avatar">
+			<FormControl let:attrs>
+				<FormLabel>Avatar</FormLabel>
 				<Input {...attrs} type="file" on:change={(event) => onAvatarChange(event)} />
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
+			</FormControl>
+			<FormFieldErrors />
+		</FormField>
 	</div>
 
 	<div class="col-span-2 md:col-span-1 md:flex md:flex-col md:justify-between">
-		<Form.Field {form} name="username">
-			<Form.Control let:attrs>
-				<Form.Label>Username</Form.Label>
+		<FormField {form} name="username">
+			<FormControl let:attrs>
+				<FormLabel>Username</FormLabel>
 				<Input {...attrs} placeholder="jwick1543" bind:value={$formData.username} />
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
+			</FormControl>
+			<FormFieldErrors />
+		</FormField>
 
-		<Form.Field {form} name="name">
-			<Form.Control let:attrs>
-				<Form.Label>Name</Form.Label>
+		<FormField {form} name="name">
+			<FormControl let:attrs>
+				<FormLabel>Name</FormLabel>
 				<Input {...attrs} placeholder="John Wick" bind:value={$formData.name} />
-			</Form.Control>
-			<Form.Description>Nickname, or your real name.</Form.Description>
-			<Form.FieldErrors />
-		</Form.Field>
+			</FormControl>
+			<FormDescription>Nickname, or your real name.</FormDescription>
+			<FormFieldErrors />
+		</FormField>
 
-		<Form.Field {form} name="bio">
-			<Form.Control let:attrs>
-				<Form.Label>Bio</Form.Label>
+		<FormField {form} name="bio">
+			<FormControl let:attrs>
+				<FormLabel>Bio</FormLabel>
 				<Textarea
 					{...attrs}
 					placeholder="Tell us a little bit about yourself"
 					bind:value={$formData.bio}
 				/>
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
+			</FormControl>
+			<FormFieldErrors />
+		</FormField>
 	</div>
-	<Form.Button type="submit" class="col-span-2 w-full" disabled={disableSubmit}>Update</Form.Button>
+	<FormButton type="submit" class="col-span-2 w-full" disabled={disableSubmit}>Update</FormButton>
 </form>
 
 {#if pathname.includes('onboarding')}

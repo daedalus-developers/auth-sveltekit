@@ -1,19 +1,25 @@
 <script lang="ts">
-	import * as Dialog from '@components/ui/dialog';
+	import {
+		Dialog,
+		DialogContent,
+		DialogDescription,
+		DialogHeader,
+		DialogTitle
+	} from '@components/ui/dialog';
 
 	export let open = false;
 </script>
 
-<Dialog.Root bind:open>
-	<Dialog.Content>
-		<Dialog.Header>
-			<Dialog.Title>
+<Dialog bind:open>
+	<DialogContent>
+		<DialogHeader>
+			<DialogTitle>
 				<h2 class="text-center text-2xl font-bold">Onboarding</h2>
-			</Dialog.Title>
-			<Dialog.Description>
+			</DialogTitle>
+			<DialogDescription>
 				<p>This is an onboarding modal</p>
-			</Dialog.Description>
-		</Dialog.Header>
+			</DialogDescription>
+		</DialogHeader>
 		Form goes here
-	</Dialog.Content>
-</Dialog.Root>
+	</DialogContent>
+</Dialog>

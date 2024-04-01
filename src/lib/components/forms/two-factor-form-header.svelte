@@ -3,9 +3,12 @@
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
 	import { Button } from '@components/ui/button';
-	import { KeySquare, MailCheck, RectangleEllipsis, Smartphone } from 'lucide-svelte';
 	import { replaceState } from '$app/navigation';
 	import { CountdownTimer } from '@components';
+	import MailCheck from 'lucide-svelte/icons/mail-check';
+	import KeySquare from 'lucide-svelte/icons/key-square';
+	import Smartphone from 'lucide-svelte/icons/smartphone';
+	import RectangleEllipsis from 'lucide-svelte/icons/rectangle-ellipsis';
 
 	$: verifyRoute = $page.url.pathname.includes('verify');
 

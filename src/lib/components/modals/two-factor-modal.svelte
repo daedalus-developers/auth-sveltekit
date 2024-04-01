@@ -1,10 +1,16 @@
 <script lang="ts">
-	import * as Dialog from '@components/ui/dialog';
 	import { TwoFactorForm } from '@components';
 	import { page } from '$app/stores';
 	import { Fingerprint, X } from 'lucide-svelte';
 	import { replaceState } from '$app/navigation';
-	// import type { CustomEventHandler } from 'bits-ui';
+	import {
+		Dialog,
+		DialogClose,
+		DialogContent,
+		DialogHeader,
+		DialogTitle
+	} from '@components/ui/dialog';
+	import type { CustomEventHandler } from 'bits-ui';
 
 	let openRequireSudo = false;
 
@@ -43,43 +49,43 @@
 		}
 	};
 
-	// const handleCloseButton = (event: CustomEventHandler<MouseEvent, HTMLButtonElement>) => {
-	// 	event.preventDefault();
-	// 	openRequireSudo = false;
-	// 	replaceState('', {
-	// 		showMfa: false,
-	// 		requireSudo: false
-	// 	});
-	// };
+	const handleCloseButton = (event: CustomEventHandler<MouseEvent, HTMLButtonElement>) => {
+		event.preventDefault();
+		openRequireSudo = false;
+		replaceState('', {
+			showMfa: false,
+			requireSudo: false
+		});
+	};
 </script>
 
 <svelte:window on:keydown={handleEscapeKey} />
 
-<Dialog.Root
+<Dialog
 	bind:open={openRequireSudo}
 	onOutsideClick={(event) => handleOutsideClick(event)}
 	onOpenChange={(open) => handleOpenChange(open)}
 	closeOnEscape={true}
 >
-	<Dialog.Content closeButton={false}>
-		<!-- <Dialog.Close -->
-		<!-- 	on:click={(event) => handleCloseButton(event)} -->
-		<!-- 	class="closeButton data-[state=open]:bg-accent  -->
-		<!--     data-[state=open]:text-muted-foreground" -->
-		<!-- > -->
-		<!-- 	<X class="h-4 w-4" /> -->
-		<!-- 	<span class="sr-only">Close</span> -->
-		<!-- </Dialog.Close> -->
-		<Dialog.Header>
-			<Dialog.Title>
+	<DialogContent closeButton={false}>
+		<DialogClose
+			on:click={(event) => handleCloseButton(event)}
+			class="closeButton data-[state=open]:bg-accent 
+		    data-[state=open]:text-muted-foreground"
+		>
+			<X class="h-4 w-4" />
+			<span class="sr-only">Close</span>
+		</DialogClose>
+		<DialogHeader>
+			<DialogTitle>
 				<h2 class="text-center text-2xl font-bold">
 					2FA Verification <Fingerprint class="inline-block h-8 w-8" />
 				</h2>
-			</Dialog.Title>
-		</Dialog.Header>
+			</DialogTitle>
+		</DialogHeader>
 		<TwoFactorForm method="totp" provider="email" />
-	</Dialog.Content>
-</Dialog.Root>
+	</DialogContent>
+</Dialog>
 
 <style lang="postcss">
 	:global(.closeButton) {
