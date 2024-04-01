@@ -155,16 +155,14 @@
 								<Link {href}>{label}</Link>
 							{/if}
 						{/each}
-						<LightSwitch iconOnly />
+						<LightSwitch iconOnly variant="ghost" class="hover:bg-transparent" />
 					</div>
 				{/if}
 			</div>
-			{#if $page.data.user}
-				<div class="mr-4 mt-2">
-					<UserDropdown />
-				</div>
-			{/if}
 		</div>
+		{#if $page.data.user}
+			<UserDropdown class="pt-2" />
+		{/if}
 	</header>
 {/if}
 
