@@ -42,7 +42,10 @@
 			<TooltipTrigger asChild let:builder>
 				<a
 					href="/settings"
-					class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+					class={cn(
+						'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
+						$page.url.pathname.includes('settings') && 'text-foreground'
+					)}
 					use:builder.action
 					{...builder}
 				>

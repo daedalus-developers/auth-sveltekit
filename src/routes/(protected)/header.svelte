@@ -53,7 +53,10 @@
 				<SheetClose asChild let:builder>
 					<a
 						href="/settings"
-						class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						class={cn(
+							'flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground',
+							$page.url.pathname.includes('settings') && 'text-foreground'
+						)}
 						use:builder.action
 						{...builder}
 					>
@@ -75,5 +78,5 @@
 			class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
 		/>
 	</div>
-	<UserDropdown />
+	<UserDropdown class="mt-3" />
 </header>
