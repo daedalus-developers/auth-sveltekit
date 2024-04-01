@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert';
 	import { TwoFactorModal } from '@components';
-	import { Navigation } from '@components/navigation';
+	// import { Navigation } from '@components/navigation';
 	import type { User } from 'lucia';
 	import { page } from '$app/stores';
 	import { Button } from '@components/ui/button';
@@ -16,8 +16,7 @@
 </script>
 
 <TwoFactorModal />
-<Navigation />
-
+<!-- <Navigation /> -->
 {#if displayOnboardingAlert}
 	<div class={cn($lgScreen ? 'container' : 'mx-2', 'py-2')}>
 		<Alert variant="default" class="space-y-2.5 hover:bg-secondary">

@@ -5,7 +5,7 @@
 	import Link from './link.svelte';
 	import { Fingerprint } from 'lucide-svelte';
 	import { cn, lgScreen } from '@utils';
-	import { debounce } from '@utils';
+	// import { debounce } from '@utils';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import { setupViewTransition } from 'sveltekit-view-transition';
@@ -17,7 +17,7 @@
 
 	let showHeader = true;
 	let currentScrollPosition: number;
-	let lastScrollPosition = 0;
+	// let lastScrollPosition = 0;
 
 	$: pathname = $page.url.pathname;
 
@@ -25,24 +25,24 @@
 
 	const { transition } = setupViewTransition();
 
-	const handleScroll = debounce(() => {
-		const scrollDirection = currentScrollPosition > lastScrollPosition ? 'down' : 'up';
-
-		switch (scrollDirection) {
-			case 'down':
-				showHeader = false;
-				break;
-			case 'up':
-				showHeader = true;
-				break;
-		}
-
-		if ($lgScreen) {
-			showHeader = true;
-		}
-
-		lastScrollPosition = currentScrollPosition;
-	}, 200);
+	// const handleScroll = debounce(() => {
+	// 	const scrollDirection = currentScrollPosition > lastScrollPosition ? 'down' : 'up';
+	//
+	// 	switch (scrollDirection) {
+	// 		case 'down':
+	// 			showHeader = false;
+	// 			break;
+	// 		case 'up':
+	// 			showHeader = true;
+	// 			break;
+	// 	}
+	//
+	// 	if ($lgScreen) {
+	// 		showHeader = true;
+	// 	}
+	//
+	// 	lastScrollPosition = currentScrollPosition;
+	// }, 200);
 
 	$: if (pathname.includes('verify') || pathname.includes('oauth')) {
 		showHeader = false;
@@ -51,23 +51,24 @@
 	}
 </script>
 
-<svelte:window bind:scrollY={currentScrollPosition} on:scroll={handleScroll} />
+<svelte:window bind:scrollY={currentScrollPosition} />
 
 {#if showHeader}
 	<header
 		in:fly={{ y: 100, duration: 100 }}
 		out:fade={{ duration: 100 }}
 		use:transition={'header'}
-		class={cn('sticky top-0 flex h-16 items-center gap-4 px-4 lg:container md:px-6')}
+		class={cn(
+			'sticky top-0 flex h-16 items-center gap-4 px-4 lg:container',
+			currentScrollPosition > 0 ? 'border-b bg-muted-foreground/5' : ''
+		)}
 	>
 		<nav
 			class="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6"
 		>
 			<a class="flex items-center gap-2 font-semibold md:text-base" href="/">
 				<Fingerprint class="h-8 w-8" />
-				{#if $lgScreen}
-					AuthKit
-				{/if}
+				<span class="sr-only"> AuthKit </span>
 			</a>
 			{#each protectedNavLinks as { label, href }}
 				<Link {href}>{label}</Link>

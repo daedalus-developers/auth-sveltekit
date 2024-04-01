@@ -7,14 +7,13 @@
 		BreadcrumbPage,
 		BreadcrumbSeparator
 	} from '@components/ui/breadcrumb';
-	import { lgScreen } from '@utils';
 	import { page } from '$app/stores';
 	import NavDropdown from './nav-dropdown.svelte';
 	import { settingsLinks } from '$lib/constants';
 	import { transformPathname } from '@utils';
 </script>
 
-<Breadcrumb class="{$lgScreen ? 'container' : 'mx-4'} py-4">
+<Breadcrumb class="px-4 md:container">
 	<BreadcrumbList>
 		<BreadcrumbItem>
 			<BreadcrumbLink href="/">Home</BreadcrumbLink>
