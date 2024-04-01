@@ -134,6 +134,11 @@ export const navLinks = [
 	{ label: 'Login', href: '/login' }
 ];
 
+export const protectedNavLinks = [
+	{ label: 'Dashboard', href: '/dashboard' },
+	{ label: 'Settings', href: '/settings' }
+];
+
 export const settingsLinks: Array<LinkWithIcon> = [
 	{
 		icon: User,

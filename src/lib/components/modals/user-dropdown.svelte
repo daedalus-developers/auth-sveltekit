@@ -13,7 +13,7 @@
 	import LightSwitch from '@components/light-switch.svelte';
 	import LogoutFormDialog from './logout-form-dialog.svelte';
 	import { Button } from '@components/ui/button';
-	import { goto } from '$app/navigation';
+	import { protectedNavLinks } from '$lib/constants';
 	import { lgScreen } from '@utils';
 	import { page } from '$app/stores';
 
@@ -42,24 +42,22 @@
 		</DropdownMenuLabel>
 		<DropdownMenuSeparator />
 		<DropdownMenuGroup>
-			<DropdownMenuItem on:click={() => goto('/dashboard')}>
-				Dashboard
-				{#if $lgScreen}
-					<DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
-				{/if}
-			</DropdownMenuItem>
-			<DropdownMenuItem on:click={() => goto('/settings')}>
-				Settings
-				{#if $lgScreen}
-					<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-				{/if}
-			</DropdownMenuItem>
+			{#each protectedNavLinks as { href, label }}
+				<DropdownMenuItem asChild>
+					<Button variant="ghost" {href} class="m-0 ml-2 flex justify-start p-0">
+						{label}
+						{#if $lgScreen}
+							<DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+						{/if}
+					</Button>
+				</DropdownMenuItem>
+			{/each}
 		</DropdownMenuGroup>
 		<DropdownMenuSeparator />
 
 		<DropdownMenuGroup>
 			<DropdownMenuItem asChild>
-				<LightSwitch />
+				<LightSwitch variant="ghost" class="ml-2 flex w-full font-normal" />
 			</DropdownMenuItem>
 
 			<DropdownMenuItem on:click={() => (open = true)}>
