@@ -13,7 +13,7 @@
 	import { transformPathname } from '@utils';
 </script>
 
-<Breadcrumb class="px-4 md:container">
+<Breadcrumb>
 	<BreadcrumbList>
 		<BreadcrumbItem>
 			<BreadcrumbLink href="/">Home</BreadcrumbLink>

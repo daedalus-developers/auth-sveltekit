@@ -12,7 +12,6 @@
 	import LightSwitch from '@components/light-switch.svelte';
 	import LogoutFormDialog from './logout-form-dialog.svelte';
 	import { Button } from '@components/ui/button';
-	import { protectedNavLinks } from '$lib/constants';
 	import { page } from '$app/stores';
 
 	const initials = $page.data?.user?.email?.charAt(0).toUpperCase() ?? 'U';
@@ -41,17 +40,24 @@
 		</DropdownMenuLabel>
 		<DropdownMenuSeparator />
 		<DropdownMenuGroup>
-			{#each protectedNavLinks as { href, label }}
-				<DropdownMenuItem class="py-0">
-					<Button
-						variant="ghost"
-						{href}
-						class="m-0 flex w-full justify-start p-0 text-sm text-muted-foreground hover:bg-transparent hover:text-foreground"
-					>
-						{label}
-					</Button>
-				</DropdownMenuItem>
-			{/each}
+			<DropdownMenuItem class="py-0">
+				<Button
+					variant="ghost"
+					href="/dashboard"
+					class="m-0 flex w-full justify-start p-0 text-sm text-muted-foreground hover:bg-transparent hover:text-foreground"
+				>
+					Dashboard
+				</Button>
+			</DropdownMenuItem>
+			<DropdownMenuItem class="py-0">
+				<Button
+					variant="ghost"
+					href="/settings"
+					class="m-0 flex w-full justify-start p-0 text-sm text-muted-foreground hover:bg-transparent hover:text-foreground"
+				>
+					Settings
+				</Button>
+			</DropdownMenuItem>
 		</DropdownMenuGroup>
 		<DropdownMenuSeparator />
 
@@ -59,7 +65,7 @@
 			<DropdownMenuItem class="py-0">
 				<LightSwitch
 					variant="ghost"
-					class="flex w-full text-xs font-normal text-muted-foreground hover:bg-transparent hover:text-foreground"
+					class="flex w-full text-sm font-normal text-muted-foreground hover:bg-transparent hover:text-foreground"
 				/>
 			</DropdownMenuItem>
 			<DropdownMenuItem class="py-0">

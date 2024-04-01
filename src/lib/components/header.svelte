@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Menu from 'lucide-svelte/icons/menu';
-	import Search from 'lucide-svelte/icons/search';
+	// import Search from 'lucide-svelte/icons/search';
+	// import { Input } from './ui/input';
 	import LightSwitch from './light-switch.svelte';
 	import Link from './link.svelte';
 	import { Fingerprint } from 'lucide-svelte';
@@ -9,9 +10,12 @@
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
 	import { setupViewTransition } from 'sveltekit-view-transition';
-	import { navLinks, protectedNavLinks } from '$lib/constants';
+	import {
+		PROTECTED_ROUTE_LINKS,
+		navLinks,
+		protectedRouteLinks as userLinks
+	} from '$lib/constants';
 	import UserDropdown from './modals/user-dropdown.svelte';
-	import { Input } from './ui/input';
 	import { Button } from './ui/button';
 	import { Sheet, SheetClose, SheetContent, SheetTrigger } from './ui/sheet';
 
@@ -42,11 +46,16 @@
 	// 	lastScrollPosition = currentScrollPosition;
 	// }, 200);
 
-	const protectedRoutes: Array<string> = ['settings', 'dashboard', 'verify', 'oauth'];
+	const protectedRoutes: Array<string> = [
+		...PROTECTED_ROUTE_LINKS.map((link) => link),
+		'settings',
+		'verify',
+		'oauth'
+	];
 
-	$: protectedRoute = protectedRoutes.includes(pathname);
+	$: protectedRoute = protectedRoutes.some((route) => pathname.includes(route));
 
-	$: if (!protectedRoute) {
+	$: if (protectedRoute) {
 		showHeader = false;
 	} else {
 		showHeader = true;
@@ -68,9 +77,12 @@
 		<nav
 			class="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6"
 		>
-			<a class="flex items-center gap-2 font-semibold md:text-base" href="/">
-				<Fingerprint class="h-8 w-8" />
-				<span class="sr-only"> AuthKit </span>
+			<a
+				href="/"
+				class="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+			>
+				<Fingerprint class="h-4 w-4 transition-all group-hover:scale-125" />
+				<span class="sr-only">AuthKit</span>
 			</a>
 			<!-- {#each protectedNavLinks as { label, href }} -->
 			<!-- 	<Link {href}>{label}</Link> -->
@@ -90,12 +102,15 @@
 			</SheetTrigger>
 			<SheetContent side="left">
 				<nav class="grid gap-6 text-lg font-medium">
-					<a href="/" class="flex items-center gap-2 text-lg font-semibold">
-						<Fingerprint class="h-8 w-8" />
+					<a
+						href="/"
+						class="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+					>
+						<Fingerprint class="h-4 w-4 transition-all group-hover:scale-125" />
 						<span class="sr-only">AuthKit</span>
 					</a>
 					{#if $page.data.user}
-						{#each protectedNavLinks as { label, href }}
+						{#each userLinks as { label, href }}
 							<SheetClose asChild let:builder>
 								<Button
 									builders={[builder]}
@@ -133,18 +148,7 @@
 		</Sheet>
 		<div class="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
 			<div class="ml-auto">
-				{#if protectedRoute}
-					<form class="ml-auto flex-1 sm:flex-initial">
-						<div class="relative">
-							<Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-							<Input
-								type="search"
-								placeholder="work in progress..."
-								class="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
-							/>
-						</div>
-					</form>
-				{:else if $lgScreen && !protectedRoute && !$page.data.user}
+				{#if $lgScreen && !protectedRoute && !$page.data.user}
 					<div class="ml-auto inline-flex flex-1 items-center space-x-4 sm:flex-initial">
 						{#each navLinks as { label, href }}
 							{#if !$page.url.pathname.includes('verify')}
