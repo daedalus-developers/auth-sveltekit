@@ -6,15 +6,13 @@
 		DropdownMenuItem,
 		DropdownMenuLabel,
 		DropdownMenuSeparator,
-		DropdownMenuTrigger,
-		DropdownMenuShortcut
+		DropdownMenuTrigger
 	} from '@components/ui/dropdown-menu';
 	import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
 	import LightSwitch from '@components/light-switch.svelte';
 	import LogoutFormDialog from './logout-form-dialog.svelte';
 	import { Button } from '@components/ui/button';
 	import { protectedNavLinks } from '$lib/constants';
-	import { lgScreen } from '@utils';
 	import { page } from '$app/stores';
 
 	const initials = $page.data?.user?.email?.charAt(0).toUpperCase() ?? 'U';
