@@ -1,5 +1,11 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form';
+	import {
+		FormField,
+		FormControl,
+		FormLabel,
+		FormFieldErrors,
+		FormButton
+	} from '@components/ui/form';
 	import { Input } from '@components/ui/input';
 	import type { PageServerData } from './$types';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
@@ -66,9 +72,9 @@
 	</div>
 	<form method="POST" use:enhance>
 		<div class="grid w-full items-center gap-y-6 py-4 text-base">
-			<Form.Field {form} name="email">
-				<Form.Control let:attrs>
-					<Form.Label>Email</Form.Label>
+			<FormField {form} name="email">
+				<FormControl let:attrs>
+					<FormLabel>Email</FormLabel>
 					<Input
 						class="text-base"
 						{...attrs}
@@ -78,17 +84,17 @@
 						bind:value={$registerData.email}
 					/>
 					<p class="h-[20px]">
-						<Form.FieldErrors class="text-center" />
+						<FormFieldErrors class="text-center" />
 					</p>
-				</Form.Control>
-			</Form.Field>
-			<Form.Button disabled={disableSubmitWhenTainted}>
+				</FormControl>
+			</FormField>
+			<FormButton disabled={disableSubmitWhenTainted}>
 				{#if $delayed}
 					Creating account...
 				{:else}
 					Register
 				{/if}
-			</Form.Button>
+			</FormButton>
 			<Button variant="link" href="/login">Already have an account? Login</Button>
 		</div>
 	</form>

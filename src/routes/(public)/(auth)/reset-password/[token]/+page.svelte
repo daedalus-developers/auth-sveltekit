@@ -1,6 +1,12 @@
 <script lang="ts">
-	import * as Card from '@components/ui/card';
-	import * as Form from '@components/ui/form';
+	import { Card, CardContent, CardFooter, CardHeader } from '@components/ui/card';
+	import {
+		FormField,
+		FormControl,
+		FormLabel,
+		FormFieldErrors,
+		FormButton
+	} from '@components/ui/form';
 	import { Input } from '@components/ui/input';
 	import { UndrawResetPassword } from '@components';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -57,17 +63,17 @@
 		<UndrawResetPassword class="-my-36 w-full md:my-0 md:block md:w-[50%]" />
 	</div>
 	<div class="flex">
-		<Card.Root class="w-full border-transparent shadow-none">
-			<Card.Header class="text-center">
+		<Card class="w-full border-transparent shadow-none">
+			<CardHeader class="text-center">
 				<span class="text-2xl">Reset password.</span>
 				{#if message}
 					<span class={cn(message.includes('tried') ? 'text-destructive' : 'text-green-500')}
 						>{message}</span
 					>
 				{/if}
-			</Card.Header>
+			</CardHeader>
 			<form method="POST" use:enhance>
-				<Card.Content class="space-y-2">
+				<CardContent class="space-y-2">
 					<Input type="hidden" name="userId" bind:value={$field.userId} />
 
 					<Button
@@ -83,33 +89,33 @@
 						{/if}
 					</Button>
 
-					<Form.Field {form} name="password">
-						<Form.Control let:attrs>
-							<Form.Label>Password</Form.Label>
+					<FormField {form} name="password">
+						<FormControl let:attrs>
+							<FormLabel>Password</FormLabel>
 							<Input {...attrs} type={passwordInputType} bind:value={$field.password} />
-							<Form.FieldErrors />
-						</Form.Control>
-					</Form.Field>
-					<Form.Field {form} name="passwordConfirm">
-						<Form.Control let:attrs>
-							<Form.Label>Password Confirm</Form.Label>
+							<FormFieldErrors />
+						</FormControl>
+					</FormField>
+					<FormField {form} name="passwordConfirm">
+						<FormControl let:attrs>
+							<FormLabel>Password Confirm</FormLabel>
 							<Input {...attrs} type={passwordInputType} bind:value={$field.passwordConfirm} />
-							<Form.FieldErrors />
-						</Form.Control>
-					</Form.Field>
-				</Card.Content>
-				<Card.Footer>
+							<FormFieldErrors />
+						</FormControl>
+					</FormField>
+				</CardContent>
+				<CardFooter>
 					<div class="flex w-full flex-col gap-y-2">
-						<Form.Button class="w-full" disabled={$delayed}>
+						<FormButton class="w-full" disabled={$delayed}>
 							{#if $delayed}
 								Updating password...<LoaderCircle class="animate-spin" />
 							{:else}
 								Change Password
 							{/if}
-						</Form.Button>
+						</FormButton>
 					</div>
-				</Card.Footer>
+				</CardFooter>
 			</form>
-		</Card.Root>
+		</Card>
 	</div>
 </div>

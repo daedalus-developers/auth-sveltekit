@@ -7,7 +7,10 @@
 		AccordionTrigger
 	} from '@components/ui/accordion';
 	import { TotpActionModal } from '@components';
-	import { Mails, Smartphone, Vibrate } from 'lucide-svelte';
+	import Mails from 'lucide-svelte/icons/mails';
+	import Smartphone from 'lucide-svelte/icons/smartphone';
+	import Vibrate from 'lucide-svelte/icons/vibrate';
+
 	import TotpSetup from './totp-setup.svelte';
 
 	let active2FASectionValue: string | string[] | undefined = undefined;
