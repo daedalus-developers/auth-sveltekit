@@ -3,6 +3,8 @@
 	import Settings from 'lucide-svelte/icons/settings';
 	import { Tooltip, TooltipTrigger, TooltipContent } from '@components/ui/tooltip';
 	import { protectedRouteLinksWithIcons as links } from '$lib/constants';
+	import { page } from '$app/stores';
+	import { cn } from '@utils';
 </script>
 
 <aside class="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -15,11 +17,15 @@
 			<span class="sr-only">AuthKit</span>
 		</a>
 		{#each links as { href, label, icon }}
+			{@const isActive = $page.url.pathname === href}
 			<Tooltip>
 				<TooltipTrigger asChild let:builder>
 					<a
 						{href}
-						class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+						class={cn(
+							'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
+							isActive && 'text-foreground'
+						)}
 						use:builder.action
 						{...builder}
 					>

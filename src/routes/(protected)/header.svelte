@@ -9,6 +9,8 @@
 	import UserDropdown from '@components/modals/user-dropdown.svelte';
 	import { Button } from '@components/ui/button';
 	import { protectedRouteLinksWithIcons as links } from '$lib/constants';
+	import { page } from '$app/stores';
+	import { cn } from '@utils';
 </script>
 
 <header
@@ -31,10 +33,14 @@
 					<span class="sr-only">AuthKit</span>
 				</a>
 				{#each links as { href, label, icon }}
+					{@const isActive = $page.url.pathname === href}
 					<SheetClose asChild let:builder>
 						<a
 							{href}
-							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+							class={cn(
+								'flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground',
+								isActive && 'text-foreground'
+							)}
 							use:builder.action
 							{...builder}
 						>

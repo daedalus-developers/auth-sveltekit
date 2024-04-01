@@ -39,7 +39,7 @@ const freeTier: TierFeature = {
 			limit: 5
 		},
 		{
-			name: 'Clients',
+			name: 'Customers',
 			enabled: true,
 			limit: 5
 		},

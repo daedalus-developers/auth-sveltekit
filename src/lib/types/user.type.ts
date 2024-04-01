@@ -43,7 +43,7 @@ export const TIERS = ['Freemium', 'Pro', 'Custom'] as const;
 
 export const FEATURES = [
 	'Invoices',
-	'Clients',
+	'Customers',
 	'Products',
 	'Projects',
 	'Tasks per project',
