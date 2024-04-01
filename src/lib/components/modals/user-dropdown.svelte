@@ -18,10 +18,10 @@
 	import { page } from '$app/stores';
 
 	const initials = $page.data?.user?.email?.charAt(0).toUpperCase() ?? 'U';
-	let open = false;
+	let showLogoutDialog = false;
 </script>
 
-<LogoutFormDialog bind:open />
+<LogoutFormDialog bind:open={showLogoutDialog} />
 <DropdownMenu>
 	<DropdownMenuTrigger asChild let:builder>
 		<Button variant="ghost" builders={[builder]} class="relative h-8 w-8 rounded-full">
@@ -29,6 +29,7 @@
 				<AvatarImage src={$page.data.user.avatar ?? ''} alt="@shadcn" />
 				<AvatarFallback>{initials}</AvatarFallback>
 			</Avatar>
+			<span class="sr-only">Toggle user menu</span>
 		</Button>
 	</DropdownMenuTrigger>
 	<DropdownMenuContent class="w-56" align="end">
@@ -43,12 +44,13 @@
 		<DropdownMenuSeparator />
 		<DropdownMenuGroup>
 			{#each protectedNavLinks as { href, label }}
-				<DropdownMenuItem asChild>
-					<Button variant="ghost" {href} class="m-0 ml-2 flex justify-start p-0">
+				<DropdownMenuItem class="py-0">
+					<Button
+						variant="ghost"
+						{href}
+						class="m-0 flex w-full justify-start p-0 text-sm text-muted-foreground hover:bg-transparent hover:text-foreground"
+					>
 						{label}
-						{#if $lgScreen}
-							<DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
-						{/if}
 					</Button>
 				</DropdownMenuItem>
 			{/each}
@@ -56,15 +58,22 @@
 		<DropdownMenuSeparator />
 
 		<DropdownMenuGroup>
-			<DropdownMenuItem asChild>
-				<LightSwitch variant="ghost" class="ml-2 flex w-full font-normal" />
+			<DropdownMenuItem class="py-0">
+				<LightSwitch
+					variant="ghost"
+					class="flex w-full text-xs font-normal text-muted-foreground hover:bg-transparent hover:text-foreground"
+				/>
 			</DropdownMenuItem>
-
-			<DropdownMenuItem on:click={() => (open = true)}>
-				Log out
-				{#if $lgScreen}
-					<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-				{/if}
+			<DropdownMenuItem class="py-0">
+				<Button
+					on:click={() => {
+						showLogoutDialog = true;
+					}}
+					variant="ghost"
+					class="m-0 flex w-full justify-start p-0 text-sm text-muted-foreground hover:bg-transparent hover:text-foreground"
+				>
+					Logout
+				</Button>
 			</DropdownMenuItem>
 		</DropdownMenuGroup>
 	</DropdownMenuContent>

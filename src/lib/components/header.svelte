@@ -4,7 +4,7 @@
 	import LightSwitch from './light-switch.svelte';
 	import Link from './link.svelte';
 	import { Fingerprint } from 'lucide-svelte';
-	import { lgScreen } from '@utils';
+	import { cn, lgScreen } from '@utils';
 	import { debounce } from '@utils';
 	import { fade, fly } from 'svelte/transition';
 	import { page } from '$app/stores';
@@ -58,7 +58,7 @@
 		in:fly={{ y: 100, duration: 100 }}
 		out:fade={{ duration: 100 }}
 		use:transition={'header'}
-		class="sticky top-0 flex h-16 items-center gap-4 px-4 md:px-6"
+		class={cn('sticky top-0 flex h-16 items-center gap-4 px-4 lg:container md:px-6')}
 	>
 		<nav
 			class="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6"
