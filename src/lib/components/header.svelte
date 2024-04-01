@@ -21,8 +21,6 @@
 
 	$: pathname = $page.url.pathname;
 
-	$: protectedRoute = pathname.includes('settings') || pathname.includes('dashboard');
-
 	const { transition } = setupViewTransition();
 
 	// const handleScroll = debounce(() => {
@@ -44,7 +42,11 @@
 	// 	lastScrollPosition = currentScrollPosition;
 	// }, 200);
 
-	$: if (pathname.includes('verify') || pathname.includes('oauth')) {
+	const protectedRoutes: Array<string> = ['settings', 'dashboard', 'verify', 'oauth'];
+
+	$: protectedRoute = protectedRoutes.includes(pathname);
+
+	$: if (!protectedRoute) {
 		showHeader = false;
 	} else {
 		showHeader = true;
@@ -70,9 +72,9 @@
 				<Fingerprint class="h-8 w-8" />
 				<span class="sr-only"> AuthKit </span>
 			</a>
-			{#each protectedNavLinks as { label, href }}
-				<Link {href}>{label}</Link>
-			{/each}
+			<!-- {#each protectedNavLinks as { label, href }} -->
+			<!-- 	<Link {href}>{label}</Link> -->
+			<!-- {/each} -->
 		</nav>
 		<Sheet>
 			<SheetTrigger asChild let:builder>
