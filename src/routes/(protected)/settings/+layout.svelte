@@ -1,35 +1,29 @@
 <script lang="ts">
-	import Sidebar from './sidebar.svelte';
-	import { ArrowLeft } from 'lucide-svelte';
-	import { Button } from '@components/ui/button';
-	import { Separator } from '@components/ui/separator';
-	import { cn, lgScreen } from '@utils';
+	import { cn } from '@utils';
 	import { page } from '$app/stores';
+	import { settingsRouteLinksWithIcon } from '$lib/constants';
 </script>
 
-<div class={cn('flex flex-col py-2', $lgScreen ? 'container' : 'mx-4')}>
-	<div class="flex w-full flex-col">
-		<div class="space-y-0.5">
-			<h2 class="scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-				Hey, {$page.data.user.email}
-			</h2>
-			<p class="text-muted-foreground">Manage account related settings here</p>
-		</div>
-		<Separator class="my-4" />
-	</div>
-	<div class="flex">
-		{#if $lgScreen}
-			<div class="flex w-[25%]">
-				<Sidebar />
+<div class="mx-auto grid w-full max-w-7xl gap-2 px-4">
+	<h1 class="text-3xl font-semibold">Settings</h1>
+</div>
+
+<div
+	class="mx-auto grid w-full max-w-7xl items-start gap-6 px-4 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]"
+>
+	<nav class="grid gap-4 text-sm text-muted-foreground">
+		{#each settingsRouteLinksWithIcon as { href, icon, label }}
+			{@const isActive = $page.url.pathname === href}
+			<div>
+				<svelte:component
+					this={icon}
+					class={cn('inline-flex h-4 w-4', isActive ? 'text-primary' : '')}
+				/>
+				<a {href} class={isActive ? 'font-semibold text-primary' : ''}>{label}</a>
 			</div>
-		{/if}
-		<div class={cn('flex w-full flex-col space-y-4', $lgScreen && 'container')}>
-			{#if !$lgScreen && $page.url.pathname !== '/settings'}
-				<Button variant="link" class="-ml-4 justify-start text-lg" href="/settings">
-					<ArrowLeft /> Go Back
-				</Button>
-			{/if}
-			<slot />
-		</div>
+		{/each}
+	</nav>
+	<div class="grid gap-6">
+		<slot />
 	</div>
 </div>

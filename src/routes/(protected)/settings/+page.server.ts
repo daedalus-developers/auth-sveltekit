@@ -1,5 +1,5 @@
 import { fail, message, setError, superValidate, withFiles } from 'sveltekit-superforms';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
 import { accountForm, emailSchema, paymentForm, tierForm } from '@types';
 import { db } from '@server/db';
@@ -10,6 +10,11 @@ import { createPresignedUrl, uploadObject } from '@server/storage';
 import { env } from '$env/dynamic/private';
 import { logger } from '@server/utils';
 import { updateUserUsername } from '@server/mutations';
+import { redirect } from '@sveltejs/kit';
+
+export const load: PageServerLoad = async () => {
+	redirect(302, '/settings/profile');
+};
 
 export const actions: Actions = {
 	updateProfile: async ({ request, locals }) => {
