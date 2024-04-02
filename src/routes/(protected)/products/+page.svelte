@@ -15,7 +15,7 @@
 	import TabSection from './tab-section.svelte';
 </script>
 
-<div class="px-2 py-4">
+<div class="overflow-x-auto px-4 py-4 md:px-6">
 	<Tabs value="all">
 		<div class="flex items-center">
 			<TabsList>

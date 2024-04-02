@@ -9,7 +9,7 @@
 		await invalidateAll();
 	}}
 />
-<div class="space-y-4 px-2">
+<div class="space-y-4 overflow-x-auto px-4 py-4 md:px-6">
 	<div class="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
 		<TopCard />
 		<TopCard />
