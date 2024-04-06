@@ -59,11 +59,39 @@ export const slugifyString = (str: string) =>
 	str
 		.trim()
 		.toLowerCase()
+		.replace(/&/g, 'and')
 		.replace(/\s+/g, '-')
 		.replace(/\./g, '-')
 		.replace(/-+/g, '-')
 		.replace(/[^a-z0-9-]/g, '-');
 
-// export const mergeObjectV2 = <T>(original: T, updated: T): T => {
-//   return Object.assign({}, , source)
-// }
+export const unslugifyString = (slug: string) =>
+	slug
+		.split('-')
+		.map((word) => {
+			if (word.toLowerCase() === 'and') {
+				return '&';
+			}
+			return word.charAt(0).toUpperCase() + word.slice(1);
+		})
+		.join(' ');
+
+export const generateSKU = (
+	productName: string,
+	variantName = '',
+	variantValue = '',
+	variantIndex = 1
+) => {
+	const productCode = productName
+		.toUpperCase()
+		.split(' ')
+		.map((word) => word.charAt(0))
+		.join('');
+
+	const variantCode =
+		variantName && variantValue
+			? variantName.toUpperCase().charAt(0) + variantValue.toUpperCase().charAt(0)
+			: '';
+
+	return `${productCode}${variantCode ? '-' + variantCode : ''}-${variantIndex.toString().padStart(2, '0')}`;
+};

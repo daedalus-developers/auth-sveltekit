@@ -1,6 +1,13 @@
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { db } from './db';
-import { passwordResetToken, sessions, users, usersOtp, type UserInsertSchema } from './schemas';
+import {
+	passwordResetToken,
+	sessions,
+	users,
+	usersOtp,
+	type SessionInsertSchema,
+	type UserInsertSchema
+} from './schemas';
 import { Cookie, Lucia, TimeSpan, generateId } from 'lucia';
 import { dev } from '$app/environment';
 import { and, eq } from 'drizzle-orm';

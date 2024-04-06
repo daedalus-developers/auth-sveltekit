@@ -189,6 +189,7 @@ const avatarSchema = union([
 	string().url(),
 	zInstanceOf(File)
 		.refine((f) => f.size < MAX_FILE_SIZE, 'Max 1MB upload size.')
+		.refine((f) => f.type.startsWith('image/'), 'Only images are allowed.')
 		.optional()
 ]);
 

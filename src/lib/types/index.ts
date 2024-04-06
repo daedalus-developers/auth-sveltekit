@@ -2,6 +2,12 @@ import type { ComponentType } from 'svelte';
 
 export * from './user.type';
 export * from './auth.type';
+export * from './product.type';
+
+export type SelectType = {
+	value: string;
+	label: string;
+};
 
 export type LinkWithIcon = {
 	icon: ComponentType;

@@ -1,5 +1,11 @@
-import { timestamp, pgTable, text, doublePrecision, integer } from 'drizzle-orm/pg-core';
-import { products, variants } from './product.schema';
+// NOTE:Do not touch this import statement , it will break migrations;
+import {
+	CUSTOMER_ADDRESS_LABELS,
+	INVOICE_STATUS,
+	ORDER_STATUS
+} from '../../constants/shared.constant';
+import { timestamp, pgTable, text, doublePrecision, integer, serial } from 'drizzle-orm/pg-core';
+import { productVariants, products } from './product.schema';
 
 export const customers = pgTable('customer', {
 	id: text('id').notNull().primaryKey(),
@@ -10,8 +16,8 @@ export const customers = pgTable('customer', {
 });
 
 export const customerAddresses = pgTable('customer_addresses', {
-	id: text('id').notNull().primaryKey(),
-	label: text('label', { enum: ['home', 'work', 'other'] })
+	id: serial('id').primaryKey(),
+	label: text('label', { enum: [...CUSTOMER_ADDRESS_LABELS] })
 		.notNull()
 		.default('home'),
 	customerId: text('customer_id')
@@ -30,7 +36,7 @@ export const orders = pgTable('orders', {
 	id: text('id').notNull().primaryKey(),
 	customerId: text('customer_id').references(() => customers.id, { onDelete: 'restrict' }),
 	orderDate: timestamp('order_date').notNull().defaultNow(),
-	status: text('status', { enum: ['draft', 'quotation', 'canceled', 'confirmed', 'invoiced'] })
+	status: text('status', { enum: [...ORDER_STATUS] })
 		.notNull()
 		.default('draft'),
 	note: text('note').notNull().default(''),
@@ -39,10 +45,10 @@ export const orders = pgTable('orders', {
 });
 
 export const orderItems = pgTable('order_items', {
-	id: text('id').notNull().primaryKey(),
+	id: serial('id').primaryKey(),
 	orderId: text('order_id').references(() => orders.id, { onDelete: 'restrict' }),
 	productId: text('product_id').references(() => products.id, { onDelete: 'restrict' }),
-	variantId: text('variant_id').references(() => variants.id, { onDelete: 'restrict' }),
+	variantId: integer('variant_id').references(() => productVariants.id, { onDelete: 'restrict' }),
 	quantity: integer('quantity').notNull(),
 	unitPrice: doublePrecision('unit_price').notNull(),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -54,9 +60,9 @@ export const invoices = pgTable('invoices', {
 	orderId: text('order_id')
 		.notNull()
 		.references(() => orders.id, { onDelete: 'restrict' }),
-	deliveryAddressId: text('delivery_address_id').references(() => customerAddresses.id, {
+	deliveryAddressId: integer('delivery_address_id').references(() => customerAddresses.id, {
 		onDelete: 'set null'
 	}),
 	issued: timestamp('issued').notNull().defaultNow(),
-	status: text('status', { enum: ['paid', 'unpaid'] })
+	status: text('status', { enum: [...INVOICE_STATUS] })
 });

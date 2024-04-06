@@ -48,6 +48,7 @@
 
 	const protectedRoutes: Array<string> = [
 		...PROTECTED_ROUTE_LINKS.map((link) => link),
+		'onboarding',
 		'settings',
 		'verify',
 		'oauth'
@@ -161,7 +162,7 @@
 			</div>
 		</div>
 		{#if $page.data.user}
-			<UserDropdown class="pt-2" />
+			<UserDropdown />
 		{/if}
 	</header>
 {/if}

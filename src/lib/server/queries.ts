@@ -1,6 +1,8 @@
 import { or, eq, sql, and } from 'drizzle-orm';
 import { db } from './db';
-import { oAuthAccounts, sessionDetails, sessions, users } from './schemas';
+import { categories, oAuthAccounts, sessionDetails, sessions, users } from './schemas';
+import type { SelectType } from '@types';
+import { unslugifyString } from '@utils';
 
 export const queryUsers = db.select().from(users).prepare('query_users');
 
@@ -87,11 +89,17 @@ export const queryCheckUsername = db
 	.where(eq(users.username, sql.placeholder('username')))
 	.prepare('query_user_usernames');
 
-// export const queryUserDetailsWithUser = db.query.userDetails
-// 	.findFirst({
-// 		where: (details, { eq }) => eq(details.userId, sql.placeholder('id')),
-// 		with: {
-// 			user: true
-// 		}
-// 	})
-// 	.prepare('query_user_details_with_user');
+export const queryCategories = db.select().from(categories).prepare('query_categories');
+
+export const queryCategoriesForCombobox = (): Promise<{ value: string; label: string }[]> =>
+	db
+		.select()
+		.from(categories)
+		.then((categories) =>
+			categories.map((category) => {
+				return {
+					value: category.name,
+					label: unslugifyString(category.name)
+				};
+			})
+		);
