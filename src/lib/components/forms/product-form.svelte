@@ -55,7 +55,6 @@
 		CommandInput,
 		CommandItem
 	} from '@components/ui/command';
-	import InputField from './input-field.svelte';
 
 	let data: SuperValidated<Infer<ProductFormSchema>> = $page.data.productForm;
 	export { data as form };
@@ -88,7 +87,8 @@
 					}
 				}
 			}
-		}
+		},
+		resetForm: false
 	});
 
 	const { form: formData, message, delayed, errors, enhance, capture, restore } = form;
@@ -113,7 +113,7 @@
 	const addVariant = () => {
 		$formData.variants = [
 			...$formData.variants,
-			{ sku: `Variant - ${$formData.variants.length + 1}`, price: 0, quantity: 0 }
+			{ sku: `Variant - ${$formData.variants.length + 1}`, price: '0', quantity: '0' }
 		];
 	};
 
@@ -139,7 +139,7 @@
 			<h1 class="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
 				{$formData.id ? $formData.name : 'New Product'}
 			</h1>
-			{#if $formData.id && $formData.variants.map((variant) => variant.quantity !== 0)}
+			{#if $formData.id && $formData.variants.map((variant) => variant.quantity !== '0')}
 				<Badge variant="outline" class="ml-auto sm:ml-0">In stock</Badge>
 			{/if}
 			<div class="hidden items-center gap-2 md:ml-auto md:flex">

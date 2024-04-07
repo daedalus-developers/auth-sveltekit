@@ -4,9 +4,7 @@
 
 <script lang="ts" generics="T extends Record<string, unknown>">
 	import { goto } from '$app/navigation';
-
 	import { toast } from 'svelte-sonner';
-
 	import SuperDebug, { superForm } from 'sveltekit-superforms';
 	import type { SuperValidated } from 'sveltekit-superforms';
 
