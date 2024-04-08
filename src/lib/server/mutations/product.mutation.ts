@@ -5,16 +5,21 @@ import { generateId } from 'lucia';
 import type { CreateProdcut, CreateCategory } from '@types';
 import { generateSKU } from '@utils';
 
-export const createProduct = async (data: CreateProdcut) => {
-	const newProduct = await db.transaction(async (tx) => {
+export const createProduct = async (data: CreateProdcut): Promise<string> => {
+	const productId = await db.transaction(async (tx) => {
+		// Insert product and get returning id
 		const [newProduct] = await tx
 			.insert(products)
 			.values({
 				id: generateId(15),
 				name: data.name,
-				category: data.category
+				category: data.category,
+				description: data.description
 			})
-			.returning();
+			.returning({
+				id: products.id,
+				name: products.name
+			});
 
 		const newProductVariants = data.variants.map((variant, index) => ({
 			productId: newProduct.id,
@@ -25,17 +30,11 @@ export const createProduct = async (data: CreateProdcut) => {
 			price: Number(variant.price)
 		}));
 
-		await tx.insert(productVariants).values(newProductVariants);
+		await tx.insert(productVariants).values(newProductVariants).returning();
 
-		return await tx.query.products.findFirst({
-			where: eq(products.id, newProduct.id),
-			with: {
-				assets: true,
-				variants: true
-			}
-		});
+		return newProduct.id;
 	});
-	return newProduct;
+	return productId;
 };
 
 export const createCategory = async (data: CreateCategory) =>
