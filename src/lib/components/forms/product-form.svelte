@@ -477,12 +477,13 @@
 				</Card>
 				<Card class="overflow-hidden">
 					<CardHeader>
-						<CardTitle>Product Images</CardTitle>
-						<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit</CardDescription>
+						<CardTitle>Product Assets</CardTitle>
+						<CardDescription>wip</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<div class="grid gap-2">
 							<button
+								disabled
 								class="flex aspect-square w-full items-center justify-center rounded-md border border-dashed"
 							>
 								<Upload class="h-4 w-4 text-muted-foreground" />

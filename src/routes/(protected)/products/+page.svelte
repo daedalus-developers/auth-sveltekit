@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { Button } from '@components/ui/button';
 	import { TabsContent, Tabs, TabsList, TabsTrigger } from '@components/ui/tabs';
 	import {
@@ -12,8 +12,17 @@
 	import ListFilter from 'lucide-svelte/icons/list-filter';
 	import CirclePlus from 'lucide-svelte/icons/circle-plus';
 	import File from 'lucide-svelte/icons/file';
-	import TabSection from './tab-section.svelte';
+	import type { PageServerData } from './$types';
+	import ProductTable from './product-table.svelte';
+
+	export let data: PageServerData;
 </script>
+
+{#await data.products then products}
+	<pre>
+	{JSON.stringify(products, null, 2)}
+  </pre>
+{/await}
 
 <Tabs value="all">
 	<div class="flex items-center">
@@ -50,6 +59,6 @@
 		</div>
 	</div>
 	<TabsContent value="all">
-		<TabSection />
+		<ProductTable />
 	</TabsContent>
 </Tabs>
