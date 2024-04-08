@@ -1,6 +1,6 @@
 import { or, eq, sql, and } from 'drizzle-orm';
 import { db } from './db';
-import { categories, oAuthAccounts, sessionDetails, sessions, users } from './schemas';
+import { categories, oAuthAccounts, products, sessionDetails, sessions, users } from './schemas';
 import type { SelectType } from '@types';
 import { unslugifyString } from '@utils';
 
@@ -88,6 +88,25 @@ export const queryCheckUsername = db
 	.from(users)
 	.where(eq(users.username, sql.placeholder('username')))
 	.prepare('query_user_usernames');
+
+export const queryProduct = db.query.products
+	.findFirst({
+		where: eq(products.id, sql.placeholder('id')),
+		with: {
+			variants: true,
+			assets: true
+		}
+	})
+	.prepare('query_product');
+
+export const queryProducts = db.query.products
+	.findMany({
+		with: {
+			variants: true,
+			assets: true
+		}
+	})
+	.prepare('query_products');
 
 export const queryCategories = db.select().from(categories).prepare('query_categories');
 

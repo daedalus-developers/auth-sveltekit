@@ -67,6 +67,8 @@ export const productSchema = object({
 	variants: productVariantsSchema.array()
 });
 
+export type Product = zInfer<typeof productSchema>;
+
 export const productVariantFormSchema = productVariantsSchema.extend({
 	id: productVariantsSchema.shape.id.optional(),
 	sku: productVariantsSchema.shape.sku.optional(),

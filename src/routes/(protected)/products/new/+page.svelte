@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { ProductForm } from '@components/forms';
 	import { CategoryFormModal } from '@components/modals';
-	import type { PageServerData } from './$types';
-
-	export let data: PageServerData;
 
 	let showCategoryForm = false;
 </script>
