@@ -1,13 +1,18 @@
 import { fail, message, setError, superValidate } from 'sveltekit-superforms';
 import type { Actions, PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
-import { categoryFormSchema, productFormSchema } from '@types';
+import { ERROR_MESSAGE, categoryFormSchema, productFormSchema } from '@types';
 import { createCategory, createProduct } from '@server/mutations/product.mutation';
 import { slugifyString } from '@utils';
 import { PostgresError } from 'postgres';
-import { queryCategoriesForCombobox } from '@server/queries';
+import { queryCategoriesForCombobox, queryProducts } from '@server/queries';
+import { redirect } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async () => {};
+export const load: PageServerLoad = async () => {
+	return {
+		products: queryProducts.execute()
+	};
+};
 
 export const actions: Actions = {
 	newCategory: async ({ request, locals }) => {
@@ -60,18 +65,26 @@ export const actions: Actions = {
 
 		if (!form.valid) return fail(400, { form });
 
-		try {
-			const newProduct = await createProduct(form.data);
+		let productId;
 
-			if (newProduct) {
+		try {
+			const newProductId = await createProduct(form.data);
+
+			if (!newProductId) {
 				return message(form, {
-					type: 'success',
-					text: 'Product created successfully.'
+					type: 'error',
+					text: 'Failed to create product.'
 				});
+			} else {
+				productId = newProductId;
 			}
 		} catch (err) {
-			console.log(err);
+			return message(form, {
+				...ERROR_MESSAGE
+			});
 		}
+
+		redirect(302, `/products/${productId}`);
 	},
 	updateProduct: async ({ request, locals }) => {}
 };
