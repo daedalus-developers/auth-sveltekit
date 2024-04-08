@@ -42,8 +42,7 @@
 		SelectTrigger,
 		SelectValue
 	} from '@components/ui/select';
-	import { Label } from '@components/ui/label';
-	import { cn, mdScreen } from '@utils';
+	import { capitalize, cn, mdScreen } from '@utils';
 	import Trash from 'lucide-svelte/icons/trash-2';
 	import { Separator } from '@components/ui/separator';
 	import { tick } from 'svelte';
@@ -55,6 +54,7 @@
 		CommandInput,
 		CommandItem
 	} from '@components/ui/command';
+	import { PRODUCT_STATUS } from '$lib/constants';
 
 	let data: SuperValidated<Infer<ProductFormSchema>> = $page.data.productForm;
 	export { data as form };
@@ -119,6 +119,8 @@
 
 	let categories = $page.data.categories as Array<{ value: string; label: string }>;
 
+	let productStatusOptions = PRODUCT_STATUS.map((value) => ({ value, label: capitalize(value) }));
+
 	let openCategoryPopup = false;
 
 	function closeAndFocusTrigger(triggerId: string) {
@@ -127,6 +129,13 @@
 			document.getElementById(triggerId)?.focus();
 		});
 	}
+
+	$: selectedStatus = $formData.status
+		? {
+				label: capitalize($formData.status),
+				value: $formData.status
+			}
+		: undefined;
 </script>
 
 <form action="/products?/newProduct" method="POST" use:enhance>
@@ -143,7 +152,9 @@
 				<Badge variant="outline" class="ml-auto sm:ml-0">In stock</Badge>
 			{/if}
 			<div class="hidden items-center gap-2 md:ml-auto md:flex">
-				<Button variant="outline" size="sm">Discard</Button>
+				{#if $formData.id}
+					<Button variant="outline" size="sm">Discard</Button>
+				{/if}
 				<FormButton size="sm" type="submit">
 					{$formData.id ? 'Update Product' : 'Save Product'}
 				</FormButton>
@@ -437,17 +448,29 @@
 					<CardContent>
 						<div class="grid gap-6">
 							<div class="grid gap-3">
-								<Label for="status">Status</Label>
-								<Select>
-									<SelectTrigger id="status" aria-label="Select status">
-										<SelectValue placeholder="Select status" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="draft" label="Draft">Draft</SelectItem>
-										<SelectItem value="published" label="Active">Active</SelectItem>
-										<SelectItem value="archived" label="Archived">Archived</SelectItem>
-									</SelectContent>
-								</Select>
+								<FormField {form} name="status">
+									<FormControl let:attrs>
+										<FormLabel>Status</FormLabel>
+										<Select
+											selected={selectedStatus}
+											onSelectedChange={(v) => {
+												v && ($formData.status = v.value);
+											}}
+										>
+											<SelectTrigger {...attrs}>
+												<SelectValue placeholder="Select status" />
+											</SelectTrigger>
+											<SelectContent>
+												{#each productStatusOptions as status}
+													<SelectItem value={status.value} label={status.label} />
+												{/each}
+											</SelectContent>
+										</Select>
+									</FormControl>
+									<FormDescription>
+										Status of the product wether its active, archived or a draft
+									</FormDescription>
+								</FormField>
 							</div>
 						</div>
 					</CardContent>
@@ -468,19 +491,23 @@
 						</div>
 					</CardContent>
 				</Card>
-				<Card>
-					<CardHeader>
-						<CardTitle>Archive Product</CardTitle>
-						<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit.</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<div></div>
-						<Button size="sm" variant="secondary">Archive Product</Button>
-					</CardContent>
-				</Card>
+				{#if $formData.id}
+					<Card>
+						<CardHeader>
+							<CardTitle>Archive Product</CardTitle>
+							<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit.</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<div></div>
+							<Button size="sm" variant="secondary">Archive Product</Button>
+						</CardContent>
+					</Card>
+				{/if}
 			</div>
 			<div class="flex items-center justify-center gap-2 md:hidden">
-				<Button variant="outline" size="sm">Discard</Button>
+				{#if $formData.id}
+					<Button variant="outline" size="sm">Discard</Button>
+				{/if}
 				<FormButton type="submit" size="sm">Save Product</FormButton>
 			</div>
 		</div>
