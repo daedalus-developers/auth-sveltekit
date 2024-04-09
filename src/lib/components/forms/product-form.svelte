@@ -93,8 +93,6 @@
 
 	const { form: formData, message, delayed, errors, enhance, capture, restore } = form;
 
-	export const snapshot = { capture, restore };
-
 	const removeVariant = (index: number) => {
 		if ($formData.variants.length > 1) {
 			const variants = $formData.variants.filter((_, i) => i !== index);

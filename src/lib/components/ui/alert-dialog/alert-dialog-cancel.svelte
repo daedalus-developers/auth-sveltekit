@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { AlertDialog as AlertDialogPrimitive } from "bits-ui";
-	import { buttonVariants } from "@components/ui/button/index.js";
-	import { cn } from "@utils/ui.js";
+	import { AlertDialog as AlertDialogPrimitive } from 'bits-ui';
+	import { buttonVariants } from '@components/ui/button/index.js';
+	import { cn } from '@utils/ui.js';
 
 	type $$Props = AlertDialogPrimitive.CancelProps;
 	type $$Events = AlertDialogPrimitive.CancelEvents;
 
-	let className: $$Props["class"] = undefined;
+	let className: $$Props['class'] = undefined;
 	export { className as class };
 </script>
 
 <AlertDialogPrimitive.Cancel
-	class={cn(buttonVariants({ variant: "outline" }), "mt-2 sm:mt-0", className)}
+	class={cn(buttonVariants({ variant: 'outline' }), 'mt-2 sm:mt-0', className)}
 	{...$$restProps}
 	on:click
 	on:keydown
