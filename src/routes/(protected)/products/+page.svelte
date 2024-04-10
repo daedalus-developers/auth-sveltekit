@@ -12,25 +12,31 @@
 	import ListFilter from 'lucide-svelte/icons/list-filter';
 	import CirclePlus from 'lucide-svelte/icons/circle-plus';
 	import File from 'lucide-svelte/icons/file';
-	import type { PageServerData } from './$types';
 	import ProductTable from './product-table.svelte';
+	import type { PageServerData } from './$types';
+	import { capitalize } from '@utils';
+	import { PRODUCT_STATUS } from '$lib/constants';
+	import { queryParam, ssp } from 'sveltekit-search-params';
+
+	const statusFilter = queryParam('status', ssp.string('all'), {
+		showDefaults: false
+	});
 
 	export let data: PageServerData;
 </script>
 
-{#await data.products then products}
-	<pre>
-	{JSON.stringify(products, null, 2)}
-  </pre>
-{/await}
-
-<Tabs value="all">
+<Tabs
+	value="all"
+	onValueChange={(value) => {
+		$statusFilter = value ?? 'all';
+	}}
+>
 	<div class="flex items-center">
 		<TabsList>
 			<TabsTrigger value="all">All</TabsTrigger>
-			<TabsTrigger value="active">Active</TabsTrigger>
-			<TabsTrigger value="draft">Draft</TabsTrigger>
-			<TabsTrigger value="archived" class="hidden sm:flex">Archived</TabsTrigger>
+			{#each PRODUCT_STATUS as status}
+				<TabsTrigger value={status}>{capitalize(status)}</TabsTrigger>
+			{/each}
 		</TabsList>
 		<div class="ml-auto flex items-center gap-2">
 			<DropdownMenu>
@@ -59,6 +65,12 @@
 		</div>
 	</div>
 	<TabsContent value="all">
-		<ProductTable />
+		<ProductTable products={data.products} />
+	</TabsContent>
+	<TabsContent value="active">
+		<ProductTable products={data.products} />
+	</TabsContent>
+	<TabsContent value="draft">
+		<ProductTable products={data.products} />
 	</TabsContent>
 </Tabs>

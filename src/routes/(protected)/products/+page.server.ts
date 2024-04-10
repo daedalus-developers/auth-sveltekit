@@ -1,16 +1,32 @@
 import { fail, message, setError, superValidate } from 'sveltekit-superforms';
 import type { Actions, PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
-import { ERROR_MESSAGE, categoryFormSchema, productFormSchema } from '@types';
+import {
+	ERROR_MESSAGE,
+	categoryFormSchema,
+	productFormSchema,
+	type ProductStatusFilter
+} from '@types';
 import { createCategory, createProduct } from '@server/mutations/product.mutation';
 import { slugifyString } from '@utils';
 import { PostgresError } from 'postgres';
 import { queryCategoriesForCombobox, queryProducts } from '@server/queries';
 import { redirect } from '@sveltejs/kit';
+import { PRODUCT_STATUS } from '$lib/constants';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ url }) => {
+	// const statusFilter = (url.searchParams.get('status') ?? 'all') as ProductStatusFilter;
+
+	const statusQueryParam = url.searchParams.get('status');
+	const statusFilter: ProductStatusFilter | 'all' =
+		statusQueryParam &&
+		(PRODUCT_STATUS.includes(statusQueryParam as (typeof PRODUCT_STATUS)[number]) ||
+			statusQueryParam === 'all')
+			? (statusQueryParam as ProductStatusFilter | 'all')
+			: 'all';
+
 	return {
-		products: queryProducts.execute()
+		products: queryProducts(statusFilter).execute()
 	};
 };
 

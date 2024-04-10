@@ -13,6 +13,7 @@ export const createProduct = async (data: CreateProdcut): Promise<string> => {
 			.values({
 				id: generateId(15),
 				name: data.name,
+				status: data.status,
 				category: data.category,
 				description: data.description
 			})

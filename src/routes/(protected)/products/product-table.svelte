@@ -25,6 +25,24 @@
 	import { Button } from '@components/ui/button';
 	import { Badge } from '@components/ui/badge';
 	import Ellipsis from 'lucide-svelte/icons/ellipsis';
+	import type { PageServerData } from './$types';
+	import { formatRelative } from 'date-fns';
+	import { unslugifyString } from '@utils';
+	type ProductsData = PageServerData['products'];
+
+	export let products: ProductsData;
+
+	type Products = Awaited<ProductsData>;
+
+	const getPriceRange = (variants: Products[0]['variants']) => {
+		if (variants.length === 0) return 'N/A';
+
+		if (variants.length === 1) return `${variants[0].price}`;
+
+		const prices = variants.map((data) => data.price) as [];
+
+		return `${Math.min(...prices)} - ${Math.max(...prices)}`;
+	};
 </script>
 
 <Card>
@@ -32,63 +50,64 @@
 		<CardTitle>Products</CardTitle>
 		<CardDescription>Manage your products and view their sales performance.</CardDescription>
 	</CardHeader>
-	<CardContent>
-		<Table>
-			<TableHeader>
-				<TableRow>
-					<TableHead class="hidden w-[100px] sm:table-cell">
-						<span class="sr-only">Image</span>
-					</TableHead>
-					<TableHead>Name</TableHead>
-					<TableHead>Status</TableHead>
-					<TableHead>Price</TableHead>
-					<TableHead class="hidden md:table-cell">Total Sales</TableHead>
-					<TableHead class="hidden md:table-cell">Created at</TableHead>
-					<TableHead>
-						<span class="sr-only">Actions</span>
-					</TableHead>
-				</TableRow>
-			</TableHeader>
-			<TableBody>
-				<TableRow>
-					<TableCell class="hidden sm:table-cell">
-						<img
-							alt="alt"
-							class="aspect-square rounded-md object-cover"
-							height="64"
-							src="/images/placeholder.svg"
-							width="64"
-						/>
-					</TableCell>
-					<TableCell class="font-medium">Laser Lemonade Machine</TableCell>
-					<TableCell>
-						<Badge variant="outline">Draft</Badge>
-					</TableCell>
-					<TableCell>$499.99</TableCell>
-					<TableCell class="hidden md:table-cell">25</TableCell>
-					<TableCell class="hidden md:table-cell">2023-07-12 10:42 AM</TableCell>
-					<TableCell>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild let:builder>
-								<Button aria-haspopup="true" size="icon" variant="ghost" builders={[builder]}>
-									<Ellipsis class="h-4 w-4" />
-									<span class="sr-only">Toggle menu</span>
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end">
-								<DropdownMenuLabel>Actions</DropdownMenuLabel>
-								<DropdownMenuItem>Edit</DropdownMenuItem>
-								<DropdownMenuItem>Delete</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</TableCell>
-				</TableRow>
-			</TableBody>
-		</Table>
-	</CardContent>
-	<CardFooter>
-		<div class="text-xs text-muted-foreground">
-			Showing <strong>1-10</strong> of <strong>32</strong> products
-		</div>
-	</CardFooter>
+	{#await products}
+		Loading Products...
+	{:then products}
+		<CardContent>
+			<Table>
+				<TableHeader>
+					<TableRow>
+						<TableHead>Name</TableHead>
+						<TableHead>Status</TableHead>
+						<TableHead>Price</TableHead>
+						<TableHead class="hidden md:table-cell">Category</TableHead>
+						<TableHead class="hidden md:table-cell">Total Sales</TableHead>
+						<TableHead class="hidden md:table-cell">Created</TableHead>
+						<TableHead>
+							<span class="sr-only">Actions</span>
+						</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{#each products as product}
+						{@const price = getPriceRange(product.variants)}
+						<TableRow>
+							<TableCell class="font-medium">{product.name}</TableCell>
+							<TableCell>
+								<Badge variant="outline">{product.status}</Badge>
+							</TableCell>
+							<TableCell>$ {price}</TableCell>
+							<TableCell class="hidden md:table-cell">{unslugifyString(product.category)}</TableCell
+							>
+							<TableCell class="hidden md:table-cell">0</TableCell>
+							<TableCell class="hidden md:table-cell">
+								{formatRelative(product.createdAt, new Date())}
+							</TableCell>
+							<TableCell>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild let:builder>
+										<Button aria-haspopup="true" size="icon" variant="ghost" builders={[builder]}>
+											<Ellipsis class="h-4 w-4" />
+											<span class="sr-only">Toggle menu</span>
+										</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent align="end">
+										<DropdownMenuLabel>Actions</DropdownMenuLabel>
+										<DropdownMenuItem>Edit</DropdownMenuItem>
+										<DropdownMenuItem>Delete</DropdownMenuItem>
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</TableCell>
+						</TableRow>
+					{/each}
+				</TableBody>
+			</Table>
+		</CardContent>
+		<CardFooter>
+			<div class="text-xs text-muted-foreground">
+				<!-- Showing <strong>1-10</strong> of <strong>{products.length}</strong> products -->
+				Toal of <strong>{products.length}</strong> products
+			</div>
+		</CardFooter>
+	{/await}
 </Card>

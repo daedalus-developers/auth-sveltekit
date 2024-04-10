@@ -71,7 +71,7 @@
 		out:fade={{ duration: 100 }}
 		use:transition={'header'}
 		class={cn(
-			'sticky top-0 flex h-16 items-center gap-4 px-4 lg:container',
+			'sticky top-0 flex h-14 items-center gap-4 px-4 lg:container',
 			currentScrollPosition > 0 ? 'border-b bg-muted-foreground/5' : ''
 		)}
 	>

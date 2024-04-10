@@ -10,6 +10,8 @@ import {
 	type output as zOutput
 } from 'zod';
 
+export type ProductStatusFilter = 'all' | (typeof PRODUCT_STATUS)[number];
+
 export const categoryFormSchema = object({
 	name: string()
 		.min(1, 'Category name is required')

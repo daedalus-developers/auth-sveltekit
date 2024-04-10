@@ -1,8 +1,18 @@
 import { or, eq, sql, and } from 'drizzle-orm';
 import { db } from './db';
 import { categories, oAuthAccounts, products, sessionDetails, sessions, users } from './schemas';
-import type { SelectType } from '@types';
 import { unslugifyString } from '@utils';
+import { type PgSelect } from 'drizzle-orm/pg-core';
+import type { PRODUCT_STATUS } from '$lib/constants';
+import type { ProductStatusFilter } from '@types';
+
+export const withPagination = <T extends PgSelect>(
+	query: T,
+	cursor: number = 0,
+	limit: number = 10
+) => {
+	return query.limit(limit).offset(cursor * limit);
+};
 
 export const queryUsers = db.select().from(users).prepare('query_users');
 
@@ -99,14 +109,37 @@ export const queryProduct = db.query.products
 	})
 	.prepare('query_product');
 
-export const queryProducts = db.query.products
-	.findMany({
-		with: {
-			variants: true,
-			assets: true
-		}
-	})
-	.prepare('query_products');
+// export const queryProducts = db.query.products
+// 	.findMany({
+// 		where: (products, { or, like }) => or(like(products.status, sql.placeholder('status'))),
+// 		with: {
+// 			variants: true,
+// 			assets: true
+// 		}
+// 	})
+// 	.prepare('query_products');
+
+export const queryProducts = (status: ProductStatusFilter = 'all') => {
+	if (status === 'all')
+		return db.query.products
+			.findMany({
+				with: {
+					variants: true,
+					assets: true
+				}
+			})
+			.prepare('query_products');
+
+	return db.query.products
+		.findMany({
+			where: (products, { or, like }) => or(like(products.status, status)),
+			with: {
+				variants: true,
+				assets: true
+			}
+		})
+		.prepare('query_products');
+};
 
 export const queryCategories = db.select().from(categories).prepare('query_categories');
 
