@@ -9,16 +9,21 @@
 		DropdownMenuSeparator,
 		DropdownMenuTrigger
 	} from '@components/ui/dropdown-menu';
-	import ListFilter from 'lucide-svelte/icons/list-filter';
+	import View from 'lucide-svelte/icons/view';
 	import CirclePlus from 'lucide-svelte/icons/circle-plus';
-	import File from 'lucide-svelte/icons/file';
 	import ProductTable from './product-table.svelte';
 	import type { PageServerData } from './$types';
 	import { capitalize } from '@utils';
 	import { PRODUCT_STATUS } from '$lib/constants';
 	import { queryParam, ssp } from 'sveltekit-search-params';
 
-	const statusFilter = queryParam('status', ssp.string('all'), {
+	const statusFilterParam = queryParam('status', ssp.string('all'), {
+		showDefaults: false
+	});
+
+	const VIEW_PARAMS = ['tabular', 'cards'] as const;
+
+	const viewParam = queryParam('view', ssp.string('tabular'), {
 		showDefaults: false
 	});
 
@@ -28,7 +33,7 @@
 <Tabs
 	value="all"
 	onValueChange={(value) => {
-		$statusFilter = value ?? 'all';
+		$statusFilterParam = value ?? 'all';
 	}}
 >
 	<div class="flex items-center">
@@ -42,35 +47,28 @@
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild let:builder>
 					<Button builders={[builder]} variant="outline" size="sm" class="h-7 gap-1">
-						<ListFilter class="h-3.5 w-3.5" />
-						<span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Filter </span>
+						<View class="h-3.5 w-3.5" />
+						<span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> View </span>
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
-					<DropdownMenuLabel>Filter by</DropdownMenuLabel>
+					<DropdownMenuLabel>View</DropdownMenuLabel>
 					<DropdownMenuSeparator />
-					<DropdownMenuCheckboxItem checked>Active</DropdownMenuCheckboxItem>
-					<DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-					<DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+					{#each VIEW_PARAMS as view}
+						<DropdownMenuCheckboxItem
+							checked={$viewParam === view}
+							on:click={() => ($viewParam = view)}>{capitalize(view)}</DropdownMenuCheckboxItem
+						>
+					{/each}
 				</DropdownMenuContent>
 			</DropdownMenu>
-			<Button size="sm" variant="outline" class="h-7 gap-1">
-				<File class="h-3.5 w-3.5" />
-				<span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Export </span>
-			</Button>
 			<Button size="sm" class="h-7 gap-1" href="/products/new">
 				<CirclePlus class="h-3.5 w-3.5" />
 				<span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Add Product </span>
 			</Button>
 		</div>
 	</div>
-	<TabsContent value="all">
-		<ProductTable products={data.products} />
-	</TabsContent>
-	<TabsContent value="active">
-		<ProductTable products={data.products} />
-	</TabsContent>
-	<TabsContent value="draft">
+	<TabsContent value={$statusFilterParam ?? 'all'}>
 		<ProductTable products={data.products} />
 	</TabsContent>
 </Tabs>

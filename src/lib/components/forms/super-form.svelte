@@ -32,6 +32,7 @@
 						}
 						break;
 					case 'error': {
+						toast.error(form.message.text);
 						if (form.message.data && form.message.data?.redirect) {
 							goto(String(form.message.data?.redirect));
 						}
@@ -48,7 +49,8 @@
 <form method="POST" use:enhance {...$$restProps}>
 	<slot
 		{superform}
-		form={$form}
+		superForm={superform}
+		formData={$form}
 		message={$message}
 		errors={$errors}
 		allErrors={$allErrors}

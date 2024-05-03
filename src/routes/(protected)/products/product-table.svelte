@@ -20,7 +20,9 @@
 		DropdownMenuContent,
 		DropdownMenuLabel,
 		DropdownMenuItem,
-		DropdownMenuTrigger
+		DropdownMenuTrigger,
+		DropdownMenuSeparator,
+		DropdownMenuCheckboxItem
 	} from '@components/ui/dropdown-menu';
 	import { Button } from '@components/ui/button';
 	import { Badge } from '@components/ui/badge';
@@ -28,6 +30,7 @@
 	import type { PageServerData } from './$types';
 	import { formatRelative } from 'date-fns';
 	import { unslugifyString } from '@utils';
+	import { ListFilter } from 'lucide-svelte';
 	type ProductsData = PageServerData['products'];
 
 	export let products: ProductsData;
@@ -49,6 +52,22 @@
 	<CardHeader>
 		<CardTitle>Products</CardTitle>
 		<CardDescription>Manage your products and view their sales performance.</CardDescription>
+
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild let:builder>
+				<Button builders={[builder]} variant="outline" size="sm" class="w-1/8 ml-auto h-7 gap-1">
+					<ListFilter class="h-3.5 w-3.5" />
+					<span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Filter </span>
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align="end">
+				<DropdownMenuLabel>Filter by</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+				<DropdownMenuCheckboxItem checked>Active</DropdownMenuCheckboxItem>
+				<DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+				<DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	</CardHeader>
 	{#await products}
 		Loading Products...

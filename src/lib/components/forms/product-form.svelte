@@ -272,8 +272,8 @@
 								<Table>
 									<TableHeader>
 										<TableHead>SKU</TableHead>
-										<TableHead>Stock</TableHead>
 										<TableHead>Price</TableHead>
+										<TableHead>Stock</TableHead>
 										{#if $formData.variants.length > 1}
 											<TableHead>Name</TableHead>
 											<TableHead>Value</TableHead>
@@ -297,11 +297,7 @@
 													<Fieldset {form} name="variants">
 														<FormField {form} name="variants[{index}].price">
 															<FormControl let:attrs>
-																<Input
-																	{...attrs}
-																	bind:value={$formData.variants[index].price}
-																	type="number"
-																/>
+																<Input {...attrs} bind:value={$formData.variants[index].price} />
 															</FormControl>
 															<FormFieldErrors />
 														</FormField>
@@ -311,11 +307,7 @@
 													<Fieldset {form} name="variants">
 														<FormField {form} name="variants[{index}].quantity">
 															<FormControl let:attrs>
-																<Input
-																	{...attrs}
-																	bind:value={$formData.variants[index].quantity}
-																	type="number"
-																/>
+																<Input {...attrs} bind:value={$formData.variants[index].quantity} />
 															</FormControl>
 															<FormFieldErrors />
 														</FormField>

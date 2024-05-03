@@ -1,8 +1,6 @@
 <script lang="ts" context="module">
 	import type { FormPath } from 'sveltekit-superforms';
-
 	type T = Record<string, unknown>;
-
 	type U = unknown;
 </script>
 
