@@ -9,6 +9,7 @@ import { Argon2id } from 'oslo/password';
 import postgres from 'postgres';
 import 'dotenv/config';
 import { exit } from 'process';
+import { slugifyString } from './src/lib/utils';
 
 (async () => {
 	// const DIR_PATH = path.dirname(process.env.DATABASE_URL!);
@@ -60,6 +61,22 @@ import { exit } from 'process';
 		];
 
 		await db.insert(users).values(initialUsers).onConflictDoNothing();
+
+		const categories = [
+			'Smartphone',
+			'Food',
+			'Clothing',
+			'Furniture',
+			'Awesome Product',
+			'Laptop & Computer',
+			'Random Category'
+		];
+
+		await db
+			.insert(schema.categories)
+			.values(categories.map((name) => ({ name: slugifyString(name) })))
+			.onConflictDoNothing();
+
 		console.log('Database Migrated.');
 		exit(0);
 	}

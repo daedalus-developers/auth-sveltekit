@@ -1,6 +1,18 @@
 import { or, eq, sql, and } from 'drizzle-orm';
 import { db } from './db';
-import { oAuthAccounts, sessionDetails, sessions, users } from './schemas';
+import { categories, oAuthAccounts, products, sessionDetails, sessions, users } from './schemas';
+import { unslugifyString } from '@utils';
+import { type PgSelect } from 'drizzle-orm/pg-core';
+import type { PRODUCT_STATUS } from '$lib/constants';
+import type { ProductStatusFilter } from '@types';
+
+export const withPagination = <T extends PgSelect>(
+	query: T,
+	cursor: number = 0,
+	limit: number = 10
+) => {
+	return query.limit(limit).offset(cursor * limit);
+};
 
 export const queryUsers = db.select().from(users).prepare('query_users');
 
@@ -87,11 +99,59 @@ export const queryCheckUsername = db
 	.where(eq(users.username, sql.placeholder('username')))
 	.prepare('query_user_usernames');
 
-// export const queryUserDetailsWithUser = db.query.userDetails
-// 	.findFirst({
-// 		where: (details, { eq }) => eq(details.userId, sql.placeholder('id')),
+export const queryProduct = db.query.products
+	.findFirst({
+		where: eq(products.id, sql.placeholder('id')),
+		with: {
+			variants: true,
+			assets: true
+		}
+	})
+	.prepare('query_product');
+
+// export const queryProducts = db.query.products
+// 	.findMany({
+// 		where: (products, { or, like }) => or(like(products.status, sql.placeholder('status'))),
 // 		with: {
-// 			user: true
+// 			variants: true,
+// 			assets: true
 // 		}
 // 	})
-// 	.prepare('query_user_details_with_user');
+// 	.prepare('query_products');
+
+export const queryProducts = (status: ProductStatusFilter = 'all') => {
+	if (status === 'all')
+		return db.query.products
+			.findMany({
+				with: {
+					variants: true,
+					assets: true
+				}
+			})
+			.prepare('query_products');
+
+	return db.query.products
+		.findMany({
+			where: (products, { or, like }) => or(like(products.status, status)),
+			with: {
+				variants: true,
+				assets: true
+			}
+		})
+		.prepare('query_products');
+};
+
+export const queryCategories = db.select().from(categories).prepare('query_categories');
+
+export const queryCategoriesForCombobox = (): Promise<{ value: string; label: string }[]> =>
+	db
+		.select()
+		.from(categories)
+		.then((categories) =>
+			categories.map((category) => {
+				return {
+					value: category.name,
+					label: unslugifyString(category.name)
+				};
+			})
+		);

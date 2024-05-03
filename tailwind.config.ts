@@ -63,7 +63,7 @@ const config: Config = {
 			}
 		}
 	},
-	plugins: [typography, forms]
+	plugins: [typography]
 };
 
 export default config;

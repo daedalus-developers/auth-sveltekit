@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import { db } from './db';
-import { oAuthAccounts, sessionDetails, users } from './schemas';
-import { logger } from './utils';
+import { db } from '@server/db';
+import { oAuthAccounts, sessionDetails, users } from '@server/schemas';
+import { logger } from '@server/utils';
 import type { SessionDetails } from '@types';
 import { generateId } from 'lucia';
 

@@ -1,5 +1,13 @@
 import { type InferInsertModel, type InferSelectModel } from 'drizzle-orm';
-import { timestamp, boolean, primaryKey, pgTable, text } from 'drizzle-orm/pg-core';
+import {
+	timestamp,
+	boolean,
+	primaryKey,
+	pgTable,
+	text,
+	serial,
+	integer
+} from 'drizzle-orm/pg-core';
 
 export const users = pgTable('user', {
 	id: text('id').notNull().primaryKey(),
@@ -16,42 +24,28 @@ export const users = pgTable('user', {
 	updatedAt: timestamp('updated_at').notNull().defaultNow()
 });
 
-export const userDetails = pgTable(
-	'users_details',
-	{
-		userId: text('user_id')
-			.notNull()
-			.references(() => users.id, {
-				onDelete: 'cascade'
-			}),
-		name: text('name'),
-		bio: text('bio'),
-		updatedAt: timestamp('updated_at').notNull().defaultNow()
-	},
-	(table) => {
-		return {
-			pk: primaryKey({ columns: [table.userId] })
-		};
-	}
-);
+export const userDetails = pgTable('users_details', {
+	id: serial('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => users.id, {
+			onDelete: 'cascade'
+		}),
+	name: text('name'),
+	bio: text('bio'),
+	updatedAt: timestamp('updated_at').notNull().defaultNow()
+});
 
-export const userDetailsUrls = pgTable(
-	'users_details_urls',
-	{
-		userId: text('user_id')
-			.notNull()
-			.references(() => userDetails.userId, {
-				onDelete: 'cascade'
-			}),
-		url: text('url').notNull(),
-		updatedAt: timestamp('updated_at').notNull().defaultNow()
-	},
-	(table) => {
-		return {
-			pk: primaryKey({ columns: [table.userId, table.url] })
-		};
-	}
-);
+export const userDetailsUrls = pgTable('users_details_urls', {
+	id: serial('id').primaryKey(),
+	userDetailsId: integer('user_details_id')
+		.notNull()
+		.references(() => userDetails.id, {
+			onDelete: 'cascade'
+		}),
+	url: text('url').notNull(),
+	updatedAt: timestamp('updated_at').notNull().defaultNow()
+});
 
 export const usersOtp = pgTable(
 	'users_otp',

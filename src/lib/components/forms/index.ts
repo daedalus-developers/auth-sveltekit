@@ -5,3 +5,6 @@ export { default as OauthForm } from './oauth-form.svelte';
 export { default as AccountForm } from './account-form.svelte';
 export { default as TierForm } from './tier-form.svelte';
 export { default as PaymentMethodForm } from './payment-method-form.svelte';
+export { default as ProductForm } from './product-form.svelte';
+export { default as CategoryForm } from './category-form.svelte';
+export { default as TextField } from './text-field.svelte';
