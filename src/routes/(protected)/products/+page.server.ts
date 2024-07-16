@@ -9,7 +9,8 @@ import {
 } from '@types';
 import { createCategory, createProduct } from '@server/mutations/product.mutation';
 import { slugifyString } from '@utils';
-import { PostgresError } from 'postgres';
+import type { PostgresError } from "postgres"
+
 import { queryCategoriesForCombobox, queryProducts } from '@server/queries';
 import { redirect } from '@sveltejs/kit';
 import { PRODUCT_STATUS } from '$lib/constants';
