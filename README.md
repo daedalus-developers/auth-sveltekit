@@ -1,5 +1,14 @@
 # Auth Kit
 
+## Svelte 5
+
+Will migrate everything to svelte 5 once it's out, my personal fork will be used to track it's progress.
+
+- [ ] Update to Svelte 5
+- [ ] Shadcn-svelte(bits-ui) waiting for next branches
+- [ ] Lucia, [Arctic](https://arcticjs.dev) and [OsloJS](https://oslojs.dev) migrations to new version
+- [ ] Remove the products page
+
 An Authentication Base Application built with SvelteKit.
 
 Libraries Used:
